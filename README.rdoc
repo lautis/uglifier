@@ -1,6 +1,34 @@
-= uglifier
+= Uglifier
 
-Description goes here.
+Ruby wrapper for UglifyJS[http://github.com/mishoo/UglifyJS] JavaScript compressor.
+
+== Usage
+
+  require 'uglifier'
+
+  Uglifier.new.compile(File.read("source.js"))
+  # => js file minified
+
+When initializing UglifyJS, you can tune the behavior of UglifyJS by passing options. For example, if you want top-level variable names to be mangled:
+
+  Uglifier.new(:toplevel => true).compile(source)
+
+Defaults are
+
+  {
+    :mangle => true, # Mangle variables names
+    :toplevel => false, # Mangle top-level variable names
+    :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
+    :seqs => true, # Reduce consecutive statements in blocks into single statement
+    :dead_code => true, # Remove dead code (e.g. after return)
+    :beautify => false, # Ouput indented code
+    :beautify_options => {
+      :indent_level => 4,
+      :indent_start => 0,
+      :quote_keys => false,
+      :space_colon => 0
+    }
+  }
 
 == Contributing to uglifier
  
@@ -16,4 +44,3 @@ Description goes here.
 
 Copyright (c) 2010 Ville Lautanala. See LICENSE.txt for
 further details.
-
