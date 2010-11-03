@@ -14,7 +14,6 @@ Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "uglifier"
   gem.summary = %Q{Ruby wrapper for UglifyJS JavaScript compressor}
-  gem.description = %Q{TODO: longer description of your gem}
   gem.email = "lautis@gmail.com"
   gem.homepage = "http://github.com/lautis/uglifier"
   gem.authors = ["Ville Lautanala"]
@@ -27,6 +26,7 @@ Jeweler::Tasks.new do |gem|
   gem.add_development_dependency "bundler", "~> 1.0.0"
   gem.add_development_dependency "jeweler", "~> 1.5.0.pre5"
   gem.add_development_dependency "rcov", ">= 0"
+  gem.files.include 'vendor/uglifyjs/lib/*'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
