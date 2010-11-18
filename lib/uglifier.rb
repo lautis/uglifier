@@ -10,6 +10,7 @@ class Uglifier
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
     :seqs => true, # Reduce consecutive statements in blocks into single statement
     :dead_code => true, # Remove dead code (e.g. after return)
+    :extra => false, # Additional and potentially unsafe optimizations
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
@@ -51,7 +52,8 @@ class Uglifier
   def squeeze(cxt, ast)
     cxt["ast_squeeze"].call(ast, {
       "make_seqs" => @options[:seqs],
-      "dead_code" => @options[:dead_code]
+      "dead_code" => @options[:dead_code],
+      "extra" => @options[:extra]
     })
   end
 
