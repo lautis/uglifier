@@ -56,7 +56,7 @@ class Uglifier
   end
 
   def initialize_v8(cxt)
-    cxt["process"] = { :version => "v1" }
+    cxt["process"] = { :version => "v0.2.0" }
     exports = {
       "sys" => {
         :debug => lambda { |m| puts m }

@@ -15,4 +15,14 @@ describe "Uglifier" do
       Uglifier.new.compile(")(")
     }.should raise_error(Uglifier::Error)
   end
+
+  it "logs to output" do
+    $stdout.should_receive(:write).at_least(:once)
+    lambda {
+      Uglifier.new.compile("function uglifyThis() {
+        return;
+        return 1; // This is an error
+      }")
+    }.should_not raise_error(Uglifier::Error)
+  end
 end
