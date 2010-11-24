@@ -38,6 +38,6 @@ describe "Uglifier" do
 
   it "squeezes code only if squeeze is set to true" do
     code = "function a(a){if(a) { return 0; } else { return 1; }}"
-    Uglifier.new(:squeeze => false).compile(code).length.should > Uglifier.new(:squeeze => true).compile(code).length
+    Uglifier.compile(code, :squeeze => false).length.should > Uglifier.compile(code, :squeeze => true).length
   end
 end

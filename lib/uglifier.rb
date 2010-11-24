@@ -44,6 +44,10 @@ class Uglifier
     end
   end
 
+  def self.compile(source, options = {})
+    self.new(options).compile(source)
+  end
+
   private
 
   def generate_code(cxt, ast)
