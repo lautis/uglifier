@@ -22,11 +22,19 @@ class Uglifier
 
   def initialize(options = {})
     @options = DEFAULTS.merge options
+    @exports = {
+      "sys" => {
+        :debug => lambda {|m| puts m }
+      }
+    }
   end
 
   def compile(source)
     V8::Context.new do |cxt|
-      initialize_v8(cxt)
+      cxt["process"] = { :version => "v0.2.0" }
+
+      load_file(cxt, "parse-js")
+      load_file(cxt, "process")
       begin
         return generate_code(cxt, ast(cxt, source))
       rescue Exception => e
@@ -57,25 +65,18 @@ class Uglifier
     })
   end
 
-  def initialize_v8(cxt)
-    cxt["process"] = { :version => "v0.2.0" }
-    exports = {
-      "sys" => {
-        :debug => lambda { |m| puts m }
-      },
-      "./parse-js" => load_file(cxt, "vendor/uglifyjs/lib/parse-js.js")
-    }
-
-    cxt["require"] = lambda do |file|
-      exports[file]
-    end
-
-    load_file(cxt, "vendor/uglifyjs/lib/process.js")
-  end
-
   def load_file(cxt, file)
+    old = cxt["exports"]
     cxt["exports"] = {}
-    cxt.load(File.join(File.dirname(__FILE__), "..", file))
-    cxt["exports"]
+    cxt["require"] = lambda {|r|
+      @exports[File.basename(r, ".js")] || begin
+        @exports[file] = cxt["exports"] # Prevent circular dependencies
+        load_file(cxt, File.basename(r, ".js"))
+      end
+    }
+    cxt.load(File.join(File.dirname(__FILE__), "..", "vendor", "uglifyjs", "lib", File.basename(file, ".js") + ".js"))
+    @exports[file] = cxt["exports"]
+    cxt["exports"] = old
+    @exports[file]
   end
 end
