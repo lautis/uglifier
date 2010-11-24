@@ -25,4 +25,19 @@ describe "Uglifier" do
       }")
     }.should_not raise_error(Uglifier::Error)
   end
+
+  it "does additional squeezing when unsafe options is true" do
+    unsafe_input = "function a(b){b.toString();}"
+    Uglifier.new(:unsafe => true).compile(unsafe_input).length.should < Uglifier.new(:unsafe => false).compile(unsafe_input).length
+  end
+
+  it "mangles variables only if mangle is set to true" do
+    code = "function longFunctionName(){}"
+    Uglifier.new(:mangle => false).compile(code).length.should == code.length
+  end
+
+  it "squeezes code only if squeeze is set to true" do
+    code = "function a(a){if(a) { return 0; } else { return 1; }}"
+    Uglifier.new(:squeeze => false).compile(code).length.should > Uglifier.new(:squeeze => true).compile(code).length
+  end
 end

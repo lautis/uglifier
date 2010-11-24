@@ -11,6 +11,7 @@ class Uglifier
     :seqs => true, # Reduce consecutive statements in blocks into single statement
     :dead_code => true, # Remove dead code (e.g. after return)
     :extra => false, # Additional and potentially unsafe optimizations
+    :unsafe => false, # Optimizations known to be unsafe in some situations
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
@@ -21,7 +22,7 @@ class Uglifier
   }
 
   def initialize(options = {})
-    @options = DEFAULTS.merge options
+    @options = DEFAULTS.merge(options)
     @exports = {
       "sys" => {
         :debug => lambda {|m| puts m }
@@ -50,19 +51,27 @@ class Uglifier
   end
 
   def ast(cxt, source)
-    squeeze(cxt, mangle(cxt, cxt["parse"].call(source)))
+    squeeze_unsafe(cxt, squeeze(cxt, mangle(cxt, cxt["parse"].call(source))))
   end
 
   def mangle(cxt, ast)
+    return ast unless @options[:mangle]
     cxt["ast_mangle"].call(ast, @options[:toplevel])
   end
 
   def squeeze(cxt, ast)
+    return ast unless @options[:squeeze]
+
     cxt["ast_squeeze"].call(ast, {
       "make_seqs" => @options[:seqs],
       "dead_code" => @options[:dead_code],
       "extra" => @options[:extra]
     })
+  end
+
+  def squeeze_unsafe(cxt, ast)
+    return ast unless @options[:unsafe]
+    cxt["ast_squeeze_more"].call(ast)
   end
 
   def load_file(cxt, file)
