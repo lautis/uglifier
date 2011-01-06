@@ -36,6 +36,7 @@ class Uglifier
 
       load_file(cxt, "parse-js")
       load_file(cxt, "process")
+      @exports["process"]["set_logger"].call(lambda {|m| puts m })
       begin
         return generate_code(cxt, ast(cxt, source))
       rescue Exception => e
