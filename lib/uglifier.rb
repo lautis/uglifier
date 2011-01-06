@@ -33,11 +33,13 @@ class Uglifier
   end
 
   def compile(source)
+    str = stringify(source)
+
     if @options[:copyright]
-      copyright(source)
+      copyright(str)
     else
       ""
-    end << generate_code(ast(source))
+    end << generate_code(ast(str))
   rescue V8::JSError => e
     raise Error.new(e.message)
   end
@@ -47,6 +49,14 @@ class Uglifier
   end
 
   private
+
+  def stringify(source)
+    if source.respond_to? :read
+      source.read
+    else
+      source.to_s
+    end
+  end
 
   def copyright(source)
     comments = []

@@ -72,4 +72,18 @@ describe "Uglifier" do
     code = "function a(a){if(a) { return 0; } else { return 1; }}"
     Uglifier.compile(code, :squeeze => false).length.should > Uglifier.compile(code, :squeeze => true).length
   end
+
+  describe "Input Formats" do
+    it "handles strings" do
+      lambda {
+        Uglifier.new.compile(File.read("vendor/uglifyjs/lib/process.js")).should_not be_empty
+      }.should_not raise_error
+    end
+
+    it "handles files" do
+      lambda {
+        Uglifier.new.compile(File.open("vendor/uglifyjs/lib/process.js", "r")).should_not be_empty
+      }.should_not raise_error
+    end
+  end
 end
