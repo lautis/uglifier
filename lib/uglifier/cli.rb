@@ -5,7 +5,7 @@ class Uglifier
     def self.run!
       options = {}
       OptionParser.new do |opts|
-        opts.banner = "Usage: uglifier [options] file"
+        opts.banner = "Usage: uglifier [options] file1 file2 ..."
 
         opts.on("-M", "--no-mangle", "Don't mangle variable names") do |m|
           options[:mangle] = m
@@ -48,11 +48,14 @@ class Uglifier
         end
       end.parse!
 
-      puts (Uglifier.new(options).compile(if ARGV[0]
-        File.open(ARGV[0], 'r')
+      uglifier = Uglifier.new(options)
+      if ARGV[0]
+        ARGV.each do |f|
+          puts uglifier.compile(File.open(f, 'r'))
+        end
       else
-        $stdin
-      end))
+        puts uglifier.compile($stdin)
+      end
       true
     end
   end
