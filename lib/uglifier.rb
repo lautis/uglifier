@@ -12,6 +12,7 @@ class Uglifier
     :dead_code => true, # Remove dead code (e.g. after return)
     :extra => false, # Additional and potentially unsafe optimizations
     :unsafe => false, # Optimizations known to be unsafe in some situations
+    :copyright => true, # Show copyright message
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
@@ -38,7 +39,13 @@ class Uglifier
       load_file(cxt, "process")
       @exports["process"]["set_logger"].call(lambda {|m| puts m })
       begin
-        return generate_code(cxt, ast(cxt, source))
+        return begin
+          if @options[:copyright]
+            copyright(source)
+          else
+            ""
+          end + generate_code(cxt, ast(cxt, source))
+        end
       rescue Exception => e
         raise Error.new(e.message)
       end
@@ -50,6 +57,25 @@ class Uglifier
   end
 
   private
+
+  def copyright(source)
+    comments = []
+    
+    tokens = @exports["parse-js"]["tokenizer"].call(source, false)
+    comment = tokens.call
+    prev = nil
+
+    while (comment["type"].match(/^comment/) && (!prev || prev == comment["type"]))
+      comments << if comment["type"] == "comment1"
+        "//#{comment["value"]}\n"
+      else
+        "/*#{comment["value"]}*/\n"
+      end
+      prev = comment["type"]
+      comment = tokens.call
+    end
+    comments.join
+  end
 
   def generate_code(cxt, ast)
     cxt["gen_code"].call(ast, @options[:beautify] && @options[:beautify_options])

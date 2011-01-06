@@ -26,6 +26,38 @@ describe "Uglifier" do
     }.should_not raise_error(Uglifier::Error)
   end
 
+  describe "Copyright Preservation" do
+    before :all do
+      @source = <<-EOS
+        /* Copyright Notice */
+        /* (c) 2011 */
+        // REMOVED
+        function identity(p) { return p; }
+      EOS
+      @minified = Uglifier.compile(@source, :copyright => true)
+    end
+
+    it "preserves copyright notice" do
+      @minified.should match /Copyright Notice/
+    end
+
+    it "handles multiple copyright blocks" do
+      @minified.should match /\(c\) 2011/
+    end
+
+    it "doesn't include different comment types" do
+      @minified.should_not match /REMOVED/
+    end
+
+    it "puts comments on own lines" do
+      @minified.split("\n").should have(3).items
+    end
+
+    it "omits copyright notification if copyright parameter is set to false" do
+      Uglifier.compile(@source, :copyright => false).should_not match /Copyright/
+    end
+  end
+
   it "does additional squeezing when unsafe options is true" do
     unsafe_input = "function a(b){b.toString();}"
     Uglifier.new(:unsafe => true).compile(unsafe_input).length.should < Uglifier.new(:unsafe => false).compile(unsafe_input).length
