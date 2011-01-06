@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Uglifier" do
   it "minifies JS" do
-    source = File.read("vendor/uglifyjs/lib/parse-js.js")
+    source = File.read("vendor/uglifyjs/lib/process.js")
     minified = Uglifier.new.compile(source)
     minified.length.should < source.length
     lambda {
