@@ -28,7 +28,7 @@ class Uglifier
     @node = Node.new do |cxt|
       @tokenizer = cxt.require("parse-js")["tokenizer"]
       process = cxt.require("process")
-      process["set_logger"].call(lambda {|m| puts m })
+      process["set_logger"].call(lambda {|m| $stderr.puts m })
     end
   end
 

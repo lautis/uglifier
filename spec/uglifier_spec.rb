@@ -16,8 +16,8 @@ describe "Uglifier" do
     }.should raise_error(Uglifier::Error)
   end
 
-  it "logs to output" do
-    $stdout.should_receive(:write).at_least(:once)
+  it "logs to stderr" do
+    $stderr.should_receive(:write).at_least(:once)
     lambda {
       Uglifier.new.compile("function uglifyThis() {
         return;
