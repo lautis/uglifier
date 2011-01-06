@@ -1,4 +1,4 @@
-require "v8"
+require "uglifier/node"
 
 class Uglifier
   # Raised when compilation fails
@@ -22,34 +22,24 @@ class Uglifier
     }
   }
 
+  # Create new instance of Uglifier with given options
   def initialize(options = {})
     @options = DEFAULTS.merge(options)
-    @exports = {
-      "sys" => {
-        :debug => lambda {|m| puts m }
-      }
-    }
+    @node = Node.new do |cxt|
+      @tokenizer = cxt.require("parse-js")["tokenizer"]
+      process = cxt.require("process")
+      process["set_logger"].call(lambda {|m| puts m })
+    end
   end
 
   def compile(source)
-    V8::Context.new do |cxt|
-      cxt["process"] = { :version => "v0.2.0" }
-
-      load_file(cxt, "parse-js")
-      load_file(cxt, "process")
-      @exports["process"]["set_logger"].call(lambda {|m| puts m })
-      begin
-        return begin
-          if @options[:copyright]
-            copyright(source)
-          else
-            ""
-          end + generate_code(cxt, ast(cxt, source))
-        end
-      rescue Exception => e
-        raise Error.new(e.message)
-      end
-    end
+    if @options[:copyright]
+      copyright(source)
+    else
+      ""
+    end << generate_code(ast(source))
+  rescue V8::JSError => e
+    raise Error.new(e.message)
   end
 
   def self.compile(source, options = {})
@@ -61,7 +51,7 @@ class Uglifier
   def copyright(source)
     comments = []
     
-    tokens = @exports["parse-js"]["tokenizer"].call(source, false)
+    tokens = @tokenizer.call(source, false)
     comment = tokens.call
     prev = nil
 
@@ -77,46 +67,31 @@ class Uglifier
     comments.join
   end
 
-  def generate_code(cxt, ast)
-    cxt["gen_code"].call(ast, @options[:beautify] && @options[:beautify_options])
+  def generate_code(ast)
+    @node["gen_code"].call(ast, @options[:beautify] && @options[:beautify_options])
   end
 
-  def ast(cxt, source)
-    squeeze_unsafe(cxt, squeeze(cxt, mangle(cxt, cxt["parse"].call(source))))
+  def ast(source)
+    squeeze_unsafe(squeeze(mangle(@node["parse"].call(source))))
   end
 
-  def mangle(cxt, ast)
+  def mangle(ast)
     return ast unless @options[:mangle]
-    cxt["ast_mangle"].call(ast, @options[:toplevel])
+    @node["ast_mangle"].call(ast, @options[:toplevel])
   end
 
-  def squeeze(cxt, ast)
+  def squeeze(ast)
     return ast unless @options[:squeeze]
 
-    cxt["ast_squeeze"].call(ast, {
+    @node["ast_squeeze"].call(ast, {
       "make_seqs" => @options[:seqs],
       "dead_code" => @options[:dead_code],
       "extra" => @options[:extra]
     })
   end
 
-  def squeeze_unsafe(cxt, ast)
+  def squeeze_unsafe(ast)
     return ast unless @options[:unsafe]
-    cxt["ast_squeeze_more"].call(ast)
-  end
-
-  def load_file(cxt, file)
-    old = cxt["exports"]
-    cxt["exports"] = {}
-    cxt["require"] = lambda {|r|
-      @exports[File.basename(r, ".js")] || begin
-        @exports[file] = cxt["exports"] # Prevent circular dependencies
-        load_file(cxt, File.basename(r, ".js"))
-      end
-    }
-    cxt.load(File.join(File.dirname(__FILE__), "..", "vendor", "uglifyjs", "lib", File.basename(file, ".js") + ".js"))
-    @exports[file] = cxt["exports"]
-    cxt["exports"] = old
-    @exports[file]
+    @node["ast_squeeze_more"].call(ast)
   end
 end
