@@ -27,10 +27,6 @@ class Uglifier
           options[:dead_code] = d
         end
 
-        opts.on("-x", "--extra-optimizations", "Additional and potentially unsafe optimizations") do |x|
-          options[:extra] = x
-        end
-
         opts.on("-u", "--unsafe-optimizations", "Optimizations known to be unsafe in some situations") do |d|
           options[:unsafe] = d
         end

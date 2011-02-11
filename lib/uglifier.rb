@@ -10,7 +10,6 @@ class Uglifier
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
     :seqs => true, # Reduce consecutive statements in blocks into single statement
     :dead_code => true, # Remove dead code (e.g. after return)
-    :extra => false, # Additional and potentially unsafe optimizations
     :unsafe => false, # Optimizations known to be unsafe in some situations
     :copyright => true, # Show copyright message
     :beautify => false, # Ouput indented code
@@ -88,7 +87,7 @@ class Uglifier
     @node["ast_squeeze"].call(ast, {
       "make_seqs" => @options[:seqs],
       "dead_code" => @options[:dead_code],
-      "extra" => @options[:extra]
+      "keep_comps" => !@options[:unsafe]
     })
   end
 
