@@ -31,7 +31,7 @@ describe "Uglifier" do
       @source = <<-EOS
         /* Copyright Notice */
         /* (c) 2011 */
-        // REMOVED
+        // INCLUDED
         function identity(p) { return p; }
       EOS
       @minified = Uglifier.compile(@source, :copyright => true)
@@ -45,12 +45,12 @@ describe "Uglifier" do
       @minified.should match /\(c\) 2011/
     end
 
-    it "doesn't include different comment types" do
-      @minified.should_not match /REMOVED/
+    it "does include different comment types" do
+      @minified.should match /INCLUDED/
     end
 
     it "puts comments on own lines" do
-      @minified.split("\n").should have(3).items
+      @minified.split("\n").should have(4).items
     end
 
     it "omits copyright notification if copyright parameter is set to false" do

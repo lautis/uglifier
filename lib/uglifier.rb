@@ -59,22 +59,14 @@ class Uglifier
   end
 
   def copyright(source)
-    comments = []
-    
     tokens = @tokenizer.call(source, false)
-    comment = tokens.call
-    prev = nil
-
-    while (comment["type"].match(/^comment/) && (!prev || prev == comment["type"]))
-      comments << if comment["type"] == "comment1"
-        "//#{comment["value"]}\n"
+    tokens.call.comments_before.inject("") do |copyright, comment|
+      copyright + if comment["type"] == "comment1"
+        "//" + comment["value"] + "\n"
       else
-        "/*#{comment["value"]}*/\n"
+        "/*" + comment["value"] + "*/\n"
       end
-      prev = comment["type"]
-      comment = tokens.call
     end
-    comments.join
   end
 
   def generate_code(ast)
