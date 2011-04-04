@@ -24,11 +24,14 @@ class Uglifier
   # Create new instance of Uglifier with given options
   def initialize(options = {})
     @options = DEFAULTS.merge(options)
-    @node = Node.new do |cxt|
-      @tokenizer = cxt.require("parse-js")["tokenizer"]
-      process = cxt.require("process")
-      process["set_logger"].call(lambda {|m| $stderr.puts m })
+    @runtime = ExecJS.compile(File.read(File.join(File.dirname(__FILE__), "uglifier.js")))
+    ["parse-js", "process", "squeeze-more"].each do |file|
+      @runtime.eval("load(\"#{file}\", #{read(file).to_json})")
     end
+    @runtime.eval("require(\"parse-js\")")
+    @runtime.eval("require(\"process\")")
+    @runtime.eval("require(\"squeeze-more\")")
+    puts @runtime.eval("exports")
   end
 
   def compile(source)
@@ -39,7 +42,7 @@ class Uglifier
     else
       ""
     end << generate_code(ast(str))
-  rescue V8::JSError => e
+  rescue Exception => e
     raise Error.new(e.message)
   end
 
@@ -48,6 +51,10 @@ class Uglifier
   end
 
   private
+
+  def read(file)
+    File.read(File.join(File.dirname(__FILE__), "..", "vendor", "uglifyjs", "lib", File.basename(file, ".js") + ".js"))
+  end
 
   def stringify(source)
     if source.respond_to? :read
