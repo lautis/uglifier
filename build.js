@@ -12,13 +12,15 @@ var package = stitch.createPackage({
 package.compile(function(err, source) {
   if (err) throw err;
 
-  var ast = UglifyJS.parser.parse(
-    "(function(window) {" + source + ";" +
-      "window.UglifyJS = this.require('.')" +
-      "}).call({}, this)"
-  );
+ source = "(function(global) {" +
+    source + ";" +
+    "global.UglifyJS = {};" +
+    "global.UglifyJS.parser = this.require('parse-js');" +
+    "global.UglifyJS.uglify = this.require('process');" +
+    "}).call({}, this)";
 
-  source = uglify.gen_code(uglify.ast_squeeze(uglify.ast_mangle(ast)));
+  var ast = UglifyJS.parser.parse(source);
+  source  = uglify.gen_code(uglify.ast_squeeze(uglify.ast_mangle(ast)));
 
   fs.writeFile(__dirname + "/lib/uglify.js", source, function(err) {
     if (err) throw err;

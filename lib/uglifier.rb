@@ -45,7 +45,7 @@ class Uglifier
       var comments = UglifyJS.parser.tokenizer(source)().comments_before;
       for (var i = 0; i < comments.length; i++) {
         var c = comments[i];
-        result += (c.type == "comment1") ? "//"+c.value+"\\n" : "/*"+c.value+"*/";
+        result += (c.type == "comment1") ? "//"+c.value+"\\n" : "/*"+c.value+"*/\\n";
       }
       JS
     end
