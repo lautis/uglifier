@@ -1,6 +1,14 @@
 = Uglifier
 
-Ruby wrapper for UglifyJS[http://github.com/mishoo/UglifyJS] JavaScript compressor.
+Ruby wrapper for UglifyJS[https://github.com/mishoo/UglifyJS] JavaScript compressor.
+
+== Installation
+
+Uglifier is available as ruby gem.
+
+  $ gem install uglifier
+
+Ensure that your environment has a JavaScript interpreter supported by ExecJS[https://github.com/sstephenson/execjs]. Usually, installing therubyracer gem is the best alternative.
 
 == Usage
 
