@@ -70,19 +70,20 @@ class Uglifier
   alias_method :compress, :compile
 
   private
-    def mangle_options
-      @options[:toplevel]
-    end
 
-    def squeeze_options
-      {
-        "make_seqs" => @options[:seqs],
-        "dead_code" => @options[:dead_code],
-        "keep_comps" => !@options[:unsafe]
-      }
-    end
+  def mangle_options
+    @options[:toplevel]
+  end
 
-    def gen_code_options
-      @options[:beautify] ? @options[:beautify_options] : {}
-    end
+  def squeeze_options
+    {
+      "make_seqs" => @options[:seqs],
+      "dead_code" => @options[:dead_code],
+      "keep_comps" => !@options[:unsafe]
+    }
+  end
+
+  def gen_code_options
+    @options[:beautify] ? @options[:beautify_options] : {}
+  end
 end
