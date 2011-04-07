@@ -54,7 +54,7 @@ describe "Uglifier" do
   end
 
   it "mangles variables only if mangle is set to true" do
-    code = "function longFunctionName() {}"
+    code = "function longFunctionName(){}"
     Uglifier.new(:mangle => false).compile(code).length.should == code.length
   end
 
