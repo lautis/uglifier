@@ -16,16 +16,6 @@ describe "Uglifier" do
     }.should raise_error(Uglifier::Error)
   end
 
-  it "logs to stderr" do
-    $stderr.should_receive(:write).at_least(:once)
-    lambda {
-      Uglifier.new.compile("function uglifyThis() {
-        return;
-        return 1; // This is an error
-      }")
-    }.should_not raise_error(Uglifier::Error)
-  end
-
   describe "Copyright Preservation" do
     before :all do
       @source = <<-EOS
@@ -64,7 +54,7 @@ describe "Uglifier" do
   end
 
   it "mangles variables only if mangle is set to true" do
-    code = "function longFunctionName(){}"
+    code = "function longFunctionName() {}"
     Uglifier.new(:mangle => false).compile(code).length.should == code.length
   end
 

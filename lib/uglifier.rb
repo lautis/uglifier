@@ -1,8 +1,7 @@
-require "uglifier/node"
+require "execjs"
 
 class Uglifier
-  # Raised when compilation fails
-  class Error < StandardError; end
+  Error = ExecJS::Error
 
   DEFAULTS = {
     :mangle => true, # Mangle variables names
@@ -21,78 +20,69 @@ class Uglifier
     }
   }
 
-  # Create new instance of Uglifier with given options
-  def initialize(options = {})
-    @options = DEFAULTS.merge(options)
-    @node = Node.new do |cxt|
-      @tokenizer = cxt.require("parse-js")["tokenizer"]
-      process = cxt.require("process")
-      process["set_logger"].call(lambda {|m| $stderr.puts m })
-    end
-  end
-
-  def compile(source)
-    str = stringify(source)
-
-    if @options[:copyright]
-      copyright(str)
-    else
-      ""
-    end << generate_code(ast(str))
-  rescue V8::JSError => e
-    raise Error.new(e.message)
-  end
+  SourcePath = File.expand_path("../uglify.js", __FILE__)
 
   def self.compile(source, options = {})
     self.new(options).compile(source)
   end
 
+  # Create new instance of Uglifier with given options
+  def initialize(options = {})
+    @options = DEFAULTS.merge(options)
+    @context = ExecJS.compile(File.read(SourcePath))
+  end
+
+  def compile(source)
+    source = source.respond_to?(:read) ? source.read : source.to_s
+
+    js = []
+    js << "var result = '';"
+    js << "var source = #{source.to_json};"
+    js << "var ast = UglifyJS.parser.parse(source);"
+
+    if @options[:copyright]
+      js << <<-JS
+      var comments = UglifyJS.parser.tokenizer(source)().comments_before;
+      for (var i = 0; i < comments.length; i++) {
+        var c = comments[i];
+        result += (c.type == "comment1") ? "//"+c.value+"\\n" : "/*"+c.value+"*/";
+      }
+      JS
+    end
+
+    if @options[:mangle]
+      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{mangle_options.to_json});"
+    end
+
+    if @options[:squeeze]
+      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{squeeze_options.to_json});"
+    end
+
+    if @options[:unsafe]
+      js << "ast = UglifyJS.uglify.ast_squeeze_more(ast);"
+    end
+
+    js << "result += UglifyJS.uglify.gen_code(ast, #{gen_code_options.to_json});"
+    js << "return result;"
+
+    @context.exec js.join("\n")
+  end
+  alias_method :compress, :compile
+
   private
-
-  def stringify(source)
-    if source.respond_to? :read
-      source.read
-    else
-      source.to_s
+    def mangle_options
+      @options[:toplevel]
     end
-  end
 
-  def copyright(source)
-    tokens = @tokenizer.call(source, false)
-    tokens.call.comments_before.inject("") do |copyright, comment|
-      copyright + if comment["type"] == "comment1"
-        "//" + comment["value"] + "\n"
-      else
-        "/*" + comment["value"] + "*/\n"
-      end
+    def squeeze_options
+      {
+        "make_seqs" => @options[:seqs],
+        "dead_code" => @options[:dead_code],
+        "keep_comps" => !@options[:unsafe]
+      }
     end
-  end
 
-  def generate_code(ast)
-    @node["gen_code"].call(ast, @options[:beautify] && @options[:beautify_options])
-  end
-
-  def ast(source)
-    squeeze_unsafe(squeeze(mangle(@node["parse"].call(source))))
-  end
-
-  def mangle(ast)
-    return ast unless @options[:mangle]
-    @node["ast_mangle"].call(ast, @options[:toplevel])
-  end
-
-  def squeeze(ast)
-    return ast unless @options[:squeeze]
-
-    @node["ast_squeeze"].call(ast, {
-      "make_seqs" => @options[:seqs],
-      "dead_code" => @options[:dead_code],
-      "keep_comps" => !@options[:unsafe]
-    })
-  end
-
-  def squeeze_unsafe(ast)
-    return ast unless @options[:unsafe]
-    @node["ast_squeeze_more"].call(ast)
-  end
+    def gen_code_options
+      @options[:beautify] ? @options[:beautify_options] : {}
+    end
 end
