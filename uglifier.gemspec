@@ -5,14 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{uglifier}
-  s.version = "0.4.0"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = %q{2011-02-26}
-  s.default_executable = %q{uglify}
+  s.date = %q{2011-04-07}
   s.email = %q{lautis@gmail.com}
-  s.executables = ["uglify"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -26,10 +24,9 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "bin/uglify",
+    "build.js",
     "lib/uglifier.rb",
-    "lib/uglifier/cli.rb",
-    "lib/uglifier/node.rb",
+    "lib/uglify.js",
     "spec/spec_helper.rb",
     "spec/uglifier_spec.rb",
     "uglifier.gemspec",
@@ -50,24 +47,23 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      if Gem.available?("therubyracer-heroku")
-        s.add_runtime_dependency(%q<therubyracer-heroku>, ["~> 0.8.0"])
-      else
-        s.add_runtime_dependency(%q<therubyracer>, ["~> 0.8.0"])
-      end
+      s.add_runtime_dependency(%q<execjs>, ["~> 0.1.0"])
+      s.add_runtime_dependency(%q<json>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
-      s.add_dependency(%q<therubyracer>, ["~> 0.8.0"])
+      s.add_dependency(%q<execjs>, ["~> 0.1.0"])
+      s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.0"])
       s.add_dependency(%q<rcov>, [">= 0"])
     end
   else
-    s.add_dependency(%q<therubyracer>, ["~> 0.8.0"])
+    s.add_dependency(%q<execjs>, ["~> 0.1.0"])
+    s.add_dependency(%q<json>, [">= 0"])
     s.add_dependency(%q<rspec>, ["~> 2.5.0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.0"])
