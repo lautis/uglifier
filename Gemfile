@@ -3,7 +3,7 @@ source "http://rubygems.org"
 # Example:
 #   gem "activesupport", ">= 2.3.5"
 
-gem "execjs"
+gem "execjs", ">=0.3.0"
 gem "multi_json"
 
 # Add dependencies to develop your gem here.
