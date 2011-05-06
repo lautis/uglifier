@@ -1,4 +1,5 @@
 require "execjs"
+require "json"
 
 class Uglifier
   Error = ExecJS::Error
