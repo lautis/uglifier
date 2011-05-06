@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = %q{2011-04-27}
+  s.date = %q{2011-05-05}
   s.email = %q{lautis@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -29,11 +29,14 @@ Gem::Specification.new do |s|
     "lib/uglify.js",
     "spec/spec_helper.rb",
     "spec/uglifier_spec.rb",
-    "uglifier.gemspec"
+    "uglifier.gemspec",
+    "vendor/uglifyjs/lib/parse-js.js",
+    "vendor/uglifyjs/lib/process.js",
+    "vendor/uglifyjs/lib/squeeze-more.js"
   ]
   s.homepage = %q{http://github.com/lautis/uglifier}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.7.2}
+  s.rubygems_version = %q{1.5.0}
   s.summary = %q{Ruby wrapper for UglifyJS JavaScript compressor}
   s.test_files = [
     "spec/spec_helper.rb",
@@ -45,14 +48,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<execjs>, [">= 0"])
-      s.add_runtime_dependency(%q<json>, [">= 0"])
+      s.add_runtime_dependency(%q<multi_json>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
       s.add_dependency(%q<execjs>, [">= 0"])
-      s.add_dependency(%q<json>, [">= 0"])
+      s.add_dependency(%q<multi_json>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.0"])
@@ -60,7 +63,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<execjs>, [">= 0"])
-    s.add_dependency(%q<json>, [">= 0"])
+    s.add_dependency(%q<multi_json>, [">= 0"])
     s.add_dependency(%q<rspec>, ["~> 2.5.0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.0"])
