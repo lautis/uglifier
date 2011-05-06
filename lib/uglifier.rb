@@ -1,8 +1,9 @@
 require "execjs"
-require "json"
+require "multi_json"
 
 class Uglifier
   Error = ExecJS::Error
+  # MultiJson.engine = :json_gem
 
   DEFAULTS = {
     :mangle => true, # Mangle variables names
@@ -38,7 +39,7 @@ class Uglifier
 
     js = []
     js << "var result = '';"
-    js << "var source = #{source.to_json};"
+    js << "var source = #{MultiJson.encode(source)};"
     js << "var ast = UglifyJS.parser.parse(source);"
 
     if @options[:copyright]
@@ -52,18 +53,18 @@ class Uglifier
     end
 
     if @options[:mangle]
-      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{mangle_options.to_json});"
+      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.encode(mangle_options)});"
     end
 
     if @options[:squeeze]
-      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{squeeze_options.to_json});"
+      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{MultiJson.encode(squeeze_options)});"
     end
 
     if @options[:unsafe]
       js << "ast = UglifyJS.uglify.ast_squeeze_more(ast);"
     end
 
-    js << "result += UglifyJS.uglify.gen_code(ast, #{gen_code_options.to_json});"
+    js << "result += UglifyJS.uglify.gen_code(ast, #{MultiJson.encode(gen_code_options)});"
     js << "return result;"
 
     @context.exec js.join("\n")
