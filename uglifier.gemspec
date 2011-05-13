@@ -29,10 +29,7 @@ Gem::Specification.new do |s|
     "lib/uglify.js",
     "spec/spec_helper.rb",
     "spec/uglifier_spec.rb",
-    "uglifier.gemspec",
-    "vendor/uglifyjs/lib/parse-js.js",
-    "vendor/uglifyjs/lib/process.js",
-    "vendor/uglifyjs/lib/squeeze-more.js"
+    "uglifier.gemspec"
   ]
   s.homepage = %q{http://github.com/lautis/uglifier}
   s.require_paths = ["lib"]
