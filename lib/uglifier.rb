@@ -1,6 +1,5 @@
 require "execjs"
 require "multi_json"
-require "multi_json/vendor/ok_json"
 
 class Uglifier
   Error = ExecJS::Error
@@ -40,7 +39,7 @@ class Uglifier
 
     js = []
     js << "var result = '';"
-    js << "var source = #{encode(source)};"
+    js << "var source = #{MultiJson.encode(source)};"
     js << "var ast = UglifyJS.parser.parse(source);"
 
     if @options[:copyright]
@@ -54,7 +53,7 @@ class Uglifier
     end
 
     if @options[:mangle]
-      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{mangle_options});"
+      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.encode(mangle_options)});"
     end
 
     if @options[:squeeze]
@@ -74,12 +73,8 @@ class Uglifier
 
   private
 
-  def encode(source)
-    OkJson.strenc(source)
-  end
-
   def mangle_options
-    @options[:toplevel] && MultiJson.encode(@options[:toplevel]) || "false"
+    @options[:toplevel]
   end
 
   def squeeze_options
