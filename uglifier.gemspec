@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = %q{2011-05-13}
+  s.date = %q{2011-05-14}
   s.email = %q{lautis@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -29,10 +29,7 @@ Gem::Specification.new do |s|
     "lib/uglify.js",
     "spec/spec_helper.rb",
     "spec/uglifier_spec.rb",
-    "uglifier.gemspec",
-    "vendor/uglifyjs/lib/parse-js.js",
-    "vendor/uglifyjs/lib/process.js",
-    "vendor/uglifyjs/lib/squeeze-more.js"
+    "uglifier.gemspec"
   ]
   s.homepage = %q{http://github.com/lautis/uglifier}
   s.require_paths = ["lib"]
