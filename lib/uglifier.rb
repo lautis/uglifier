@@ -23,6 +23,7 @@ class Uglifier
   }
 
   SourcePath = File.expand_path("../uglify.js", __FILE__)
+  ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
 
   def self.compile(source, options = {})
     self.new(options).compile(source)
@@ -31,7 +32,7 @@ class Uglifier
   # Create new instance of Uglifier with given options
   def initialize(options = {})
     @options = DEFAULTS.merge(options)
-    @context = ExecJS.compile(File.read(SourcePath))
+    @context = ExecJS.compile(File.read(ES5FallbackPath) + File.read(SourcePath))
   end
 
   def compile(source)

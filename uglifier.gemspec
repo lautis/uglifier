@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "build.js",
+    "lib/es5.js",
     "lib/uglifier.rb",
     "lib/uglify.js",
     "spec/spec_helper.rb",
