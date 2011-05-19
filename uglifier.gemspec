@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{uglifier}
-  s.version = "0.5.3"
+  s.version = "0.5.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Ville Lautanala"]
-  s.date = %q{2011-05-14}
+  s.authors = [%q{Ville Lautanala}]
+  s.date = %q{2011-05-19}
   s.email = %q{lautis@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -33,8 +33,8 @@ Gem::Specification.new do |s|
     "uglifier.gemspec"
   ]
   s.homepage = %q{http://github.com/lautis/uglifier}
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.7.2}
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{1.8.2}
   s.summary = %q{Ruby wrapper for UglifyJS JavaScript compressor}
   s.test_files = [
     "spec/spec_helper.rb",
