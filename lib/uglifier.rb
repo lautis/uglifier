@@ -8,6 +8,8 @@ class Uglifier
   DEFAULTS = {
     :mangle => true, # Mangle variables names
     :toplevel => false, # Mangle top-level variable names
+    :except => [], # Variable names to be excluded from mangling
+    :max_line_length => 32 * 1024, # Maximum line length
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
     :seqs => true, # Reduce consecutive statements in blocks into single statement
     :dead_code => true, # Remove dead code (e.g. after return)
@@ -18,7 +20,8 @@ class Uglifier
       :indent_level => 4,
       :indent_start => 0,
       :quote_keys => false,
-      :space_colon => 0
+      :space_colon => 0,
+      :ascii_only => false
     }
   }
 
@@ -66,6 +69,11 @@ class Uglifier
     end
 
     js << "result += UglifyJS.uglify.gen_code(ast, #{MultiJson.encode(gen_code_options)});"
+
+    if !@options[:beautify] && @options[:max_line_length]
+      js << "result = UglifyJS.uglify.split_lines(result, #{@options[:max_line_length].to_i})"
+    end
+
     js << "return result;"
 
     @context.exec js.join("\n")
@@ -75,7 +83,11 @@ class Uglifier
   private
 
   def mangle_options
-    @options[:toplevel]
+    {
+      "toplevel" => @options[:toplevel],
+      "defines" => {},
+      "except" => @options[:except]
+    }
   end
 
   def squeeze_options

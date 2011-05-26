@@ -63,6 +63,21 @@ describe "Uglifier" do
     Uglifier.compile(code, :squeeze => false).length.should > Uglifier.compile(code, :squeeze => true).length
   end
 
+  it "should allow top level variables to be mangled" do
+    code = "var foo = 123"
+    Uglifier.compile(code, :toplevel => true).should_not include("var foo")
+  end
+
+  it "allows variables to be excluded from mangling" do
+    code = "var foo = {bar: 123};"
+    Uglifier.compile(code, :except => ["foo"], :toplevel => true).should include("var foo")
+  end
+
+  it "honors max line length" do
+    code = "var foo = 123;var bar = 123456"
+    Uglifier.compile(code, :max_line_length => 8).split("\n").length.should == 2
+  end
+
   describe "Input Formats" do
     it "handles strings" do
       lambda {
