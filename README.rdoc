@@ -17,24 +17,34 @@ Ensure that your environment has a JavaScript interpreter supported by ExecJS[ht
   Uglifier.new.compile(File.read("source.js"))
   # => js file minified
 
+  # Or alternatively
+  Uglifier.compile(File.read("source.js"))
+
 When initializing UglifyJS, you can tune the behavior of UglifyJS by passing options. For example, if you want top-level variable names to be mangled:
 
   Uglifier.new(:toplevel => true).compile(source)
 
-Defaults are
+  # Or
+  Uglifier.compile(source, :toplevel => true)
 
+Available options and their defaults are
   {
     :mangle => true, # Mangle variables names
     :toplevel => false, # Mangle top-level variable names
+    :except => [], # Variable names to be excluded from mangling
+    :max_line_length => 32 * 1024, # Maximum line length
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
     :seqs => true, # Reduce consecutive statements in blocks into single statement
     :dead_code => true, # Remove dead code (e.g. after return)
+    :unsafe => false, # Optimizations known to be unsafe in some situations
+    :copyright => true, # Show copyright message
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
       :indent_start => 0,
       :quote_keys => false,
-      :space_colon => 0
+      :space_colon => 0,
+      :ascii_only => false
     }
   }
 
