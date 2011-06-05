@@ -1,8 +1,9 @@
+# encoding: UTF-8
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Uglifier" do
   it "minifies JS" do
-    source = File.read("vendor/uglifyjs/lib/process.js")
+    source = File.open("vendor/uglifyjs/lib/process.js", "r:UTF-8").read
     minified = Uglifier.new.compile(source)
     minified.length.should < source.length
     lambda {
@@ -81,13 +82,13 @@ describe "Uglifier" do
   describe "Input Formats" do
     it "handles strings" do
       lambda {
-        Uglifier.new.compile(File.read("vendor/uglifyjs/lib/process.js")).should_not be_empty
+        Uglifier.new.compile(File.open("vendor/uglifyjs/lib/process.js", "r:UTF-8").read).should_not be_empty
       }.should_not raise_error
     end
 
     it "handles files" do
       lambda {
-        Uglifier.new.compile(File.open("vendor/uglifyjs/lib/process.js", "r")).should_not be_empty
+        Uglifier.new.compile(File.open("vendor/uglifyjs/lib/process.js", "r:UTF-8")).should_not be_empty
       }.should_not raise_error
     end
   end

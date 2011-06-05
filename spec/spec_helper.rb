@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'uglifier'
 require 'rspec'
 

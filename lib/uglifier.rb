@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "execjs"
 require "multi_json"
 
@@ -35,7 +37,7 @@ class Uglifier
   # Create new instance of Uglifier with given options
   def initialize(options = {})
     @options = DEFAULTS.merge(options)
-    @context = ExecJS.compile(File.read(ES5FallbackPath) + File.read(SourcePath))
+    @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read + File.open(SourcePath, "r:UTF-8").read)
   end
 
   def compile(source)
