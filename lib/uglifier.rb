@@ -7,6 +7,7 @@ class Uglifier
   Error = ExecJS::Error
   # MultiJson.engine = :json_gem
 
+  # Default options for compilation
   DEFAULTS = {
     :mangle => true, # Mangle variables names
     :toplevel => false, # Mangle top-level variable names
@@ -30,16 +31,29 @@ class Uglifier
   SourcePath = File.expand_path("../uglify.js", __FILE__)
   ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
 
+  # Minifies JavaScript code using implicit context.
+  #
+  # source should be a String or IO object containing valid JavaScript.
+  # options contain optional overrides to Uglifier::DEFAULTS
+  #
+  # Returns minified code as String
   def self.compile(source, options = {})
     self.new(options).compile(source)
   end
 
-  # Create new instance of Uglifier with given options
+  # Initialize new context for Uglifier with given options
+  #
+  # options - Hash of options to override Uglifier::DEFAULTS
   def initialize(options = {})
     @options = DEFAULTS.merge(options)
     @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read + File.open(SourcePath, "r:UTF-8").read)
   end
 
+  # Minifies JavaScript code
+  #
+  # source should be a String or IO object containing valid JavaScript.
+  #
+  # Returns minified code as String
   def compile(source)
     source = source.respond_to?(:read) ? source.read : source.to_s
 
