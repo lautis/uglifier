@@ -115,6 +115,7 @@ class Uglifier
   end
 
   def gen_code_options
-    @options[:beautify] ? @options[:beautify_options] : {}
+    
+    @options[:beautify] ? {:beautify => true}.merge(@options[:beautify_options]) : {}
   end
 end
