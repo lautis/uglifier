@@ -21,6 +21,10 @@ describe "Uglifier" do
     Uglifier.new.compile('var foo="\0bar"').should match(/(\0|\\0)/)
   end
 
+  it "doesn't try to mangle $super by default to avoid breaking PrototypeJS" do
+    Uglifier.new.compile('function foo($super) {return $super}').should include("$super")
+  end
+
   describe "Copyright Preservation" do
     before :all do
       @source = <<-EOS

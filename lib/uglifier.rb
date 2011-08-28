@@ -11,7 +11,7 @@ class Uglifier
   DEFAULTS = {
     :mangle => true, # Mangle variables names
     :toplevel => false, # Mangle top-level variable names
-    :except => [], # Variable names to be excluded from mangling
+    :except => ["$super"], # Variable names to be excluded from mangling
     :max_line_length => 32 * 1024, # Maximum line length
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
     :seqs => true, # Reduce consecutive statements in blocks into single statement
