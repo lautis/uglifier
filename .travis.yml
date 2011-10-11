@@ -1,4 +1,19 @@
 rvm:
   - 1.8.7
   - 1.9.2
+  - jruby
 before_script: "git submodule update --init --recursive"
+env:
+  - EXECJS_RUNTIME=RubyRacer
+  - EXECJS_RUNTIME=Mustang
+  - EXECJS_RUNTIME=RubyRhino
+matrix:
+  exclude:
+    - rvm: 1.8.7
+      env: EXECJS_RUNTIME=RubyRhino
+    - rvm: 1.9.2
+      env: EXECJS_RUNTIME=RubyRhino
+    - rvm: jruby
+      env: EXECJS_RUNTIME=RubyRacer
+    - rvm: jruby
+      env: EXECJS_RUNTIME=Mustang
