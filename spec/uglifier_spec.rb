@@ -87,6 +87,11 @@ describe "Uglifier" do
     Uglifier.compile(code, :max_line_length => 8).split("\n").length.should == 2
   end
 
+  it "lifts vars to top of the scope" do
+    code = "function something() { var foo = 123; foo = 1234; var bar = 123456; return foo + bar}"
+    Uglifier.compile(code, :lift_vars => true).should include("var a,b")
+  end
+
   describe "Input Formats" do
     it "handles strings" do
       lambda {

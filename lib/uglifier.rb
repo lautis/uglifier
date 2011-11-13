@@ -16,6 +16,7 @@ class Uglifier
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
     :seqs => true, # Reduce consecutive statements in blocks into single statement
     :dead_code => true, # Remove dead code (e.g. after return)
+    :lift_vars => false, # Lift all var declarations at the start of the scope
     :unsafe => false, # Optimizations known to be unsafe in some situations
     :copyright => true, # Show copyright message
     :beautify => false, # Ouput indented code
@@ -61,6 +62,10 @@ class Uglifier
     js << "var result = '';"
     js << "var source = #{MultiJson.encode(source)};"
     js << "var ast = UglifyJS.parser.parse(source);"
+
+    if @options[:lift_vars]
+      js << "ast = UglifyJS.uglify.ast_lift_variables(ast);"
+    end
 
     if @options[:copyright]
       js << <<-JS
