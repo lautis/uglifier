@@ -97,6 +97,16 @@ describe "Uglifier" do
     Uglifier.compile(code, :ascii_only => true).should include("\\ud83c\\ude01")
   end
 
+  it "escapes </script when asked to" do
+    code = "function test() { return '</script>';}"
+    Uglifier.compile(code, :inline_script => true).should_not include("</script>")
+  end
+
+  it "quotes keys" do
+    code = "var a = {foo: 1}"
+    Uglifier.compile(code, :quote_keys => true).should include('"foo"')
+  end
+
   describe "Input Formats" do
     it "handles strings" do
       lambda {

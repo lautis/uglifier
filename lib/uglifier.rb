@@ -20,12 +20,13 @@ class Uglifier
     :unsafe => false, # Optimizations known to be unsafe in some situations
     :copyright => true, # Show copyright message
     :ascii_only => false, # Encode non-ASCII characters as Unicode code points
+    :inline_script => false, # Escape </script
+    :quote_keys => false, # Quote keys in object literals
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
       :indent_start => 0,
-      :quote_keys => false,
-      :space_colon => 0
+      :space_colon => false
     }
   }
 
@@ -120,7 +121,11 @@ class Uglifier
   end
 
   def gen_code_options
-    options = {:ascii_only => @options[:ascii_only]}
+    options = {
+      :ascii_only => @options[:ascii_only],
+      :inline_script => @options[:inline_script],
+      :quote_keys => @options[:quote_keys]
+    }
 
     if @options[:beautify]
       options.merge(:beautify => true).merge(@options[:beautify_options])

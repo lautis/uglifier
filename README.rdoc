@@ -42,13 +42,13 @@ Available options and their defaults are
     :unsafe => false, # Optimizations known to be unsafe in some situations
     :copyright => true, # Show copyright message
     :ascii_only => false, # Encode non-ASCII characters as Unicode code points
+    :inline_script => false, # Escape </script
+    :quote_keys => false, # Quote keys in object literals
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
       :indent_start => 0,
-      :quote_keys => false,
-      :space_colon => 0,
-      :ascii_only => false
+      :space_colon => false
     }
   }
 
