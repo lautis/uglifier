@@ -92,6 +92,11 @@ describe "Uglifier" do
     Uglifier.compile(code, :lift_vars => true).should include("var a,b")
   end
 
+  it "can be configured to output only ASCII" do
+    code = "function emoji() { return '\\ud83c\\ude01'; }"
+    Uglifier.compile(code, :ascii_only => true).should include("\\ud83c\\ude01")
+  end
+
   describe "Input Formats" do
     it "handles strings" do
       lambda {

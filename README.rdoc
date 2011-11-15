@@ -41,6 +41,7 @@ Available options and their defaults are
     :lift_vars => false, # Lift all var declarations at the start of the scope
     :unsafe => false, # Optimizations known to be unsafe in some situations
     :copyright => true, # Show copyright message
+    :ascii_only => false, # Encode non-ASCII characters as Unicode code points
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,

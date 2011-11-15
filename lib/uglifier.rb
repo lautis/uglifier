@@ -19,13 +19,13 @@ class Uglifier
     :lift_vars => false, # Lift all var declarations at the start of the scope
     :unsafe => false, # Optimizations known to be unsafe in some situations
     :copyright => true, # Show copyright message
+    :ascii_only => false, # Encode non-ASCII characters as Unicode code points
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
       :indent_start => 0,
       :quote_keys => false,
-      :space_colon => 0,
-      :ascii_only => false
+      :space_colon => 0
     }
   }
 
@@ -120,7 +120,12 @@ class Uglifier
   end
 
   def gen_code_options
-    
-    @options[:beautify] ? {:beautify => true}.merge(@options[:beautify_options]) : {}
+    options = {:ascii_only => @options[:ascii_only]}
+
+    if @options[:beautify]
+      options.merge(:beautify => true).merge(@options[:beautify_options])
+    else
+      options
+    end
   end
 end
