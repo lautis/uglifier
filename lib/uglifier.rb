@@ -9,7 +9,7 @@ class Uglifier
 
   # Default options for compilation
   DEFAULTS = {
-    :mangle => true, # Mangle variables names
+    :mangle => true, # Mangle variable and function names, use :vars to skip function mangling
     :toplevel => false, # Mangle top-level variable names
     :except => ["$super"], # Variable names to be excluded from mangling
     :max_line_length => 32 * 1024, # Maximum line length
@@ -108,7 +108,8 @@ class Uglifier
     {
       "toplevel" => @options[:toplevel],
       "defines" => {},
-      "except" => @options[:except]
+      "except" => @options[:except],
+      "no_functions" => @options[:mangle] == :vars
     }
   end
 

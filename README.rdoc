@@ -31,7 +31,7 @@ When initializing UglifyJS, you can tune the behavior of UglifyJS by passing opt
 
 Available options and their defaults are
   {
-    :mangle => true, # Mangle variables names
+    :mangle => true, # Mangle variable and function names, use :variables to skip function mangling
     :toplevel => false, # Mangle top-level variable names
     :except => [], # Variable names to be excluded from mangling
     :max_line_length => 32 * 1024, # Maximum line length

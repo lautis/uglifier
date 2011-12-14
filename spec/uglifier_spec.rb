@@ -82,6 +82,13 @@ describe "Uglifier" do
     Uglifier.compile(code, :except => ["foo"], :toplevel => true).should include("var foo")
   end
 
+  it "allows disabling of function name mangling" do
+    code = "function sample() {var bar = 1; function foo() { return bar; }}"
+    mangled = Uglifier.compile(code, :mangle => :vars)
+    mangled.should include("foo()")
+    mangled.should_not include("bar")
+  end
+
   it "honors max line length" do
     code = "var foo = 123;var bar = 123456"
     Uglifier.compile(code, :max_line_length => 8).split("\n").length.should == 2
