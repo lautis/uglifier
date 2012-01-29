@@ -27,7 +27,7 @@ describe "Uglifier" do
 
   it "adds trailing semicolon to minified source" do
     source = "function id(i) {return i;};"
-    Uglifier.new.compile(source)[-1].should eql(";")
+    Uglifier.new.compile(source)[-1].should eql(";"[0])
   end
 
   describe "Copyright Preservation" do
