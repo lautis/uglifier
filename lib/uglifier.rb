@@ -96,7 +96,7 @@ class Uglifier
       js << "result = UglifyJS.uglify.split_lines(result, #{@options[:max_line_length].to_i})"
     end
 
-    js << "return result;"
+    js << "return result + ';';"
 
     @context.exec js.join("\n")
   end

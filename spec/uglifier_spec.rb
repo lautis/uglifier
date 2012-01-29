@@ -25,6 +25,11 @@ describe "Uglifier" do
     Uglifier.new.compile('function foo($super) {return $super}').should include("$super")
   end
 
+  it "adds trailing semicolon to minified source" do
+    source = "function id(i) {return i;};"
+    Uglifier.new.compile(source)[-1].should eql(";")
+  end
+
   describe "Copyright Preservation" do
     before :all do
       @source = <<-EOS
@@ -63,7 +68,7 @@ describe "Uglifier" do
   end
 
   it "mangles variables only if mangle is set to true" do
-    code = "function longFunctionName(){}"
+    code = "function longFunctionName(){};"
     Uglifier.new(:mangle => false).compile(code).length.should == code.length
   end
 
