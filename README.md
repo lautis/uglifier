@@ -8,7 +8,7 @@ Uglifier is available as ruby gem.
 
     $ gem install uglifier
 
-Ensure that your environment has a JavaScript interpreter supported by ExecJS[https://github.com/sstephenson/execjs]. Usually, installing therubyracer gem is the best alternative.
+Ensure that your environment has a JavaScript interpreter supported by [ExecJS](https://github.com/sstephenson/execjs). Usually, installing therubyracer gem is the best alternative.
 
 ## Usage
 
