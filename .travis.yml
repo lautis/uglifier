@@ -6,7 +6,6 @@ rvm:
 before_script: "git submodule update --init --recursive"
 env:
   - EXECJS_RUNTIME=RubyRacer
-  - EXECJS_RUNTIME=Mustang
   - EXECJS_RUNTIME=RubyRhino
 matrix:
   exclude:
@@ -18,5 +17,3 @@ matrix:
       env: EXECJS_RUNTIME=RubyRhino
     - rvm: jruby
       env: EXECJS_RUNTIME=RubyRacer
-    - rvm: jruby
-      env: EXECJS_RUNTIME=Mustang
