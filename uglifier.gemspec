@@ -50,7 +50,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rdoc>, ["~> 3.11"])
     else
       s.add_dependency(%q<execjs>, [">= 0.3.0"])
-      s.add_dependency(%q<multi_json>, [">= 1.0.2"])
+      s.add_dependency(%q<multi_json>, [">= 1.3"])
       s.add_dependency(%q<rspec>, ["~> 2.7"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
