@@ -61,7 +61,7 @@ class Uglifier
 
     js = []
     js << "var result = '';"
-    js << "var source = #{MultiJson.encode(source)};"
+    js << "var source = #{MultiJson.dump(source)};"
     js << "var ast = UglifyJS.parser.parse(source);"
 
     if @options[:lift_vars]
@@ -79,18 +79,18 @@ class Uglifier
     end
 
     if @options[:mangle]
-      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.encode(mangle_options)});"
+      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.dump(mangle_options)});"
     end
 
     if @options[:squeeze]
-      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{MultiJson.encode(squeeze_options)});"
+      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{MultiJson.dump(squeeze_options)});"
     end
 
     if @options[:unsafe]
       js << "ast = UglifyJS.uglify.ast_squeeze_more(ast);"
     end
 
-    js << "result += UglifyJS.uglify.gen_code(ast, #{MultiJson.encode(gen_code_options)});"
+    js << "result += UglifyJS.uglify.gen_code(ast, #{MultiJson.dump(gen_code_options)});"
 
     if !@options[:beautify] && @options[:max_line_length]
       js << "result = UglifyJS.uglify.split_lines(result, #{@options[:max_line_length].to_i})"
