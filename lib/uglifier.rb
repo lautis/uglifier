@@ -78,9 +78,7 @@ class Uglifier
       JS
     end
 
-    if @options[:mangle]
-      js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.dump(mangle_options)});"
-    end
+    js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.dump(mangle_options)});"
 
     if @options[:squeeze]
       js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{MultiJson.dump(squeeze_options)});"
@@ -106,6 +104,7 @@ class Uglifier
 
   def mangle_options
     {
+      "mangle" => @options[:mangle],
       "toplevel" => @options[:toplevel],
       "defines" => {},
       "except" => @options[:except],
