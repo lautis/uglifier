@@ -101,7 +101,7 @@ describe "Uglifier" do
 
   it "lifts vars to top of the scope" do
     code = "function something() { var foo = 123; foo = 1234; var bar = 123456; return foo + bar}"
-    Uglifier.compile(code, :lift_vars => true).should include("var a,b")
+    Uglifier.compile(code, :lift_vars => true).should match /var \w,\w/
   end
 
   it "can be configured to output only ASCII" do
