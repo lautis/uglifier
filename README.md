@@ -4,11 +4,11 @@ Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS) JavaScript compr
 
 ## Installation
 
-Uglifier is available as ruby gem.
+Uglifier is available as a ruby gem.
 
     $ gem install uglifier
 
-Ensure that your environment has a JavaScript interpreter supported by [ExecJS](https://github.com/sstephenson/execjs). Usually, installing therubyracer gem is the best alternative.
+Ensure that your environment has a JavaScript interpreter supported by [ExecJS](https://github.com/sstephenson/execjs). Installing `therubyracer` gem is a safe choice  and having `node` in `PATH` works too.
 
 ## Usage
 
