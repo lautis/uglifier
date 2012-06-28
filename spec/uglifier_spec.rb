@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require 'stringio'
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Uglifier" do
@@ -120,15 +121,17 @@ describe "Uglifier" do
   end
 
   describe "Input Formats" do
+    let(:code) { "function hello() { return 'hello world'; }" }
+
     it "handles strings" do
       lambda {
-        Uglifier.new.compile(File.open("lib/uglify.js", "r:UTF-8").read).should_not be_empty
+        Uglifier.new.compile(code).should_not be_empty
       }.should_not raise_error
     end
 
-    it "handles files" do
+    it "handles IO objects" do
       lambda {
-        Uglifier.new.compile(File.open("lib/uglify.js", "r:UTF-8")).should_not be_empty
+        Uglifier.new.compile(StringIO.new(code)).should_not be_empty
       }.should_not raise_error
     end
   end
