@@ -120,6 +120,16 @@ describe "Uglifier" do
     Uglifier.compile(code, :quote_keys => true).should include('"foo"')
   end
 
+  it "handles constant definitions" do
+    code = "if (BOOLEAN) { var a = STRING; var b = NULL; var c = NUMBER; }"
+    defines = {"NUMBER" => 1234, "BOOLEAN" => true, "NULL" => nil, "STRING" => "str"}
+    processed = Uglifier.compile(code, :define => defines)
+    processed.should include("a=\"str\"")
+    processed.should_not include("if")
+    processed.should include("b=null")
+    processed.should include("c=1234")
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 

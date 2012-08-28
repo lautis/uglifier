@@ -43,6 +43,7 @@ Available options and their defaults are
       :ascii_only => false, # Encode non-ASCII characters as Unicode code points
       :inline_script => false, # Escape </script
       :quote_keys => false, # Quote keys in object literals
+      :define => {}, # Define values for symbol replacement
       :beautify => false, # Ouput indented code
       :beautify_options => {
         :indent_level => 4,

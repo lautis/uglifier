@@ -22,6 +22,7 @@ class Uglifier
     :ascii_only => false, # Encode non-ASCII characters as Unicode code points
     :inline_script => false, # Escape </script
     :quote_keys => false, # Quote keys in object literals
+    :define => {}, # Define values for symbol replacement
     :beautify => false, # Ouput indented code
     :beautify_options => {
       :indent_level => 4,
@@ -106,7 +107,7 @@ class Uglifier
     {
       "mangle" => @options[:mangle],
       "toplevel" => @options[:toplevel],
-      "defines" => {},
+      "defines" => defines,
       "except" => @options[:except],
       "no_functions" => @options[:mangle] == :vars
     }
@@ -118,6 +119,21 @@ class Uglifier
       "dead_code" => @options[:dead_code],
       "keep_comps" => !@options[:unsafe]
     }
+  end
+
+  def defines
+    Hash[(@options[:define] || {}).map do |k, v|
+      token = if v.is_a? Numeric
+        ['num', v]
+      elsif [true, false].include?(v)
+        ['name', v.to_s]
+      elsif v == nil
+        ['name', 'null']
+      else
+        ['string', v.to_s]
+      end
+      [k, token]
+    end]
   end
 
   def gen_code_options
