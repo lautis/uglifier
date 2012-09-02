@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 gem "execjs", ">=0.3.0"
-gem "multi_json", "~> 1.3"
+gem "multi_json", "~> 1.0", ">= 1.0.2"
 
 # Depend on defined ExecJS runtime
 execjs_runtimes = {

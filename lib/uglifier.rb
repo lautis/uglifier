@@ -62,7 +62,7 @@ class Uglifier
 
     js = []
     js << "var result = '';"
-    js << "var source = #{MultiJson.dump(source)};"
+    js << "var source = #{json_encode(source)};"
     js << "var ast = UglifyJS.parser.parse(source);"
 
     if @options[:lift_vars]
@@ -79,17 +79,17 @@ class Uglifier
       JS
     end
 
-    js << "ast = UglifyJS.uglify.ast_mangle(ast, #{MultiJson.dump(mangle_options)});"
+    js << "ast = UglifyJS.uglify.ast_mangle(ast, #{json_encode(mangle_options)});"
 
     if @options[:squeeze]
-      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{MultiJson.dump(squeeze_options)});"
+      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{json_encode(squeeze_options)});"
     end
 
     if @options[:unsafe]
       js << "ast = UglifyJS.uglify.ast_squeeze_more(ast);"
     end
 
-    js << "result += UglifyJS.uglify.gen_code(ast, #{MultiJson.dump(gen_code_options)});"
+    js << "result += UglifyJS.uglify.gen_code(ast, #{json_encode(gen_code_options)});"
 
     if !@options[:beautify] && @options[:max_line_length]
       js << "result = UglifyJS.uglify.split_lines(result, #{@options[:max_line_length].to_i})"
@@ -147,6 +147,17 @@ class Uglifier
       options.merge(:beautify => true).merge(@options[:beautify_options])
     else
       options
+    end
+  end
+
+  # MultiJson API detection
+  if MultiJson.respond_to? :dump
+    def json_encode(obj)
+      MultiJson.dump(obj)
+    end
+  else
+    def json_encode(obj)
+      MultiJson.encode(obj)
     end
   end
 end
