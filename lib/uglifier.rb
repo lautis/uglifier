@@ -160,4 +160,12 @@ class Uglifier
       MultiJson.encode(obj)
     end
   end
+
+  if defined?(::Rails::Railtie)
+    class Railtie < ::Rails::Railtie
+      initializer :setup_compressor do |app|
+        app.config.assets.js_compressor = :uglifier
+      end
+    end
+  end
 end
