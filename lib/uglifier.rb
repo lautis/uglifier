@@ -10,7 +10,6 @@ class Uglifier
   # Default options for compilation
   DEFAULTS = {
     :mangle => true, # Mangle variable and function names, use :vars to skip function mangling
-    :toplevel => false, # Mangle top-level variable names
     :except => ["$super"], # Variable names to be excluded from mangling
     :max_line_length => 32 * 1024, # Maximum line length
     :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
@@ -60,87 +59,82 @@ class Uglifier
   def compile(source)
     source = source.respond_to?(:read) ? source.read : source.to_s
 
-    js = []
-    js << "var result = '';"
-    js << "var source = #{json_encode(source)};"
-    js << "var ast = UglifyJS.parser.parse(source);"
+    js = <<-JS
+      var source = %{source};
+      var ast = UglifyJS.parse(source);
+      ast.figure_out_scope();
 
-    if @options[:lift_vars]
-      js << "ast = UglifyJS.uglify.ast_lift_variables(ast);"
-    end
-
-    if @options[:copyright]
-      js << <<-JS
-      var comments = UglifyJS.parser.tokenizer(source)().comments_before;
-      for (var i = 0; i < comments.length; i++) {
-        var c = comments[i];
-        result += (c.type == "comment1") ? "//"+c.value+"\\n" : "/*"+c.value+"*/\\n";
+      if (%{squeeze}) {
+        var compressor = UglifyJS.Compressor(%{compressor_options});
+        ast = ast.transform(compressor);
+        ast.figure_out_scope();
       }
-      JS
-    end
 
-    js << "ast = UglifyJS.uglify.ast_mangle(ast, #{json_encode(mangle_options)});"
+      if (%{mangle}) {
+        ast.compute_char_frequency();
+        ast.mangle_names(%{mangle_options});
+      }
 
-    if @options[:squeeze]
-      js << "ast = UglifyJS.uglify.ast_squeeze(ast, #{json_encode(squeeze_options)});"
-    end
+      var stream = UglifyJS.OutputStream(%{gen_code_options});
 
-    if @options[:unsafe]
-      js << "ast = UglifyJS.uglify.ast_squeeze_more(ast);"
-    end
+      if (%{copyright}) {
+        var comments = ast.start.comments_before;
+        for (var i = 0; i < comments.length; i++) {
+          var c = comments[i];
+          stream.print((c.type == "comment1") ? "//"+c.value+"\\n" : "/*"+c.value+"*/\\n");
+        }
+      }
 
-    js << "result += UglifyJS.uglify.gen_code(ast, #{json_encode(gen_code_options)});"
+      ast.print(stream);
+      return stream.toString() + ";";
+    JS
 
-    if !@options[:beautify] && @options[:max_line_length]
-      js << "result = UglifyJS.uglify.split_lines(result, #{@options[:max_line_length].to_i})"
-    end
-
-    js << "return result + ';';"
-
-    @context.exec js.join("\n")
+    @context.exec(js % {
+      :source => json_encode(source),
+      :compressor_options => json_encode(compressor_options),
+      :gen_code_options => json_encode(gen_code_options),
+      :mangle_options => json_encode(mangle_options),
+      :squeeze => squeeze?.to_s,
+      :mangle => mangle?.to_s,
+      :copyright => copyright?.to_s
+    })
   end
   alias_method :compress, :compile
 
   private
 
+  def mangle?
+    !!@options[:mangle]
+  end
+
+  def squeeze?
+    !!@options[:squeeze]
+  end
+
+  def copyright?
+    !!@options[:copyright]
+  end
+
   def mangle_options
-    {
-      "mangle" => @options[:mangle],
-      "toplevel" => @options[:toplevel],
-      "defines" => defines,
-      "except" => @options[:except],
-      "no_functions" => @options[:mangle] == :vars
-    }
+    {"except" => @options[:except]}
   end
 
-  def squeeze_options
+  def compressor_options
     {
-      "make_seqs" => @options[:seqs],
+      "sequences" => @options[:seqs],
       "dead_code" => @options[:dead_code],
-      "keep_comps" => !@options[:unsafe]
+      "unsafe" => !@options[:unsafe],
+      "hoist_vars" => @options[:lift_vars],
+      "global_defs" => @options[:define] || {}
     }
-  end
-
-  def defines
-    Hash[(@options[:define] || {}).map do |k, v|
-      token = if v.is_a? Numeric
-        ['num', v]
-      elsif [true, false].include?(v)
-        ['name', v.to_s]
-      elsif v == nil
-        ['name', 'null']
-      else
-        ['string', v.to_s]
-      end
-      [k, token]
-    end]
   end
 
   def gen_code_options
     options = {
       :ascii_only => @options[:ascii_only],
       :inline_script => @options[:inline_script],
-      :quote_keys => @options[:quote_keys]
+      :quote_keys => @options[:quote_keys],
+      :max_line_len => @options[:max_line_length]
     }
 
     if @options[:beautify]

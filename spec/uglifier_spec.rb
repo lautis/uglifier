@@ -63,11 +63,6 @@ describe "Uglifier" do
     end
   end
 
-  it "does additional squeezing when unsafe options is true" do
-    unsafe_input = "function a(b){b.toString();}"
-    Uglifier.new(:unsafe => true).compile(unsafe_input).length.should < Uglifier.new(:unsafe => false).compile(unsafe_input).length
-  end
-
   it "mangles variables only if mangle is set to true" do
     code = "function longFunctionName(){};"
     Uglifier.new(:mangle => false).compile(code).length.should == code.length
@@ -78,26 +73,14 @@ describe "Uglifier" do
     Uglifier.compile(code, :squeeze => false).length.should > Uglifier.compile(code, :squeeze => true).length
   end
 
-  it "should allow top level variables to be mangled" do
-    code = "var foo = 123"
-    Uglifier.compile(code, :toplevel => true).should_not include("var foo")
-  end
-
   it "allows variables to be excluded from mangling" do
     code = "var foo = {bar: 123};"
     Uglifier.compile(code, :except => ["foo"], :toplevel => true).should include("var foo")
   end
 
-  it "allows disabling of function name mangling" do
-    code = "function sample() {var bar = 1; function foo() { return bar; }}"
-    mangled = Uglifier.compile(code, :mangle => :vars)
-    mangled.should include("foo()")
-    mangled.should_not include("bar")
-  end
-
   it "honors max line length" do
     code = "var foo = 123;var bar = 123456"
-    Uglifier.compile(code, :max_line_length => 8).split("\n").length.should == 2
+    Uglifier.compile(code, :max_line_length => 8, :squeeze => false).split("\n").length.should == 2
   end
 
   it "lifts vars to top of the scope" do
