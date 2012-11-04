@@ -27,7 +27,11 @@ class Uglifier
       :indent_level => 4,
       :indent_start => 0,
       :space_colon => false
-    }
+    },
+    :source_filename => nil, # The filename of the input
+    :source_root => nil, # The URL of the directory which contains :source_filename
+    :output_filename => nil, # The filename or URL where the minified output can be found
+    :input_source_map => nil, # The contents of the source map describing the input
   }
 
   SourcePath = File.expand_path("../uglify.js", __FILE__)
@@ -41,6 +45,16 @@ class Uglifier
   # Returns minified code as String
   def self.compile(source, options = {})
     self.new(options).compile(source)
+  end
+
+  # Minifies JavaScript code and generates a source map using implicit context.
+  #
+  # source should be a String or IO object containing valid JavaScript.
+  # options contain optional overrides to Uglifier::DEFAULTS
+  #
+  # Returns a pair of [minified code as String, source map as a String]
+  def self.compile_with_map(source, options = {})
+    self.new(options).compile_with_map(source)
   end
 
   # Initialize new context for Uglifier with given options
@@ -57,11 +71,30 @@ class Uglifier
   #
   # Returns minified code as String
   def compile(source)
+    really_compile(source, false)
+  end
+  alias_method :compress, :compile
+
+  # Minifies JavaScript code and generates a source map
+  #
+  # source should be a String or IO object containing valid JavaScript.
+  #
+  # Returns a pair of [minified code as String, source map as a String]
+  def compile_with_map(source)
+    really_compile(source, true)
+  end
+
+  private
+
+  # Minifies JavaScript code
+  #
+  # source should be a String or IO object containing valid JavaScript.
+  def really_compile(source, generate_map)
     source = source.respond_to?(:read) ? source.read : source.to_s
 
     js = <<-JS
       var source = %{source};
-      var ast = UglifyJS.parse(source);
+      var ast = UglifyJS.parse(source, %{parse_options});
       ast.figure_out_scope();
 
       if (%{squeeze}) {
@@ -75,7 +108,14 @@ class Uglifier
         ast.mangle_names(%{mangle_options});
       }
 
-      var stream = UglifyJS.OutputStream(%{gen_code_options});
+      var gen_code_options = %{gen_code_options};
+
+      if (%{generate_map}) {
+          var source_map = UglifyJS.SourceMap(%{source_map_options});
+          gen_code_options.source_map = source_map;
+      }
+
+      var stream = UglifyJS.OutputStream(gen_code_options);
 
       if (%{copyright}) {
         var comments = ast.start.comments_before;
@@ -86,7 +126,11 @@ class Uglifier
       }
 
       ast.print(stream);
-      return stream.toString() + ";";
+      if (%{generate_map}) {
+          return [stream.toString() + ";", source_map.toString()];
+      } else {
+          return stream.toString() + ";";
+      }
     JS
 
     @context.exec(js % {
@@ -94,14 +138,14 @@ class Uglifier
       :compressor_options => json_encode(compressor_options),
       :gen_code_options => json_encode(gen_code_options),
       :mangle_options => json_encode(mangle_options),
+      :parse_options => json_encode(parse_options),
+      :source_map_options => json_encode(source_map_options),
       :squeeze => squeeze?.to_s,
       :mangle => mangle?.to_s,
-      :copyright => copyright?.to_s
+      :copyright => copyright?.to_s,
+      :generate_map => (!!generate_map).to_s
     })
   end
-  alias_method :compress, :compile
-
-  private
 
   def mangle?
     !!@options[:mangle]
@@ -142,6 +186,18 @@ class Uglifier
     else
       options
     end
+  end
+
+  def source_map_options
+    {
+      :file => @options[:output_filename],
+      :root => @options[:source_root],
+      :orig => @options[:input_source_map]
+    }
+  end
+
+  def parse_options
+    {:filename => @options[:source_filename]}
   end
 
   # MultiJson API detection
