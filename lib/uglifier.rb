@@ -93,31 +93,32 @@ class Uglifier
     source = source.respond_to?(:read) ? source.read : source.to_s
 
     js = <<-JS
-      var source = %{source};
-      var ast = UglifyJS.parse(source, %{parse_options});
+      var options = %s;
+      var source = options.source;
+      var ast = UglifyJS.parse(source, options.parse_options);
       ast.figure_out_scope();
 
-      if (%{squeeze}) {
-        var compressor = UglifyJS.Compressor(%{compressor_options});
+      if (options.squeeze) {
+        var compressor = UglifyJS.Compressor(options.compressor_options);
         ast = ast.transform(compressor);
         ast.figure_out_scope();
       }
 
-      if (%{mangle}) {
+      if (options.mangle) {
         ast.compute_char_frequency();
-        ast.mangle_names(%{mangle_options});
+        ast.mangle_names(options.mangle_options);
       }
 
-      var gen_code_options = %{gen_code_options};
+      var gen_code_options = options.gen_code_options;
 
-      if (%{generate_map}) {
-          var source_map = UglifyJS.SourceMap(%{source_map_options});
+      if (options.generate_map) {
+          var source_map = UglifyJS.SourceMap(options.source_map_options);
           gen_code_options.source_map = source_map;
       }
 
       var stream = UglifyJS.OutputStream(gen_code_options);
 
-      if (%{copyright}) {
+      if (options.copyright) {
         var comments = ast.start.comments_before;
         for (var i = 0; i < comments.length; i++) {
           var c = comments[i];
@@ -126,25 +127,25 @@ class Uglifier
       }
 
       ast.print(stream);
-      if (%{generate_map}) {
+      if (options.generate_map) {
           return [stream.toString() + ";", source_map.toString()];
       } else {
           return stream.toString() + ";";
       }
     JS
 
-    @context.exec(js % {
-      :source => json_encode(source),
-      :compressor_options => json_encode(compressor_options),
-      :gen_code_options => json_encode(gen_code_options),
-      :mangle_options => json_encode(mangle_options),
-      :parse_options => json_encode(parse_options),
-      :source_map_options => json_encode(source_map_options),
-      :squeeze => squeeze?.to_s,
-      :mangle => mangle?.to_s,
-      :copyright => copyright?.to_s,
-      :generate_map => (!!generate_map).to_s
-    })
+    @context.exec(js % json_encode(
+      :source => source,
+      :compressor_options => compressor_options,
+      :gen_code_options => gen_code_options,
+      :mangle_options => mangle_options,
+      :parse_options => parse_options,
+      :source_map_options => source_map_options,
+      :squeeze => squeeze?,
+      :mangle => mangle?,
+      :copyright => copyright?,
+      :generate_map => (!!generate_map)
+    ))
   end
 
   def mangle?
