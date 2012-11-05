@@ -54,9 +54,7 @@ Available options and their defaults are
 
 ## Development
 
-Uglifier uses [stitch](https://github.com/sstephenson/stitch) to compile UglifyJs for non-node JS runtimes. If you need to update or patch UglifyJS, you can stitch UglifyJS using
-
-    node build.js
+Uglifier bundles its javascript dependencies using git submodules. If you want to rebuild the javascript you will first need to get the latest version of the code with `git submodule update --init`. After you have the git submodules at the desired versions, run `rake js` to recreate `lib/uglify.js`.
 
 See [CONTRIBUTING](https://github.com/lautis/uglifier/blob/master/CONTRIBUTING.md) for details about contributing to Uglifier.
 
