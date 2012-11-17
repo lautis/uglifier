@@ -55,7 +55,7 @@ task :js do
   source << "window = this;"
   source << File.read("vendor/source-map/dist/source-map.js")
   source << "MOZ_SourceMap = sourceMap;"
-  source << `./vendor/uglifyjs/bin/uglifyjs2 --self`
+  source << `./vendor/uglifyjs/bin/uglifyjs --self`
 
   File.write("lib/uglify.js", source)
 end

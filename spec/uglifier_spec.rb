@@ -27,7 +27,7 @@ describe "Uglifier" do
   end
 
   it "adds trailing semicolon to minified source" do
-    source = "function id(i) {return i;};"
+    source = "(function id(i) {return i;}());"
     Uglifier.new.compile(source)[-1].should eql(";"[0])
   end
 
@@ -64,7 +64,7 @@ describe "Uglifier" do
   end
 
   it "mangles variables only if mangle is set to true" do
-    code = "function longFunctionName(){};"
+    code = "function longFunctionName(){}"
     Uglifier.new(:mangle => false).compile(code).length.should == code.length
   end
 

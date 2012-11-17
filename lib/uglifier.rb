@@ -128,9 +128,9 @@ class Uglifier
 
       ast.print(stream);
       if (options.generate_map) {
-          return [stream.toString() + ";", source_map.toString()];
+          return [stream.toString(), source_map.toString()];
       } else {
-          return stream.toString() + ";";
+          return stream.toString();
       }
     JS
 
