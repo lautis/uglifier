@@ -73,8 +73,8 @@ describe "Uglifier" do
   end
 
   it "allows variables to be excluded from mangling" do
-    code = "var foo = {bar: 123};"
-    Uglifier.compile(code, :except => ["foo"], :toplevel => true).should include("var foo")
+    code = "function bar(foo) {return foo + 'bar'};"
+    Uglifier.compile(code, :except => ["foo"]).should include("(foo)")
   end
 
   it "honors max line length" do
