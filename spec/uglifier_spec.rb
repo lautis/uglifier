@@ -32,34 +32,33 @@ describe "Uglifier" do
   end
 
   describe "Copyright Preservation" do
-    before :all do
-      @source = <<-EOS
+    let(:source) {
+      <<-EOS
         /* Copyright Notice */
         /* (c) 2011 */
         // INCLUDED
         function identity(p) { return p; }
+        /* Another Copyright */
+        function add(a, b) { return a + b; }
       EOS
-      @minified = Uglifier.compile(@source, :copyright => true)
-    end
+    }
+    subject { Uglifier.compile(source, :copyright => true) }
 
-    it "preserves copyright notice" do
-      @minified.should match /Copyright Notice/
+    it "preserves copyright notices" do
+      subject.should match /Copyright Notice/
+      subject.should match /Another Copyright/
     end
 
     it "handles multiple copyright blocks" do
-      @minified.should match /\(c\) 2011/
+      subject.should match /\(c\) 2011/
     end
 
     it "does include different comment types" do
-      @minified.should match /INCLUDED/
-    end
-
-    it "puts comments on own lines" do
-      @minified.split("\n").should have(4).items
+      subject.should match /INCLUDED/
     end
 
     it "omits copyright notification if copyright parameter is set to false" do
-      Uglifier.compile(@source, :copyright => false).should_not match /Copyright/
+      Uglifier.compile(source, :copyright => false).should_not match /Copyright/
     end
   end
 

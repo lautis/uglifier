@@ -118,14 +118,6 @@ class Uglifier
 
       var stream = UglifyJS.OutputStream(gen_code_options);
 
-      if (options.copyright) {
-        var comments = ast.start.comments_before;
-        for (var i = 0; i < comments.length; i++) {
-          var c = comments[i];
-          stream.print((c.type == "comment1") ? "//"+c.value+"\\n" : "/*"+c.value+"*/\\n");
-        }
-      }
-
       ast.print(stream);
       if (options.generate_map) {
           return [stream.toString(), source_map.toString()];
@@ -179,7 +171,8 @@ class Uglifier
       :ascii_only => @options[:ascii_only],
       :inline_script => @options[:inline_script],
       :quote_keys => @options[:quote_keys],
-      :max_line_len => @options[:max_line_length]
+      :max_line_len => @options[:max_line_length],
+      :comments => copyright?
     }
 
     if @options[:beautify]
