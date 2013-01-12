@@ -214,8 +214,8 @@ class Uglifier
       :max_line_len => @options[:max_line_length]
     }
 
-    DEFAULTS[:output].merge(@options[:output] || {})
-      .merge(:comments => comment_options)
+    DEFAULTS[:output].merge(@options[:output] || {}).merge(
+      :comments => comment_options)
   end
 
   def source_map_options
