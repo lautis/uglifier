@@ -22,19 +22,36 @@ describe "Uglifier" do
     Uglifier.new.compile('var foo="\0bar"').should match(/(\0|\\0)/)
   end
 
-  it "doesn't try to mangle $super by default to avoid breaking PrototypeJS" do
-    Uglifier.new.compile('function foo($super) {return $super}').should include("$super")
-  end
-
   it "adds trailing semicolon to minified source" do
     source = "(function id(i) {return i;}());"
     Uglifier.new.compile(source)[-1].should eql(";"[0])
   end
 
-  describe "Copyright Preservation" do
+  describe "argument name mangling" do
+    it "doesn't try to mangle $super by default to avoid breaking PrototypeJS" do
+      Uglifier.compile('function foo($super) {return $super}').should include("$super")
+    end
+
+    it "allows variables to be excluded from mangling" do
+      code = "function bar(foo) {return foo + 'bar'};"
+      Uglifier.compile(code, :mangle => {:except => ["foo"]}).should include("(foo)")
+    end
+
+    it "skips mangling when set to false" do
+      code = "function bar(foo) {return foo + 'bar'};"
+      Uglifier.compile(code, :mangle => false).should include("(foo)")
+    end
+
+    it "mangles argumen names by default" do
+      code = "function bar(foo) {return foo + 'bar'};"
+      Uglifier.compile(code, :mangle => true).should_not include("(foo)")
+    end
+  end
+
+  describe "comment preservation" do
     let(:source) {
       <<-EOS
-        /* Copyright Notice */
+        /* @preserve Copyright Notice */
         /* (c) 2011 */
         // INCLUDED
         function identity(p) { return p; }
@@ -42,29 +59,61 @@ describe "Uglifier" do
         function add(a, b) { return a + b; }
       EOS
     }
-    subject { Uglifier.compile(source, :copyright => true) }
 
-    it "preserves copyright notices" do
-      subject.should match /Copyright Notice/
-      subject.should match /Another Copyright/
+    describe ":copyright" do
+      subject { Uglifier.compile(source, :comments => :copyright) }
+
+      it "preserves comments with string Copyright" do
+        subject.should match /Copyright Notice/
+        subject.should match /Another Copyright/
+      end
+
+      it "ignores other comments" do
+        subject.should_not match /INCLUDED/
+      end
     end
 
-    it "handles multiple copyright blocks" do
-      subject.should match /\(c\) 2011/
+    describe ":jsdoc" do
+      subject { Uglifier.compile(source, :output => {:comments => :jsdoc}) }
+
+      it "preserves jsdoc license/preserve blocks" do
+        subject.should match /Copyright Notice/
+      end
+
+      it "ignores other comments" do
+        subject.should_not match /Another Copyright/
+      end
     end
 
-    it "does include different comment types" do
-      subject.should match /INCLUDED/
+    describe ":all" do
+      subject { Uglifier.compile(source, :comments => :all) }
+
+      it "preserves all comments" do
+        subject.should match /INCLUDED/
+        subject.should match /2011/
+      end
     end
 
-    it "omits copyright notification if copyright parameter is set to false" do
-      Uglifier.compile(source, :copyright => false).should_not match /Copyright/
-    end
-  end
+    describe ":none" do
+      subject { Uglifier.compile(source, :comments => :none) }
 
-  it "mangles variables only if mangle is set to true" do
-    code = "function longFunctionName(){}"
-    Uglifier.new(:mangle => false).compile(code).length.should == code.length
+      it "omits all comments" do
+        subject.should_not match /\/\//
+        subject.should_not match /\/\*/
+      end
+    end
+
+    describe "regular expression" do
+      subject { Uglifier.compile(source, :comments => /included/i) }
+
+      it "matches comment blocks with regex" do
+        subject.should match /INCLUDED/
+      end
+
+      it "omits other blocks" do
+        subject.should_not match /2011/
+      end
+    end
   end
 
   it "squeezes code only if squeeze is set to true" do
@@ -72,34 +121,29 @@ describe "Uglifier" do
     Uglifier.compile(code, :squeeze => false).length.should > Uglifier.compile(code, :squeeze => true).length
   end
 
-  it "allows variables to be excluded from mangling" do
-    code = "function bar(foo) {return foo + 'bar'};"
-    Uglifier.compile(code, :except => ["foo"]).should include("(foo)")
-  end
-
   it "honors max line length" do
-    code = "var foo = 123;var bar = 123456"
-    Uglifier.compile(code, :max_line_length => 8, :squeeze => false).split("\n").length.should == 2
+    code = "var foo = 123;function bar() { return foo; }"
+    Uglifier.compile(code, :output => {:max_line_len => 16}, :compress => false).split("\n").length.should == 2
   end
 
-  it "lifts vars to top of the scope" do
+  it "hoists vars to top of the scope" do
     code = "function something() { var foo = 123; foo = 1234; var bar = 123456; return foo + bar}"
-    Uglifier.compile(code, :lift_vars => true).should match /var \w,\w/
+    Uglifier.compile(code, :compress => {:hoist_vars => true}).should match /var \w,\w/
   end
 
   it "can be configured to output only ASCII" do
     code = "function emoji() { return '\\ud83c\\ude01'; }"
-    Uglifier.compile(code, :ascii_only => true).should include("\\ud83c\\ude01")
+    Uglifier.compile(code, :output => {:ascii_only => true}).should include("\\ud83c\\ude01")
   end
 
   it "escapes </script when asked to" do
     code = "function test() { return '</script>';}"
-    Uglifier.compile(code, :inline_script => true).should_not include("</script>")
+    Uglifier.compile(code, :output => {:inline_script => true}).should_not include("</script>")
   end
 
   it "quotes keys" do
     code = "var a = {foo: 1}"
-    Uglifier.compile(code, :quote_keys => true).should include('"foo"')
+    Uglifier.compile(code, :output => {:quote_keys => true}).should include('"foo"')
   end
 
   it "handles constant definitions" do

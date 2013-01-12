@@ -9,25 +9,45 @@ class Uglifier
 
   # Default options for compilation
   DEFAULTS = {
-    :mangle => true, # Mangle variable and function names, use :vars to skip function mangling
-    :except => ["$super"], # Variable names to be excluded from mangling
-    :max_line_length => 32 * 1024, # Maximum line length
-    :squeeze => true, # Squeeze code resulting in smaller, but less-readable code
-    :seqs => true, # Reduce consecutive statements in blocks into single statement
-    :dead_code => true, # Remove dead code (e.g. after return)
-    :lift_vars => false, # Lift all var declarations at the start of the scope
-    :unsafe => false, # Optimizations known to be unsafe in some situations
-    :copyright => true, # Show copyright message
-    :ascii_only => false, # Encode non-ASCII characters as Unicode code points
-    :inline_script => false, # Escape </script
-    :quote_keys => false, # Quote keys in object literals
-    :define => {}, # Define values for symbol replacement
-    :beautify => false, # Ouput indented code
-    :beautify_options => {
-      :indent_level => 4,
-      :indent_start => 0,
-      :space_colon => false
+    :output => {
+      :ascii_only => false, # Escape non-ASCII characterss
+      :comments => :copyright, # Preserve comments, possible values: :all, :jsdoc, :copyright, and :none.
+      :inline_script => false, # Escape occurrences of </script in strings
+      :quote_keys => false, # Quote keys in object literals
+      :max_line_len => 32 * 1024, # Maximum line length in minified code
+      :ie_proof => true, # Output block brakcets around do-while loops ([details](https://github.com/mishoo/UglifyJS/issues/57))
+      :bracketize => false, # Always insert brackets in if, for, do, while or with statements, even if their body is a single statement.
+      :semicolons => true, # Separate statements with semicolons
+      :preserve_line => false,
+      :beautify => false, # Beautify output
+      :indent_level => 4, # Indent level in spaces
+      :indent_start => 0, # Starting indent level
+      :space_colon => false, # Insert space before colons (only with beautifier)
+      :width => 80 # Specify line width when beautifier is used (only with beautifier)
     },
+    :mangle => {
+      :except => ["$super"]
+    }, # Mangle variable and function names, set to false to skip mangling
+    :compress => {
+      :sequences => true, # join consecutive simple statements using the comma operator
+      :properties => true, # rewrite property access using the dot notation, for example foo["bar"] → foo.bar
+      :dead_code => true, # remove unreachable code
+      :drop_debugger => true, # remove debugger; statements
+      :unsafe => false,# apply "unsafe" transformations (discussion below)
+      :conditionals => true, # apply optimizations for if-s and conditional expressions
+      :comparisons => true, # apply certain optimizations to binary nodes, for example: !(a <= b) → a > b (only when unsafe), attempts to negate binary nodes, e.g. a = !b && !c && !d && !e → a=!(b||c||d||e) etc.
+      :evaluate => true, # attempt to evaluate constant expressions
+      :booleans => true, # various optimizations for boolean context, for example !!a ? b : c → a ? b : c
+      :loops => true, # optimizations for do, while and for loops when we can statically determine the condition
+      :unused => true, # drop unreferenced functions and variables
+      :hoist_funs => true, # hoist function declarations
+      :hoist_vars => false, # hoist var declarations (this is false by default because it seems to increase the size of the output in general)
+      :if_return => true, # optimizations for if/return and if/continue
+      :join_vars => true, # join consecutive var statements
+      :cascade => true, # small optimization for sequences, transform x, x into x and x = something(), x into x = something()
+      :warnings => true # display warnings when dropping unreachable code or unused declarations etc.
+    }, # Apply transformations to code, set to false to skip
+    :define => {}, # Define values for symbol replacement
     :source_filename => nil, # The filename of the input
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
@@ -61,7 +81,7 @@ class Uglifier
   #
   # options - Hash of options to override Uglifier::DEFAULTS
   def initialize(options = {})
-    @options = DEFAULTS.merge(options)
+    @options = options
     @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read + File.open(SourcePath, "r:UTF-8").read)
   end
 
@@ -93,23 +113,40 @@ class Uglifier
     source = source.respond_to?(:read) ? source.read : source.to_s
 
     js = <<-JS
+      function comments(option) {
+        if (Object.prototype.toString.call(option) === '[object Array]') {
+          return new RegExp(option[0], option[1]);
+        } else if (option == "jsdoc") {
+          return function(node, comment) {
+            if (comment.type == "comment2") {
+              return /@preserve|@license|@cc_on/i.test(comment.value);
+            } else {
+              return false;
+            }
+          }
+        } else {
+          return option;
+        }
+      }
+
       var options = %s;
       var source = options.source;
       var ast = UglifyJS.parse(source, options.parse_options);
       ast.figure_out_scope();
 
-      if (options.squeeze) {
-        var compressor = UglifyJS.Compressor(options.compressor_options);
+      if (options.compress) {
+        var compressor = UglifyJS.Compressor(options.compress);
         ast = ast.transform(compressor);
         ast.figure_out_scope();
       }
 
       if (options.mangle) {
         ast.compute_char_frequency();
-        ast.mangle_names(options.mangle_options);
+        ast.mangle_names(options.mangle);
       }
 
-      var gen_code_options = options.gen_code_options;
+      var gen_code_options = options.output;
+      gen_code_options.comments = comments(options.output.comments);
 
       if (options.generate_map) {
           var source_map = UglifyJS.SourceMap(options.source_map_options);
@@ -128,58 +165,57 @@ class Uglifier
 
     @context.exec(js % json_encode(
       :source => source,
-      :compressor_options => compressor_options,
-      :gen_code_options => gen_code_options,
-      :mangle_options => mangle_options,
+      :output => output_options,
+      :compress => compressor_options,
+      :mangle => mangle_options,
       :parse_options => parse_options,
       :source_map_options => source_map_options,
-      :squeeze => squeeze?,
-      :mangle => mangle?,
-      :copyright => copyright?,
       :generate_map => (!!generate_map)
     ))
   end
 
-  def mangle?
-    !!@options[:mangle]
-  end
-
-  def squeeze?
-    !!@options[:squeeze]
-  end
-
-  def copyright?
-    !!@options[:copyright]
-  end
-
   def mangle_options
-    {"except" => @options[:except]}
+    conditional_option(@options[:mangle], DEFAULTS[:mangle])
   end
 
   def compressor_options
-    {
-      "sequences" => @options[:seqs],
-      "dead_code" => @options[:dead_code],
-      "unsafe" => !@options[:unsafe],
-      "hoist_vars" => @options[:lift_vars],
-      "global_defs" => @options[:define] || {}
-    }
+    defaults = conditional_option(DEFAULTS[:compress], :global_defs => @options[:define] || {})
+    conditional_option(@options[:compress] || @options[:squeeze], defaults)
   end
 
-  def gen_code_options
-    options = {
+  def comment_options
+    val = if @options.has_key?(:output) && @options[:output].has_key?(:comments)
+      @options[:output][:comments]
+    elsif @options.has_key?(:comments)
+      @options[:comments]
+    else
+      DEFAULTS[:output][:comments]
+    end
+
+    case val
+    when :all, true
+      true
+    when :jsdoc
+      "jsdoc"
+    when :copyright
+      encode_regexp(/Copyright/i)
+    when Regexp
+      encode_regexp(val)
+    else
+      false
+    end
+  end
+
+  def output_options
+    defaults = {
       :ascii_only => @options[:ascii_only],
       :inline_script => @options[:inline_script],
       :quote_keys => @options[:quote_keys],
-      :max_line_len => @options[:max_line_length],
-      :comments => copyright?
+      :max_line_len => @options[:max_line_length]
     }
 
-    if @options[:beautify]
-      options.merge(:beautify => true).merge(@options[:beautify_options])
-    else
-      options
-    end
+    DEFAULTS[:output].merge(@options[:output] || {})
+      .merge(:comments => comment_options)
   end
 
   def source_map_options
@@ -202,6 +238,26 @@ class Uglifier
   else
     def json_encode(obj)
       MultiJson.encode(obj)
+    end
+  end
+
+  def encode_regexp(regexp)
+    modifiers = if regexp.casefold?
+      "i"
+    else
+      ""
+    end
+
+    [regexp.source, modifiers]
+  end
+
+  def conditional_option(value, defaults)
+    if value == true || value == nil
+      defaults
+    elsif value
+      defaults.merge(value)
+    else
+      false
     end
   end
 end
