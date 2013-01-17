@@ -11,14 +11,14 @@ class Uglifier
   DEFAULTS = {
     :output => {
       :ascii_only => false, # Escape non-ASCII characterss
-      :comments => :copyright, # Preserve comments, possible values: :all, :jsdoc, :copyright, and :none.
+      :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
       :inline_script => false, # Escape occurrences of </script in strings
       :quote_keys => false, # Quote keys in object literals
       :max_line_len => 32 * 1024, # Maximum line length in minified code
-      :ie_proof => true, # Output block brakcets around do-while loops ([details](https://github.com/mishoo/UglifyJS/issues/57))
-      :bracketize => false, # Always insert brackets in if, for, do, while or with statements, even if their body is a single statement.
+      :ie_proof => true, # Output block brakcets around do-while loops
+      :bracketize => false, # Bracketize if, for, do, while or with statements, even if their body is a single statement
       :semicolons => true, # Separate statements with semicolons
-      :preserve_line => false,
+      :preserve_line => false, # Preserve line numbers in outputs
       :beautify => false, # Beautify output
       :indent_level => 4, # Indent level in spaces
       :indent_start => 0, # Starting indent level
@@ -26,32 +26,31 @@ class Uglifier
       :width => 80 # Specify line width when beautifier is used (only with beautifier)
     },
     :mangle => {
-      :except => ["$super"]
+      :except => ["$super"] # Argument names to be excluded from mangling
     }, # Mangle variable and function names, set to false to skip mangling
     :compress => {
-      :sequences => true, # join consecutive simple statements using the comma operator
-      :properties => true, # rewrite property access using the dot notation, for example foo["bar"] → foo.bar
-      :dead_code => true, # remove unreachable code
-      :drop_debugger => true, # remove debugger; statements
-      :unsafe => false,# apply "unsafe" transformations (discussion below)
-      :conditionals => true, # apply optimizations for if-s and conditional expressions
-      :comparisons => true, # apply certain optimizations to binary nodes, for example: !(a <= b) → a > b (only when unsafe), attempts to negate binary nodes, e.g. a = !b && !c && !d && !e → a=!(b||c||d||e) etc.
-      :evaluate => true, # attempt to evaluate constant expressions
-      :booleans => true, # various optimizations for boolean context, for example !!a ? b : c → a ? b : c
-      :loops => true, # optimizations for do, while and for loops when we can statically determine the condition
-      :unused => true, # drop unreferenced functions and variables
-      :hoist_funs => true, # hoist function declarations
-      :hoist_vars => false, # hoist var declarations (this is false by default because it seems to increase the size of the output in general)
-      :if_return => true, # optimizations for if/return and if/continue
-      :join_vars => true, # join consecutive var statements
-      :cascade => true, # small optimization for sequences, transform x, x into x and x = something(), x into x = something()
-      :warnings => true # display warnings when dropping unreachable code or unused declarations etc.
+      :sequences => true, # Allow statements to be joined by commas
+      :properties => true, # Rewrite property access using the dot notation
+      :dead_code => true, # Remove unreachable code
+      :drop_debugger => true, # Remove debugger; statements
+      :unsafe => false, # Apply "unsafe" transformations
+      :conditionals => true, # Optimize for if-s and conditional expressions
+      :comparisons => true, # Apply binary node optimizations for comparisons
+      :evaluate => true, # Attempt to evaluate constant expressions
+      :booleans => true, # Various optimizations to boolean contexts
+      :loops => true, # Optimize lops when condition can be statically determined
+      :unused => true, # Drop unreferenced functions and variables
+      :hoist_funs => true, # Hoist function declarations
+      :hoist_vars => false, # Hoist var declarations
+      :if_return => true, # Optimizations for if/return and if/continue
+      :join_vars => true, # Join consecutive var statements
+      :cascade => true # Cascade sequences
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
-    :source_filename => nil, # The filename of the input
+    :source_filename => nil, # The filename of the input file
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
-    :input_source_map => nil, # The contents of the source map describing the input
+    :input_source_map => nil # The contents of the source map describing the input
   }
 
   SourcePath = File.expand_path("../uglify.js", __FILE__)
@@ -179,7 +178,8 @@ class Uglifier
   end
 
   def compressor_options
-    defaults = conditional_option(DEFAULTS[:compress], :global_defs => @options[:define] || {})
+    defaults = conditional_option(DEFAULTS[:compress],
+      :global_defs => @options[:define] || {})
     conditional_option(@options[:compress] || @options[:squeeze], defaults)
   end
 
