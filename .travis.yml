@@ -3,6 +3,7 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
+  - 2.0.0
   - jruby-18mode
 env:
   - EXECJS_RUNTIME=RubyRacer
@@ -15,5 +16,9 @@ matrix:
       env: EXECJS_RUNTIME=RubyRhino
     - rvm: 1.9.3
       env: EXECJS_RUNTIME=RubyRhino
+    - rvm: 2.0.0
+      env: EXECJS_RUNTIME=RubyRhino
     - rvm: jruby-18mode
       env: EXECJS_RUNTIME=RubyRacer
+  allow_failures:
+    - rvm: 2.0.0
