@@ -20,5 +20,3 @@ matrix:
       env: EXECJS_RUNTIME=RubyRhino
     - rvm: jruby-18mode
       env: EXECJS_RUNTIME=RubyRacer
-  allow_failures:
-    - rvm: 2.0.0
