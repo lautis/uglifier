@@ -37,12 +37,12 @@ Available options and their defaults are
 
     {
       :output => {
-        :ascii_only => false, # Escape non-ASCII characterss
+        :ascii_only => false, # Escape non-ASCII characters
         :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
         :inline_script => false, # Escape occurrences of </script in strings
         :quote_keys => false, # Quote keys in object literals
         :max_line_len => 32 * 1024, # Maximum line length in minified code
-        :ie_proof => true, # Output block brakcets around do-while loops
+        :ie_proof => true, # Output block brackets around do-while loops
         :bracketize => false, # Bracketize if, for, do, while or with statements, even if their body is a single statement
         :semicolons => true, # Separate statements with semicolons
         :preserve_line => false, # Preserve line numbers in outputs
