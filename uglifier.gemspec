@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = "2012-09-02"
+  s.date = "2013-04-02"
   s.email = "lautis@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     ".gitmodules",
     ".rspec",
     ".travis.yml",
+    "CONTRIBUTING.md",
     "Gemfile",
     "LICENSE.txt",
     "README.md",
@@ -28,11 +29,13 @@ Gem::Specification.new do |s|
     "lib/es5.js",
     "lib/uglifier.rb",
     "lib/uglify.js",
+    "spec/source_map_spec.rb",
     "spec/spec_helper.rb",
     "spec/uglifier_spec.rb",
     "uglifier.gemspec"
   ]
   s.homepage = "http://github.com/lautis/uglifier"
+  s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
   s.summary = "Ruby wrapper for UglifyJS JavaScript compressor"
@@ -46,14 +49,16 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, ["~> 2.7"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
-      s.add_development_dependency(%q<rdoc>, ["~> 3.11"])
+      s.add_development_dependency(%q<rdoc>, [">= 3.11"])
+      s.add_development_dependency(%q<source_map>, [">= 0"])
     else
       s.add_dependency(%q<execjs>, [">= 0.3.0"])
       s.add_dependency(%q<multi_json>, [">= 1.0.2", "~> 1.0"])
       s.add_dependency(%q<rspec>, ["~> 2.7"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
-      s.add_dependency(%q<rdoc>, ["~> 3.11"])
+      s.add_dependency(%q<rdoc>, [">= 3.11"])
+      s.add_dependency(%q<source_map>, [">= 0"])
     end
   else
     s.add_dependency(%q<execjs>, [">= 0.3.0"])
@@ -61,7 +66,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, ["~> 2.7"])
     s.add_dependency(%q<bundler>, ["~> 1.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
-    s.add_dependency(%q<rdoc>, ["~> 3.11"])
+    s.add_dependency(%q<rdoc>, [">= 3.11"])
+    s.add_dependency(%q<source_map>, [">= 0"])
   end
 end
 

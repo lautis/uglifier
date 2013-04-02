@@ -17,6 +17,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = "lautis@gmail.com"
   gem.homepage = "http://github.com/lautis/uglifier"
   gem.authors = ["Ville Lautanala"]
+  gem.license = "MIT"
 end
 Jeweler::RubygemsDotOrgTasks.new
 
