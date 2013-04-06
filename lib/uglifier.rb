@@ -5,7 +5,6 @@ require "multi_json"
 
 class Uglifier
   Error = ExecJS::Error
-  # MultiJson.engine = :json_gem
 
   # Default options for compilation
   DEFAULTS = {
@@ -210,13 +209,6 @@ class Uglifier
   end
 
   def output_options
-    defaults = {
-      :ascii_only => @options[:ascii_only],
-      :inline_script => @options[:inline_script],
-      :quote_keys => @options[:quote_keys],
-      :max_line_len => @options[:max_line_length]
-    }
-
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
       :comments => comment_options)
   end

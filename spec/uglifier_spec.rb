@@ -13,9 +13,9 @@ describe "Uglifier" do
   end
 
   it "throws an exception when compilation fails" do
-    lambda {
+    expect {
       Uglifier.new.compile(")(")
-    }.should raise_error(Uglifier::Error)
+    }.to raise_error(Uglifier::Error)
   end
 
   it "throws an exception on invalid option" do
