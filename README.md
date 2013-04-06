@@ -2,8 +2,6 @@
 
 Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS) JavaScript compressor.
 
-**NOTICE:** This documentation is for unreleased Uglifier 2.0, which is based on UglifyJS 2.0.
-
 ## Installation
 
 Uglifier is available as a ruby gem.
