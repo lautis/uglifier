@@ -66,6 +66,11 @@ describe "Uglifier" do
       EOS
     }
 
+    it "handles copyright option" do
+      compiled = Uglifier.compile(source, :copyright => false)
+      compiled.should_not match /Copyright/
+    end
+
     describe ":copyright" do
       subject { Uglifier.compile(source, :comments => :copyright) }
 

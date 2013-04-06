@@ -79,7 +79,7 @@ class Uglifier
   #
   # options - Hash of options to override Uglifier::DEFAULTS
   def initialize(options = {})
-    (options.keys - DEFAULTS.keys - [:comments, :squeeze])[0..1].each do |missing|
+    (options.keys - DEFAULTS.keys - [:comments, :squeeze, :copyright])[0..1].each do |missing|
       raise ArgumentError.new("Invalid option: #{missing}")
     end
     @options = options
@@ -190,6 +190,8 @@ class Uglifier
       @options[:output][:comments]
     elsif @options.has_key?(:comments)
       @options[:comments]
+    elsif @options[:copyright] == false
+      :none
     else
       DEFAULTS[:output][:comments]
     end
