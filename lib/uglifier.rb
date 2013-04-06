@@ -80,6 +80,9 @@ class Uglifier
   #
   # options - Hash of options to override Uglifier::DEFAULTS
   def initialize(options = {})
+    (options.keys - DEFAULTS.keys - [:comments, :squeeze])[0..1].each do |missing|
+      raise ArgumentError.new("Invalid option: #{missing}")
+    end
     @options = options
     @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read + File.open(SourcePath, "r:UTF-8").read)
   end

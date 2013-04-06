@@ -18,6 +18,12 @@ describe "Uglifier" do
     }.should raise_error(Uglifier::Error)
   end
 
+  it "throws an exception on invalid option" do
+    expect {
+      Uglifier.new(:foo => true)
+    }.to raise_error(ArgumentError)
+  end
+
   it "doesn't omit null character in strings" do
     Uglifier.new.compile('var foo="\0bar"').should match(/(\0|\\0)/)
   end
