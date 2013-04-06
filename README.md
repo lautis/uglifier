@@ -1,6 +1,6 @@
 # Uglifier  [![Build Status](https://secure.travis-ci.org/lautis/uglifier.png?branch=master)](http://travis-ci.org/lautis/uglifier) [![Dependency Status](https://gemnasium.com/lautis/uglifier.png?travis)](https://gemnasium.com/lautis/uglifier)
 
-Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS) JavaScript compressor.
+Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS2) JavaScript compressor.
 
 ## Installation
 
@@ -86,4 +86,4 @@ See [CONTRIBUTING](https://github.com/lautis/uglifier/blob/master/CONTRIBUTING.m
 
 ## Copyright
 
-© Ville Lautanala. Released under MIT license, see [LICENSE.txt](https://github.com/lautis/uglifier/blob/master/LICENSE.txt) for more details.
+© Ville Lautanala. Released under MIT license, see [LICENSE](https://github.com/lautis/uglifier/blob/master/LICENSE.txt) for details.
