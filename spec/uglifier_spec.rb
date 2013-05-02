@@ -197,7 +197,7 @@ describe "Uglifier" do
     end
 
     it "handles multiple definitions" do
-      minified = Uglifier.compile(code, :enclose => {'lol' => 'lulz', 'foo' => 'bar'})
+      minified = Uglifier.compile(code, :enclose => [['lol','lulz'],['foo','bar']])
       minified.should match(/lol,foo/)
       minified.should match(/lulz,bar/)
     end
