@@ -46,6 +46,7 @@ class Uglifier
       :cascade => true # Cascade sequences
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
+    :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
     :source_filename => nil, # The filename of the input file
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
@@ -147,6 +148,10 @@ class Uglifier
         ast.mangle_names(options.mangle);
       }
 
+      if (options.enclose) {
+        ast = ast.wrap_enclose(options.enclose);
+      }
+
       var gen_code_options = options.output;
       gen_code_options.comments = comments(options.output.comments);
 
@@ -172,7 +177,8 @@ class Uglifier
       :mangle => mangle_options,
       :parse_options => parse_options,
       :source_map_options => source_map_options,
-      :generate_map => (!!generate_map)
+      :generate_map => (!!generate_map),
+      :enclose => enclose_options
     ))
   end
 
@@ -230,6 +236,16 @@ class Uglifier
 
   def parse_options
     {:filename => @options[:source_filename]}
+  end
+
+  def enclose_options
+    if @options[:enclose]
+      @options[:enclose].map do |pair|
+        pair.first + ':' + pair.last
+      end
+    else
+      false
+    end
   end
 
   # MultiJson API detection

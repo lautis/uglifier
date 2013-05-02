@@ -188,4 +188,23 @@ describe "Uglifier" do
       }.should_not raise_error
     end
   end
+
+  describe "enclose" do
+    let(:code) { "$.foo()" }
+
+    it "encloses code with given arguments" do
+      Uglifier.compile(code, :enclose => {'window.jQuery' => '$'}).should match /window.jQuery/
+    end
+
+    it "handles multiple definitions" do
+      minified = Uglifier.compile(code, :enclose => {'lol' => 'lulz', 'foo' => 'bar'})
+      minified.should match(/lol,foo/)
+      minified.should match(/lulz,bar/)
+    end
+
+    it "wraps with function when given empty object" do
+      minified = Uglifier.compile(code, :enclose => {})
+      minified.should match(/function\(/)
+    end
+  end
 end

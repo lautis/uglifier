@@ -79,6 +79,7 @@ Available options and their defaults are
     :cascade => true            # Cascade sequences
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
+  :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs
   :source_filename => nil,      # The filename of the input file
   :source_root => nil,          # The URL of the directory which contains :source_filename
   :output_filename => nil,      # The filename or URL where the minified output can be found
