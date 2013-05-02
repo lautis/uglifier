@@ -49,7 +49,8 @@ class Uglifier
     :source_filename => nil, # The filename of the input file
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
-    :input_source_map => nil # The contents of the source map describing the input
+    :input_source_map => nil, # The contents of the source map describing the input
+    :screw_ie8 => false # Dotted member access for reserved words
   }
 
   SourcePath = File.expand_path("../uglify.js", __FILE__)
@@ -176,12 +177,16 @@ class Uglifier
   end
 
   def mangle_options
-    conditional_option(@options[:mangle], DEFAULTS[:mangle])
+    conditional_option(@options[:mangle], DEFAULTS[:mangle].merge(
+      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
+    ))
   end
 
   def compressor_options
     defaults = conditional_option(DEFAULTS[:compress],
-      :global_defs => @options[:define] || {})
+      :global_defs => @options[:define] || {},
+      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
+    )
     conditional_option(@options[:compress] || @options[:squeeze], defaults)
   end
 

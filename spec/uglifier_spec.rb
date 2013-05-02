@@ -142,6 +142,12 @@ describe "Uglifier" do
     Uglifier.compile(code, :compress => {:hoist_vars => true}).should match /var \w,\w/
   end
 
+  it "forwards screw_ie8 option to UglifyJS" do
+    code = "function something() { return g['switch']; }"
+    Uglifier.compile(code, :mangle => false, :screw_ie8 => true).should match /g\.switch/
+    Uglifier.compile(code, :compress => false, :screw_ie8 => true).should match /g\.switch/
+  end
+
   it "can be configured to output only ASCII" do
     code = "function emoji() { return '\\ud83c\\ude01'; }"
     Uglifier.compile(code, :output => {:ascii_only => true}).should include("\\ud83c\\ude01")

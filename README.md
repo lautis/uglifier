@@ -82,7 +82,8 @@ Available options and their defaults are
   :source_filename => nil,      # The filename of the input file
   :source_root => nil,          # The URL of the directory which contains :source_filename
   :output_filename => nil,      # The filename or URL where the minified output can be found
-  :input_source_map => nil      # The contents of the source map describing the input
+  :input_source_map => nil,     # The contents of the source map describing the input
+  :screw_ie8 => false           # Dotted member access for reserved words
 }
 ```
 
