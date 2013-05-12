@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 require "execjs"
-require "multi_json"
+require "json"
 
 class Uglifier
   Error = ExecJS::Error
@@ -257,15 +257,8 @@ class Uglifier
     end
   end
 
-  # MultiJson API detection
-  if MultiJson.respond_to? :dump
-    def json_encode(obj)
-      MultiJson.dump(obj)
-    end
-  else
-    def json_encode(obj)
-      MultiJson.encode(obj)
-    end
+  def json_encode(obj)
+    JSON.dump(obj)
   end
 
   def encode_regexp(regexp)
