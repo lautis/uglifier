@@ -56,6 +56,7 @@ class Uglifier
 
   SourcePath = File.expand_path("../uglify.js", __FILE__)
   ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
+  SplitFallbackPath = File.expand_path("../split.js", __FILE__)
 
   # Minifies JavaScript code using implicit context.
   #
@@ -85,7 +86,9 @@ class Uglifier
       raise ArgumentError.new("Invalid option: #{missing}")
     end
     @options = options
-    @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read + File.open(SourcePath, "r:UTF-8").read)
+    @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read +
+                              File.open(SplitFallbackPath, "r:UTF-8").read +
+                              File.open(SourcePath, "r:UTF-8").read)
   end
 
   # Minifies JavaScript code
