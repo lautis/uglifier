@@ -1,3 +1,7 @@
+## 2.1.2 (7 July 2013)
+
+  - update UglifyJS to 2.3.6
+
 ## 2.1.1 (18 May 2013)
 
   - fix JScript compatibility
