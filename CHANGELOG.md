@@ -1,3 +1,10 @@
+## 2.2.0 (25 August 2013)
+
+  - update UglifyJS to 2.4.0
+  - add `negate_iife` compressor option
+  - escape null characters as \x00, so that null followed by number isn't
+    interpreted as octal (#47)
+
 ## 2.1.2 (7 July 2013)
 
   - update UglifyJS to 2.3.6
