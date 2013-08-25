@@ -43,7 +43,8 @@ class Uglifier
       :hoist_vars => false, # Hoist var declarations
       :if_return => true, # Optimizations for if/return and if/continue
       :join_vars => true, # Join consecutive var statements
-      :cascade => true # Cascade sequences
+      :cascade => true, # Cascade sequences
+      :negate_iife => true # Negate immediately invoke function expressions
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs

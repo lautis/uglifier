@@ -173,6 +173,14 @@ describe "Uglifier" do
     processed.should include("c=1234")
   end
 
+  it "can disable IIFE negation" do
+    code = "(function() { console.log('test')})();"
+    disabled_negation = Uglifier.compile(code, :compress => {:negate_iife => false})
+    disabled_negation.should_not include("!")
+    negation = Uglifier.compile(code, :compress => {:negate_iife => true})
+    negation.should include("!")
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 
