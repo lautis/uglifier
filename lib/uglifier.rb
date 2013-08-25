@@ -227,7 +227,7 @@ class Uglifier
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
       :comments => comment_options,
       :screw_ie8 => @options[:screw_ie8] || !@options[:ie_proof] || DEFAULTS[:screw_ie8]
-    ).reject! { |key| key == :ie_proof}
+    ).reject! { |key,value| key == :ie_proof}
   end
 
   def source_map_options
