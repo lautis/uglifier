@@ -186,9 +186,7 @@ class Uglifier
   end
 
   def mangle_options
-    conditional_option(@options[:mangle], DEFAULTS[:mangle].merge(
-      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
-    ))
+    conditional_option(@options[:mangle], DEFAULTS[:mangle])
   end
 
   def compressor_options
@@ -226,7 +224,9 @@ class Uglifier
 
   def output_options
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
-      :comments => comment_options)
+      :comments => comment_options,
+      :screw_ie8 => @options[:screw_ie8] || !@options[:ie_proof] || DEFAULTS[:screw_ie8]
+    ).reject! { |key| key == :ie_proof}
   end
 
   def source_map_options

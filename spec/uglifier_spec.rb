@@ -25,7 +25,7 @@ describe "Uglifier" do
   end
 
   it "doesn't omit null character in strings" do
-    Uglifier.new.compile('var foo="\0bar"').should match(/(\0|\\0)/)
+    Uglifier.new.compile('var foo="\0bar"').should include("\\x00bar")
   end
 
   it "adds trailing semicolon to minified source" do
