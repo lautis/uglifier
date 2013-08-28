@@ -14,7 +14,6 @@ class Uglifier
       :inline_script => false, # Escape occurrences of </script in strings
       :quote_keys => false, # Quote keys in object literals
       :max_line_len => 32 * 1024, # Maximum line length in minified code
-      :ie_proof => true, # Output block brakcets around do-while loops
       :bracketize => false, # Bracketize if, for, do, while or with statements, even if their body is a single statement
       :semicolons => true, # Separate statements with semicolons
       :preserve_line => false, # Preserve line numbers in outputs
@@ -52,7 +51,7 @@ class Uglifier
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
     :input_source_map => nil, # The contents of the source map describing the input
-    :screw_ie8 => false # Dotted member access for reserved words
+    :screw_ie8 => false # Generate safe code for IE8
   }
 
   SourcePath = File.expand_path("../uglify.js", __FILE__)
@@ -224,10 +223,16 @@ class Uglifier
   end
 
   def output_options
+    screw_ie8 = if (@options[:output] || {}).has_key?(:ie_proof)
+      false
+    else
+      @options[:screw_ie8] || DEFAULTS[:screw_ie8]
+    end
+
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
       :comments => comment_options,
-      :screw_ie8 => @options[:screw_ie8] || !@options[:ie_proof] || DEFAULTS[:screw_ie8]
-    ).reject! { |key,value| key == :ie_proof}
+      :screw_ie8 => screw_ie8
+    ).reject { |key,value| key == :ie_proof}
   end
 
   def source_map_options

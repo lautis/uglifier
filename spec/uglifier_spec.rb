@@ -163,6 +163,11 @@ describe "Uglifier" do
     Uglifier.compile(code, :output => {:quote_keys => true}).should include('"foo"')
   end
 
+  it "quotes unsafe keys by default" do
+    code = 'var code = {"class": ""}'
+    Uglifier.compile(code, screw_ie8: false).should include('"class"')
+  end
+
   it "handles constant definitions" do
     code = "if (BOOLEAN) { var a = STRING; var b = NULL; var c = NUMBER; }"
     defines = {"NUMBER" => 1234, "BOOLEAN" => true, "NULL" => nil, "STRING" => "str"}

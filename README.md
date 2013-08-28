@@ -49,7 +49,6 @@ Available options and their defaults are
     :inline_script => false,    # Escape occurrences of </script in strings
     :quote_keys => false,       # Quote keys in object literals
     :max_line_len => 32 * 1024, # Maximum line length in minified code
-    :ie_proof => true,          # Output block brackets around do-while loops
     :bracketize => false,       # Bracketize if, for, do, while or with statements, even if their body is a single statement
     :semicolons => true,        # Separate statements with semicolons
     :preserve_line => false,    # Preserve line numbers in outputs
@@ -86,7 +85,7 @@ Available options and their defaults are
   :source_root => nil,          # The URL of the directory which contains :source_filename
   :output_filename => nil,      # The filename or URL where the minified output can be found
   :input_source_map => nil,     # The contents of the source map describing the input
-  :screw_ie8 => false           # Dotted member access for reserved words
+  :screw_ie8 => false           # Generate safe code for IE8
 }
 ```
 
