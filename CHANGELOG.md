@@ -1,3 +1,7 @@
+## 2.2.1 (28 August 2013)
+
+  - fix IE8 compatibility
+
 ## 2.2.0 (25 August 2013)
 
   - update UglifyJS to 2.4.0
