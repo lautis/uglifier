@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "uglifier"
-  s.version = "2.2.0"
+  s.version = "2.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ville Lautanala"]
-  s.date = "2013-08-25"
+  s.date = "2013-08-28"
   s.email = "lautis@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
