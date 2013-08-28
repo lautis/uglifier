@@ -165,7 +165,7 @@ describe "Uglifier" do
 
   it "quotes unsafe keys by default" do
     code = 'var code = {"class": ""}'
-    Uglifier.compile(code, screw_ie8: false).should include('"class"')
+    Uglifier.compile(code).should include('"class"')
   end
 
   it "handles constant definitions" do
