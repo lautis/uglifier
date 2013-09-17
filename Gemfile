@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-gem "execjs", ">=0.3.0"
-gem "multi_json", "~> 1.0", ">= 1.0.2"
+gem "execjs", ">= 0.3.0"
+gem "json", ">= 1.8.0"
 
 # Depend on defined ExecJS runtime
 execjs_runtimes = {
@@ -13,9 +13,6 @@ execjs_runtimes = {
 if ENV["EXECJS_RUNTIME"] && execjs_runtimes[ENV["EXECJS_RUNTIME"]]
   gem execjs_runtimes[ENV["EXECJS_RUNTIME"]], :group => :development
 end
-
-# Engine
-gem ENV["MULTI_JSON_ENGINE"], :group => :development if ENV["MULTI_JSON_ENGINE"]
 
 group :development do
   gem "rspec", "~> 2.7"
