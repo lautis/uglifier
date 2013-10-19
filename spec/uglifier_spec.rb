@@ -166,7 +166,7 @@ describe "Uglifier" do
   it "quotes unsafe keys by default" do
     code = 'var code = {"class": "", "\u200c":"A"}'
     Uglifier.compile(code).should include('"class"')
-    Uglifier.compile(code, output: {quote_keys: false}).should include("\"\u200c\"")
+    Uglifier.compile(code, :output => {:quote_keys => false}).should include("\"\u200c\"")
   end
 
   it "handles constant definitions" do
