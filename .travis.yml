@@ -5,18 +5,11 @@ rvm:
   - 1.9.3
   - 2.0.0
   - jruby-19mode
-env:
-  - EXECJS_RUNTIME=RubyRacer
-  - EXECJS_RUNTIME=RubyRhino
+gemfile:
+  - Gemfile
 matrix:
-  exclude:
-    - rvm: 1.8.7
-      env: EXECJS_RUNTIME=RubyRhino
-    - rvm: 1.9.2
-      env: EXECJS_RUNTIME=RubyRhino
-    - rvm: 1.9.3
-      env: EXECJS_RUNTIME=RubyRhino
+  include:
     - rvm: 2.0.0
-      env: EXECJS_RUNTIME=RubyRhino
+      gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
-      env: EXECJS_RUNTIME=RubyRacer
+      gemfile: gemfiles/rubyrhino
