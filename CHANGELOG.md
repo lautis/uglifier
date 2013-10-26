@@ -1,3 +1,9 @@
+## 2.3.0 (26 October 2013)
+
+  - use JSON gem instead of multi_json
+  - update UglifyJS to 2.4.1
+  - fix issues with some Unicode JS identifiers (#47, #58)
+
 ## 2.2.1 (28 August 2013)
 
   - fix IE8 compatibility
