@@ -36,7 +36,7 @@ class Uglifier
       :comparisons => true, # Apply binary node optimizations for comparisons
       :evaluate => true, # Attempt to evaluate constant expressions
       :booleans => true, # Various optimizations to boolean contexts
-      :loops => true, # Optimize lops when condition can be statically determined
+      :loops => true, # Optimize loops when condition can be statically determined
       :unused => true, # Drop unreferenced functions and variables
       :hoist_funs => true, # Hoist function declarations
       :hoist_vars => false, # Hoist var declarations
