@@ -1,3 +1,7 @@
+## 2.3.1 (8 November 2013)
+
+ - update UglifyJS to 2.4.3
+
 ## 2.3.0 (26 October 2013)
 
   - use JSON gem instead of multi_json
