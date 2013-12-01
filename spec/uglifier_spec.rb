@@ -52,6 +52,12 @@ describe "Uglifier" do
       code = "function bar(foo) {return foo + 'bar'};"
       Uglifier.compile(code, :mangle => true).should_not include("(foo)")
     end
+
+    it "mangles top-level names when explicitly instructed" do
+      code = "function bar(foo) {return foo + 'bar'};"
+      Uglifier.compile(code, :mangle => {:toplevel => false}).should include("bar(")
+      Uglifier.compile(code, :mangle => {:toplevel => true}).should_not include("bar(")
+    end
   end
 
   describe "comment preservation" do

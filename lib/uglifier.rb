@@ -22,10 +22,14 @@ class Uglifier
       :indent_level => 4, # Indent level in spaces
       :indent_start => 0, # Starting indent level
       :space_colon => false, # Insert space before colons (only with beautifier)
-      :width => 80 # Specify line width when beautifier is used (only with beautifier)
+      :width => 80, # Specify line width when beautifier is used (only with beautifier)
+      :preamble => nil # Preamble for the generated JS file. Can be used to insert any code or comment.
     },
     :mangle => {
-      :except => ["$super"] # Argument names to be excluded from mangling
+      :eval => false, # Mangle names when eval of when is used in scope
+      :except => ["$super"], # Argument names to be excluded from mangling
+      :sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
+      :toplevel => false # Mangle names declared in the toplevel scope
     }, # Mangle variable and function names, set to false to skip mangling
     :compress => {
       :sequences => true, # Allow statements to be joined by commas
@@ -44,7 +48,9 @@ class Uglifier
       :if_return => true, # Optimizations for if/return and if/continue
       :join_vars => true, # Join consecutive var statements
       :cascade => true, # Cascade sequences
-      :negate_iife => true # Negate immediately invoke function expressions
+      :negate_iife => true, # Negate immediately invoked function expressions to avoid extra parens
+      :pure_getters => false, # Assume that object property access does not have any side-effects
+      :pure_funcs => nil # List of functions without side-effects. Can safely discard function calls when the result value is not used
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
