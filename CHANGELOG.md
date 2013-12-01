@@ -1,5 +1,6 @@
-## 2.3.2
+## 2.3.2 (1 December 2013)
 
+- update UglifyJS to 2.4.6
 - document missing mangler and output options
 
 ## 2.3.1 (8 November 2013)
