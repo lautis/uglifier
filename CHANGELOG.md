@@ -1,3 +1,7 @@
+## 2.3.3 (Unreleased)
+
+- update UglifyJS to 2.4.7
+
 ## 2.3.2 (1 December 2013)
 
 - update UglifyJS to 2.4.6
