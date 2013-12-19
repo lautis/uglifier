@@ -1,3 +1,8 @@
+## 2.4.0 (19 December 2013)
+
+- update UglifyJS to 2.4.8
+- add drop_console compress option
+
 ## 2.3.3 (12 December 2013)
 
 - update UglifyJS to 2.4.7
