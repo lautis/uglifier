@@ -193,6 +193,12 @@ describe "Uglifier" do
     negation.should include("!")
   end
 
+  it "can drop console logging" do
+    code = "(function() { console.log('test')})();"
+    compiled = Uglifier.compile(code, :compress => {:drop_console => true})
+    compiled.should_not include("console")
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 
