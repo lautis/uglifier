@@ -3,6 +3,7 @@ rvm:
   - 1.8.7
   - 1.9.3
   - 2.0.0
+  - 2.1.0
   - jruby-19mode
   - rbx
 git:
@@ -11,6 +12,8 @@ gemfile:
   - Gemfile
 matrix:
   include:
+    - rvm: 2.1.0
+      gemfile: gemfiles/rubyracer
     - rvm: 2.0.0
       gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
