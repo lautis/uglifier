@@ -18,3 +18,5 @@ matrix:
       gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
       gemfile: gemfiles/rubyrhino
+before_install:
+  - '[ "$TRAVIS_RUBY_VERSION" = "2.1.0" ] && gem install bundler -v "= 1.5.1" || true'
