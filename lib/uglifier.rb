@@ -201,7 +201,7 @@ class Uglifier
   def compressor_options
     defaults = conditional_option(DEFAULTS[:compress],
       :global_defs => @options[:define] || {},
-      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8],
+      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
     )
     conditional_option(@options[:compress] || @options[:squeeze], defaults)
   end
