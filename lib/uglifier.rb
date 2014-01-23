@@ -51,7 +51,8 @@ class Uglifier
       :negate_iife => true, # Negate immediately invoked function expressions to avoid extra parens
       :pure_getters => false, # Assume that object property access does not have any side-effects
       :pure_funcs => nil, # List of functions without side-effects. Can safely discard function calls when the result value is not used
-      :drop_console => false # Drop calls to console.* functions
+      :drop_console => false, # Drop calls to console.* functions
+      :angular => false # Process @ngInject annotations
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
@@ -200,7 +201,7 @@ class Uglifier
   def compressor_options
     defaults = conditional_option(DEFAULTS[:compress],
       :global_defs => @options[:define] || {},
-      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
+      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8],
     )
     conditional_option(@options[:compress] || @options[:squeeze], defaults)
   end

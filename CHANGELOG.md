@@ -1,6 +1,7 @@
 ## Next
 
 - update UglifyJS to 2.4.11
+- process Angular @ngInject annotations
 
 ## 2.4.0 (19 December 2013)
 

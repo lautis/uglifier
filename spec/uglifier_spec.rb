@@ -199,6 +199,17 @@ describe "Uglifier" do
     compiled.should_not include("console")
   end
 
+  it "processes @ngInject annotations" do
+    code = <<-EOF
+    /**
+     * @ngInject
+     */
+    var f = function(foo, bar) { return foo + bar};
+    EOF
+    Uglifier.compile(code, :compress => {:angular => true}).should include("f.$inject")
+    Uglifier.compile(code, :compress => {:angular => false}).should_not include("f.$inject")
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 
