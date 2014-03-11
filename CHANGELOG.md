@@ -2,6 +2,7 @@
 
 - update UglifyJS to 2.4.13
 - process Angular @ngInject annotations
+- add keep_fargs option
 
 ## 2.4.0 (19 December 2013)
 

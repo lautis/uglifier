@@ -210,6 +210,16 @@ describe "Uglifier" do
     Uglifier.compile(code, :compress => {:angular => false}).should_not include("f.$inject")
   end
 
+  it "keeps unused function arguments when keep_fargs option is set" do
+    code = <<-EOF
+    function plus(a, b, c) { return a + b};
+    plus(1, 2);
+    EOF
+    Uglifier.compile(code, mangle: false).should_not include("c)")
+    Uglifier.compile(code, mangle: false, compress: {:keep_fargs => true}).should include("c)")
+
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 

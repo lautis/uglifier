@@ -87,6 +87,7 @@ Available options and their defaults are
     :pure_funcs => nil,         # List of functions without side-effects. Can safely discard function calls when the result value is not used
     :drop_console => false,     # Drop calls to console.* functions
     :angular => false           # Process @ngInject annotations
+    :keep_fargs => false        # Preserve unused function arguments
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs
