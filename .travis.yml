@@ -3,7 +3,7 @@ rvm:
   - 1.8.7
   - 1.9.3
   - 2.0.0
-  - 2.1.0
+  - 2.1.1
   - jruby-19mode
   - rbx
 git:
@@ -12,13 +12,9 @@ gemfile:
   - Gemfile
 matrix:
   include:
-    - rvm: 2.1.0
+    - rvm: 2.1.1
       gemfile: gemfiles/rubyracer
     - rvm: 2.0.0
       gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
       gemfile: gemfiles/rubyrhino
-before_install:
-  # Workaround for https://github.com/rubygems/rubygems/pull/763
-  - '[ "$TRAVIS_RUBY_VERSION" = "1.8.7" ] && gem update --system 2.1.11 || true'
-  - '[ "$TRAVIS_RUBY_VERSION" = "2.1.0" ] && gem install bundler -v "= 1.5.1" || true'
