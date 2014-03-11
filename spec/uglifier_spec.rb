@@ -215,8 +215,8 @@ describe "Uglifier" do
     function plus(a, b, c) { return a + b};
     plus(1, 2);
     EOF
-    Uglifier.compile(code, mangle: false).should_not include("c)")
-    Uglifier.compile(code, mangle: false, :compress => {:keep_fargs => true}).should include("c)")
+    Uglifier.compile(code, :mangle => false).should_not include("c)")
+    Uglifier.compile(code, :mangle => false, :compress => {:keep_fargs => true}).should include("c)")
 
   end
 
