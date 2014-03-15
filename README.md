@@ -44,7 +44,7 @@ Available options and their defaults are
 ```ruby
 {
   :output => {
-    :ascii_only => false,       # Escape non-ASCII characters
+    :ascii_only => true,        # Escape non-ASCII characters
     :comments => :copyright,    # Preserve comments (:all, :jsdoc, :copyright, :none)
     :inline_script => false,    # Escape occurrences of </script in strings
     :quote_keys => false,       # Quote keys in object literals

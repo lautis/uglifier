@@ -10,7 +10,7 @@ class Uglifier
   # Default options for compilation
   DEFAULTS = {
     :output => {
-      :ascii_only => false, # Escape non-ASCII characterss
+      :ascii_only => true, # Escape non-ASCII characterss
       :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
       :inline_script => false, # Escape occurrences of </script in strings
       :quote_keys => false, # Quote keys in object literals
