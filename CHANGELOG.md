@@ -1,4 +1,4 @@
-## Next
+## 2.5.0 (15 March 2014)
 
 - update UglifyJS to 2.4.13
 - process Angular @ngInject annotations
