@@ -71,6 +71,7 @@ class Uglifier
 
   # Default options for compilation
   DEFAULTS = {
+    # rubocop:disable LineLength
     :output => {
       :ascii_only => true, # Escape non-ASCII characterss
       :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
@@ -125,6 +126,7 @@ class Uglifier
     :input_source_map => nil, # The contents of the source map describing the input
     :screw_ie8 => false # Don't bother to generate safe code for IE8
   }
+  # rubocop:enable LineLength
 
   # Minifies JavaScript code using implicit context.
   #

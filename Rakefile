@@ -51,3 +51,8 @@ task :js do
 
   File.write("lib/uglify.js", source)
 end
+
+require 'rubocop/rake_task'
+Rubocop::RakeTask.new(:rubocop)
+
+task :default => [:rubocop, :spec]
