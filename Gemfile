@@ -8,4 +8,7 @@ platforms :rbx do
   gem 'psych'
 end
 
-gem 'rubocop'
+if RUBY_VERSION < '1.9.3'
+  gem 'rubocop'
+end
+

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'rubygems'
 require 'bundler'
 require 'bundler/gem_tasks'
@@ -17,8 +19,6 @@ require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
-
-task :default => :spec
 
 require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
@@ -52,7 +52,10 @@ task :js do
   File.write("lib/uglify.js", source)
 end
 
-require 'rubocop/rake_task'
-Rubocop::RakeTask.new(:rubocop)
-
-task :default => [:rubocop, :spec]
+if RUBY_VERSION < '1.9.3'
+  task :default => [:spec]
+else
+  require 'rubocop/rake_task'
+  Rubocop::RakeTask.new(:rubocop)
+  task :default => [:rubocop, :spec]
+end
