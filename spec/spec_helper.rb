@@ -8,5 +8,10 @@ require 'source_map'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
-  
+  config.mock_with :rspec do |configuration|
+    configuration.syntax = :expect
+  end
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
