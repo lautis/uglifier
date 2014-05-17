@@ -6,11 +6,11 @@ describe "Uglifier" do
   it "generates source maps" do
     source = File.open("lib/uglify.js", "r:UTF-8").read
     minified, map = Uglifier.new.compile_with_map(source)
-    minified.length.should < source.length
-    map.length.should > 0
-    lambda {
+    expect(minified.length).to be < source.length
+    expect(map.length).to be > 0
+    expect {
       JSON.parse(map)
-    }.should_not raise_error
+    }.not_to raise_error
   end
 
   it "generates source maps with the correct meta-data" do
@@ -30,11 +30,11 @@ describe "Uglifier" do
                                               :source_root => "http://localhost/")
 
     map = SourceMap.from_s(map)
-    map.file.should == "ahoy.min.js"
-    map.sources.should == ["ahoy.js"]
-    map.names.should == ["hello", "world"]
-    map.source_root.should == "http://localhost/"
-    map.mappings.first[:generated_line].should == 1
+    expect(map.file).to eq("ahoy.min.js")
+    expect(map.sources).to eq(["ahoy.js"])
+    expect(map.names).to eq(["hello", "world"])
+    expect(map.source_root).to eq("http://localhost/")
+    expect(map.mappings.first[:generated_line]).to eq(1)
   end
 
   it "should skip copyright lines in source maps" do
@@ -53,7 +53,7 @@ describe "Uglifier" do
                                               :source_filename => "ahoy.js",
                                               :source_root => "http://localhost/")
     map = SourceMap.from_s(map)
-    map.mappings.first[:generated_line].should == 2
+    expect(map.mappings.first[:generated_line]).to eq(2)
   end
 
   it "should be able to handle an input source map" do
@@ -76,11 +76,11 @@ describe "Uglifier" do
                                                :input_source_map => map1,
                                                :mangle => true)
 
-    minified1.lines.to_a.length.should == 1
+    expect(minified1.lines.to_a.length).to eq(1)
 
     map = SourceMap.from_s(map2)
-    map.sources.should == ["http://localhost/ahoy.js"]
-    map.mappings.first[:source_line].should == 1
-    map.mappings.last[:source_line].should == 6
+    expect(map.sources).to eq(["http://localhost/ahoy.js"])
+    expect(map.mappings.first[:source_line]).to eq(1)
+    expect(map.mappings.last[:source_line]).to eq(6)
   end
 end
