@@ -7,21 +7,15 @@ describe "Uglifier" do
     source = File.open("lib/uglify.js", "r:UTF-8").read
     minified = Uglifier.new.compile(source)
     expect(minified.length).to be < source.length
-    expect {
-      Uglifier.new.compile(minified)
-    }.not_to raise_error
+    expect { Uglifier.new.compile(minified) }.not_to raise_error
   end
 
   it "throws an exception when compilation fails" do
-    expect {
-      Uglifier.new.compile(")(")
-    }.to raise_error(Uglifier::Error)
+    expect { Uglifier.new.compile(")(") }.to raise_error(Uglifier::Error)
   end
 
   it "throws an exception on invalid option" do
-    expect {
-      Uglifier.new(:foo => true)
-    }.to raise_error(ArgumentError)
+    expect { Uglifier.new(:foo => true) }.to raise_error(ArgumentError)
   end
 
   it "doesn't omit null character in strings" do
@@ -40,7 +34,7 @@ describe "Uglifier" do
 
     it "allows variables to be excluded from mangling" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => {:except => ["foo"]})).to include("(foo)")
+      expect(Uglifier.compile(code, :mangle => { :except => ["foo"] })).to include("(foo)")
     end
 
     it "skips mangling when set to false" do
@@ -55,13 +49,13 @@ describe "Uglifier" do
 
     it "mangles top-level names when explicitly instructed" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => {:toplevel => false})).to include("bar(")
-      expect(Uglifier.compile(code, :mangle => {:toplevel => true})).not_to include("bar(")
+      expect(Uglifier.compile(code, :mangle => { :toplevel => false })).to include("bar(")
+      expect(Uglifier.compile(code, :mangle => { :toplevel => true })).not_to include("bar(")
     end
   end
 
   describe "comment preservation" do
-    let(:source) {
+    let(:source) do
       <<-EOS
         /* @preserve Copyright Notice */
         /* (c) 2011 */
@@ -70,35 +64,35 @@ describe "Uglifier" do
         /* Another Copyright */
         function add(a, b) { return a + b; }
       EOS
-    }
+    end
 
     it "handles copyright option" do
       compiled = Uglifier.compile(source, :copyright => false)
-      expect(compiled).not_to match /Copyright/
+      expect(compiled).not_to match(/Copyright/)
     end
 
     describe ":copyright" do
       subject { Uglifier.compile(source, :comments => :copyright) }
 
       it "preserves comments with string Copyright" do
-        expect(subject).to match /Copyright Notice/
-        expect(subject).to match /Another Copyright/
+        expect(subject).to match(/Copyright Notice/)
+        expect(subject).to match(/Another Copyright/)
       end
 
       it "ignores other comments" do
-        expect(subject).not_to match /INCLUDED/
+        expect(subject).not_to match(/INCLUDED/)
       end
     end
 
     describe ":jsdoc" do
-      subject { Uglifier.compile(source, :output => {:comments => :jsdoc}) }
+      subject { Uglifier.compile(source, :output => { :comments => :jsdoc }) }
 
       it "preserves jsdoc license/preserve blocks" do
-        expect(subject).to match /Copyright Notice/
+        expect(subject).to match(/Copyright Notice/)
       end
 
       it "ignores other comments" do
-        expect(subject).not_to match /Another Copyright/
+        expect(subject).not_to match(/Another Copyright/)
       end
     end
 
@@ -106,8 +100,8 @@ describe "Uglifier" do
       subject { Uglifier.compile(source, :comments => :all) }
 
       it "preserves all comments" do
-        expect(subject).to match /INCLUDED/
-        expect(subject).to match /2011/
+        expect(subject).to match(/INCLUDED/)
+        expect(subject).to match(/2011/)
       end
     end
 
@@ -115,8 +109,8 @@ describe "Uglifier" do
       subject { Uglifier.compile(source, :comments => :none) }
 
       it "omits all comments" do
-        expect(subject).not_to match /\/\//
-        expect(subject).not_to match /\/\*/
+        expect(subject).not_to match %r{//}
+        expect(subject).not_to match(/\/\*/)
       end
     end
 
@@ -124,61 +118,70 @@ describe "Uglifier" do
       subject { Uglifier.compile(source, :comments => /included/i) }
 
       it "matches comment blocks with regex" do
-        expect(subject).to match /INCLUDED/
+        expect(subject).to match(/INCLUDED/)
       end
 
       it "omits other blocks" do
-        expect(subject).not_to match /2011/
+        expect(subject).not_to match(/2011/)
       end
     end
   end
 
   it "squeezes code only if squeeze is set to true" do
     code = "function a(a){if(a) { return 0; } else { return 1; }}"
-    expect(Uglifier.compile(code, :squeeze => false).length).to be > Uglifier.compile(code, :squeeze => true).length
+    minified = Uglifier.compile(code, :squeeze => false)
+    squeezed = Uglifier.compile(code, :squeeze => true)
+    expect(minified.length).to be > squeezed.length
   end
 
   it "honors max line length" do
     code = "var foo = 123;function bar() { return foo; }"
-    expect(Uglifier.compile(code, :output => {:max_line_len => 16}, :compress => false).split("\n").length).to eq(2)
+    uglifier = Uglifier.new(:output => { :max_line_len => 16 }, :compress => false)
+    expect(uglifier.compile(code).split("\n").length).to eq(2)
   end
 
   it "hoists vars to top of the scope" do
-    code = "function something() { var foo = 123; foo = 1234; var bar = 123456; return foo + bar}"
-    expect(Uglifier.compile(code, :compress => {:hoist_vars => true})).to match /var \w,\w/
+    code = "function something() { var a = 1; a = 2; var b = 3; return a + b;}"
+    minified = Uglifier.compile(code, :compress => { :hoist_vars => true })
+    expect(minified).to match(/var \w,\w/)
   end
 
   it "forwards screw_ie8 option to UglifyJS" do
     code = "function something() { return g['switch']; }"
-    expect(Uglifier.compile(code, :mangle => false, :screw_ie8 => true)).to match /g\.switch/
-    expect(Uglifier.compile(code, :compress => false, :screw_ie8 => true)).to match /g\.switch/
+    expect(Uglifier.compile(code, :mangle => false, :screw_ie8 => true)).to match(/g\.switch/)
+    expect(Uglifier.compile(code, :compress => false, :screw_ie8 => true)).to match(/g\.switch/)
   end
 
   it "can be configured to output only ASCII" do
     code = "function emoji() { return '\\ud83c\\ude01'; }"
-    expect(Uglifier.compile(code, :output => {:ascii_only => true})).to include("\\ud83c\\ude01")
+    minified = Uglifier.compile(code, :output => { :ascii_only => true })
+    expect(minified).to include("\\ud83c\\ude01")
   end
 
   it "escapes </script when asked to" do
     code = "function test() { return '</script>';}"
-    expect(Uglifier.compile(code, :output => {:inline_script => true})).not_to include("</script>")
+    minified = Uglifier.compile(code, :output => { :inline_script => true })
+    expect(minified).not_to include("</script>")
   end
 
   it "quotes keys" do
     code = "var a = {foo: 1}"
-    expect(Uglifier.compile(code, :output => {:quote_keys => true})).to include('"foo"')
+    minified = Uglifier.compile(code, :output => { :quote_keys => true })
+    expect(minified).to include('"foo"')
   end
 
   it "quotes unsafe keys by default" do
     code = 'var code = {"class": "", "\u200c":"A"}'
     expect(Uglifier.compile(code)).to include('"class"')
     expect(Uglifier.compile(code)).to include('"\u200c"')
-    expect(Uglifier.compile(code, :output => {:ascii_only => false, :quote_keys => false})).to include(["200c".to_i(16)].pack("U*"))
+
+    uglifier = Uglifier.new(:output => { :ascii_only => false, :quote_keys => false })
+    expect(uglifier.compile(code)).to include(["200c".to_i(16)].pack("U*"))
   end
 
   it "handles constant definitions" do
-    code = "if (BOOLEAN) { var a = STRING; var b = NULL; var c = NUMBER; }"
-    defines = {"NUMBER" => 1234, "BOOLEAN" => true, "NULL" => nil, "STRING" => "str"}
+    code = "if (BOOL) { var a = STR; var b = NULL; var c = NUM; }"
+    defines = { "NUM" => 1234, "BOOL" => true, "NULL" => nil, "STR" => "str" }
     processed = Uglifier.compile(code, :define => defines)
     expect(processed).to include("a=\"str\"")
     expect(processed).not_to include("if")
@@ -188,15 +191,15 @@ describe "Uglifier" do
 
   it "can disable IIFE negation" do
     code = "(function() { console.log('test')})();"
-    disabled_negation = Uglifier.compile(code, :compress => {:negate_iife => false})
+    disabled_negation = Uglifier.compile(code, :compress => { :negate_iife => false })
     expect(disabled_negation).not_to include("!")
-    negation = Uglifier.compile(code, :compress => {:negate_iife => true})
+    negation = Uglifier.compile(code, :compress => { :negate_iife => true })
     expect(negation).to include("!")
   end
 
   it "can drop console logging" do
     code = "(function() { console.log('test')})();"
-    compiled = Uglifier.compile(code, :compress => {:drop_console => true})
+    compiled = Uglifier.compile(code, :compress => { :drop_console => true })
     expect(compiled).not_to include("console")
   end
 
@@ -207,8 +210,10 @@ describe "Uglifier" do
      */
     var f = function(foo, bar) { return foo + bar};
     EOF
-    expect(Uglifier.compile(code, :compress => {:angular => true})).to include("f.$inject")
-    expect(Uglifier.compile(code, :compress => {:angular => false})).not_to include("f.$inject")
+    with_angular = Uglifier.compile(code, :compress => { :angular => true })
+    without_angular = Uglifier.compile(code, :compress => { :angular => false })
+    expect(with_angular).to include("f.$inject")
+    expect(without_angular).not_to include("f.$inject")
   end
 
   it "keeps unused function arguments when keep_fargs option is set" do
@@ -217,7 +222,9 @@ describe "Uglifier" do
     plus(1, 2);
     EOF
     expect(Uglifier.compile(code, :mangle => false)).not_to include("c)")
-    expect(Uglifier.compile(code, :mangle => false, :compress => {:keep_fargs => true})).to include("c)")
+
+    keep_fargs = Uglifier.compile(code, :mangle => false, :compress => { :keep_fargs => true })
+    expect(keep_fargs).to include("c)")
 
   end
 
@@ -225,15 +232,11 @@ describe "Uglifier" do
     let(:code) { "function hello() { return 'hello world'; }" }
 
     it "handles strings" do
-      expect {
-        expect(Uglifier.new.compile(code)).not_to be_empty
-      }.not_to raise_error
+      expect(Uglifier.new.compile(code)).not_to be_empty
     end
 
     it "handles IO objects" do
-      expect {
-        expect(Uglifier.new.compile(StringIO.new(code))).not_to be_empty
-      }.not_to raise_error
+      expect(Uglifier.new.compile(StringIO.new(code))).not_to be_empty
     end
   end
 
@@ -241,11 +244,13 @@ describe "Uglifier" do
     let(:code) { "$.foo()" }
 
     it "encloses code with given arguments" do
-      expect(Uglifier.compile(code, :enclose => {'window.jQuery' => '$'})).to match /window.jQuery/
+      minified = Uglifier.compile(code, :enclose => { 'window.jQuery' => '$' })
+      expect(minified).to match(/window.jQuery/)
     end
 
     it "handles multiple definitions" do
-      minified = Uglifier.compile(code, :enclose => [['lol','lulz'],['foo','bar']])
+      definitions = [%w(lol lulz), %w(foo bar)]
+      minified = Uglifier.compile(code, :enclose => definitions)
       expect(minified).to match(/lol,foo/)
       expect(minified).to match(/lulz,bar/)
     end

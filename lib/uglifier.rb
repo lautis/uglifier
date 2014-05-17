@@ -4,8 +4,70 @@ require "execjs"
 require "json"
 require "uglifier/version"
 
+# A wrapper around the UglifyJS interface
 class Uglifier
   Error = ExecJS::Error
+  JS = <<-JS
+    function comments(option) {
+      if (Object.prototype.toString.call(option) === '[object Array]') {
+        return new RegExp(option[0], option[1]);
+      } else if (option == "jsdoc") {
+        return function(node, comment) {
+          if (comment.type == "comment2") {
+            return /@preserve|@license|@cc_on/i.test(comment.value);
+          } else {
+            return false;
+          }
+        }
+      } else {
+        return option;
+      }
+    }
+
+    var options = %s;
+    var source = options.source;
+    var ast = UglifyJS.parse(source, options.parse_options);
+    ast.figure_out_scope();
+
+    if (options.compress) {
+      var compressor = UglifyJS.Compressor(options.compress);
+      ast = ast.transform(compressor);
+      ast.figure_out_scope();
+    }
+
+    if (options.mangle) {
+      ast.compute_char_frequency();
+      ast.mangle_names(options.mangle);
+    }
+
+    if (options.enclose) {
+      ast = ast.wrap_enclose(options.enclose);
+    }
+
+    var gen_code_options = options.output;
+    gen_code_options.comments = comments(options.output.comments);
+
+    if (options.generate_map) {
+        var source_map = UglifyJS.SourceMap(options.source_map_options);
+        gen_code_options.source_map = source_map;
+    }
+
+    var stream = UglifyJS.OutputStream(gen_code_options);
+
+    ast.print(stream);
+    if (options.generate_map) {
+        return [stream.toString(), source_map.toString()];
+    } else {
+        return stream.toString();
+    }
+  JS
+
+  # UglifyJS source patch
+  SourcePath = File.expand_path("../uglify.js", __FILE__)
+  # ES5 shims source path
+  ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
+  # String.split shim source path
+  SplitFallbackPath = File.expand_path("../split.js", __FILE__)
 
   # Default options for compilation
   DEFAULTS = {
@@ -64,10 +126,6 @@ class Uglifier
     :screw_ie8 => false # Don't bother to generate safe code for IE8
   }
 
-  SourcePath = File.expand_path("../uglify.js", __FILE__)
-  ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
-  SplitFallbackPath = File.expand_path("../split.js", __FILE__)
-
   # Minifies JavaScript code using implicit context.
   #
   # source should be a String or IO object containing valid JavaScript.
@@ -75,7 +133,7 @@ class Uglifier
   #
   # Returns minified code as String
   def self.compile(source, options = {})
-    self.new(options).compile(source)
+    new(options).compile(source)
   end
 
   # Minifies JavaScript code and generates a source map using implicit context.
@@ -85,7 +143,7 @@ class Uglifier
   #
   # Returns a pair of [minified code as String, source map as a String]
   def self.compile_with_map(source, options = {})
-    self.new(options).compile_with_map(source)
+    new(options).compile_with_map(source)
   end
 
   # Initialize new context for Uglifier with given options
@@ -93,7 +151,7 @@ class Uglifier
   # options - Hash of options to override Uglifier::DEFAULTS
   def initialize(options = {})
     (options.keys - DEFAULTS.keys - [:comments, :squeeze, :copyright])[0..1].each do |missing|
-      raise ArgumentError.new("Invalid option: #{missing}")
+      raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
     @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read +
@@ -107,7 +165,7 @@ class Uglifier
   #
   # Returns minified code as String
   def compile(source)
-    really_compile(source, false)
+    run_uglifyjs(source, false)
   end
   alias_method :compress, :compile
 
@@ -117,82 +175,31 @@ class Uglifier
   #
   # Returns a pair of [minified code as String, source map as a String]
   def compile_with_map(source)
-    really_compile(source, true)
+    run_uglifyjs(source, true)
   end
 
   private
 
-  # Minifies JavaScript code
-  #
-  # source should be a String or IO object containing valid JavaScript.
-  def really_compile(source, generate_map)
-    source = source.respond_to?(:read) ? source.read : source.to_s
-
-    js = <<-JS
-      function comments(option) {
-        if (Object.prototype.toString.call(option) === '[object Array]') {
-          return new RegExp(option[0], option[1]);
-        } else if (option == "jsdoc") {
-          return function(node, comment) {
-            if (comment.type == "comment2") {
-              return /@preserve|@license|@cc_on/i.test(comment.value);
-            } else {
-              return false;
-            }
-          }
-        } else {
-          return option;
-        }
-      }
-
-      var options = %s;
-      var source = options.source;
-      var ast = UglifyJS.parse(source, options.parse_options);
-      ast.figure_out_scope();
-
-      if (options.compress) {
-        var compressor = UglifyJS.Compressor(options.compress);
-        ast = ast.transform(compressor);
-        ast.figure_out_scope();
-      }
-
-      if (options.mangle) {
-        ast.compute_char_frequency();
-        ast.mangle_names(options.mangle);
-      }
-
-      if (options.enclose) {
-        ast = ast.wrap_enclose(options.enclose);
-      }
-
-      var gen_code_options = options.output;
-      gen_code_options.comments = comments(options.output.comments);
-
-      if (options.generate_map) {
-          var source_map = UglifyJS.SourceMap(options.source_map_options);
-          gen_code_options.source_map = source_map;
-      }
-
-      var stream = UglifyJS.OutputStream(gen_code_options);
-
-      ast.print(stream);
-      if (options.generate_map) {
-          return [stream.toString(), source_map.toString()];
-      } else {
-          return stream.toString();
-      }
-    JS
-
-    @context.exec(js % json_encode(
-      :source => source,
+  # Run UglifyJS for given source code
+  def run_uglifyjs(source, generate_map)
+    @context.exec(Uglifier::JS % json_encode(
+      :source => read_source(source),
       :output => output_options,
       :compress => compressor_options,
       :mangle => mangle_options,
       :parse_options => parse_options,
       :source_map_options => source_map_options,
-      :generate_map => (!!generate_map),
+      :generate_map => generate_map,
       :enclose => enclose_options
     ))
+  end
+
+  def read_source(source)
+    if source.respond_to?(:read)
+      source.read
+    else
+      source.to_s
+    end
   end
 
   def mangle_options
@@ -200,7 +207,8 @@ class Uglifier
   end
 
   def compressor_options
-    defaults = conditional_option(DEFAULTS[:compress],
+    defaults = conditional_option(
+      DEFAULTS[:compress],
       :global_defs => @options[:define] || {},
       :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
     )
@@ -208,7 +216,22 @@ class Uglifier
   end
 
   def comment_options
-    val = if @options.has_key?(:output) && @options[:output].has_key?(:comments)
+    case comment_setting
+    when :all, true
+      true
+    when :jsdoc
+      "jsdoc"
+    when :copyright
+      encode_regexp(/Copyright/i)
+    when Regexp
+      encode_regexp(comment_setting)
+    else
+      false
+    end
+  end
+
+  def comment_setting
+    if @options.has_key?(:output) && @options[:output].has_key?(:comments)
       @options[:output][:comments]
     elsif @options.has_key?(:comments)
       @options[:comments]
@@ -217,32 +240,21 @@ class Uglifier
     else
       DEFAULTS[:output][:comments]
     end
-
-    case val
-    when :all, true
-      true
-    when :jsdoc
-      "jsdoc"
-    when :copyright
-      encode_regexp(/Copyright/i)
-    when Regexp
-      encode_regexp(val)
-    else
-      false
-    end
   end
 
   def output_options
-    screw_ie8 = if (@options[:output] || {}).has_key?(:ie_proof)
+    DEFAULTS[:output].merge(@options[:output] || {}).merge(
+      :comments => comment_options,
+      :screw_ie8 => screw_ie8?
+    ).reject { |key, _| key == :ie_proof }
+  end
+
+  def screw_ie8?
+    if (@options[:output] || {}).has_key?(:ie_proof)
       false
     else
       @options[:screw_ie8] || DEFAULTS[:screw_ie8]
     end
-
-    DEFAULTS[:output].merge(@options[:output] || {}).merge(
-      :comments => comment_options,
-      :screw_ie8 => screw_ie8
-    ).reject { |key,value| key == :ie_proof}
   end
 
   def source_map_options
@@ -254,7 +266,7 @@ class Uglifier
   end
 
   def parse_options
-    {:filename => @options[:source_filename]}
+    { :filename => @options[:source_filename] }
   end
 
   def enclose_options
@@ -273,16 +285,16 @@ class Uglifier
 
   def encode_regexp(regexp)
     modifiers = if regexp.casefold?
-      "i"
-    else
-      ""
-    end
+                  "i"
+                else
+                  ""
+                end
 
     [regexp.source, modifiers]
   end
 
   def conditional_option(value, defaults)
-    if value == true || value == nil
+    if value == true || value.nil?
       defaults
     elsif value
       defaults.merge(value)
