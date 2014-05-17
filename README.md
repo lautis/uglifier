@@ -101,9 +101,7 @@ Available options and their defaults are
 
 ## Development
 
-Uglifier bundles its javascript dependencies using git submodules. If you want to rebuild the javascript you will first need to get the latest version of the code with `git submodule update --init`. After you have the git submodules at the desired versions, run `rake js` to recreate `lib/uglify.js`.
-
-See [CONTRIBUTING](https://github.com/lautis/uglifier/blob/master/CONTRIBUTING.md) for details about contributing to Uglifier.
+See [CONTRIBUTING](https://github.com/lautis/uglifier/blob/master/CONTRIBUTING.md) for details about working on and contributing to Uglifier.
 
 ## Copyright
 
