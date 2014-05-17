@@ -2,3 +2,4 @@ source "https://rubygems.org"
 
 gemspec :path=>"../"
 gem 'therubyracer'
+gem 'rubocop', '0.21.0'

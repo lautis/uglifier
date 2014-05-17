@@ -1,4 +1,3 @@
-source "https://rubygems.org"
-
-gemspec :path=>"../"
+eval File.read('../Gemfile'), nil, 'Gemfile'
 gem 'therubyrhino'
+gem 'rubocop', '0.21.0'
