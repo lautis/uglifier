@@ -9,6 +9,6 @@ platforms :rbx do
 end
 
 if RUBY_VERSION >= '1.9'
-  gem 'rubocop', '0.21.0'
+  gem 'rubocop', '~> 0.23.0', :group => [:development]
 end
 

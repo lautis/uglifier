@@ -56,6 +56,6 @@ if RUBY_VERSION < '1.9.3'
   task :default => [:spec]
 else
   require 'rubocop/rake_task'
-  Rubocop::RakeTask.new(:rubocop)
+  RuboCop::RakeTask.new(:rubocop)
   task :default => [:rubocop, :spec]
 end
