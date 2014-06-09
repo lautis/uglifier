@@ -1,4 +1,4 @@
-# Uglifier  [![Build Status](https://img.shields.io/travis/lautis/uglifier/master.svg)](https://travis-ci.org/lautis/uglifier) [![Dependency Status](https://img.shields.io/gemnasium/lautis/uglifier.svg)](https://gemnasium.com/lautis/uglifier)
+# Uglifier [![Build Status](https://travis-ci.org/lautis/uglifier.svg?branch=master)](https://travis-ci.org/lautis/uglifier) [![Dependency Status](https://gemnasium.com/lautis/uglifier.svg)](https://gemnasium.com/lautis/uglifier)
 
 Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS2) JavaScript compressor.
 
