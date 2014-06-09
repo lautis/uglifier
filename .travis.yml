@@ -5,14 +5,12 @@ rvm:
   - 2.0.0
   - 2.1.2
   - jruby
-  - rbx-2
+  #- rbx-2 # Fails on Travis
 git:
   submodules: false
 gemfile:
   - Gemfile
 matrix:
-  allow_failures:
-    - rbx-2
   include:
     - rvm: 2.1.1
       gemfile: gemfiles/rubyracer
