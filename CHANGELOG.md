@@ -1,3 +1,7 @@
+## 2.5.3 (18 July 2014)
+
+- no changes
+
 ## 2.5.2 (18 July 2014)
 
 - update UglifyJS to 2.4.15
