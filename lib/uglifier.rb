@@ -55,6 +55,15 @@ class Uglifier
     var stream = UglifyJS.OutputStream(gen_code_options);
 
     ast.print(stream);
+
+    if (options.source_map_options.map_url) {
+      stream += "\\n//# sourceMappingURL=" + options.source_map_options.map_url;
+    }
+
+    if (options.source_map_options.url) {
+      stream += "\\n//# sourceURL=" + options.source_map_options.url;
+    }
+
     if (options.generate_map) {
         return [stream.toString(), source_map.toString()];
     } else {
@@ -124,7 +133,9 @@ class Uglifier
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
     :input_source_map => nil, # The contents of the source map describing the input
-    :screw_ie8 => false # Don't bother to generate safe code for IE8
+    :screw_ie8 => false, # Don't bother to generate safe code for IE8
+    :source_map_url => false, # Url for source mapping to be appended in minified source
+    :source_url => false # Url for original source to be appended in minified source
   }
   # rubocop:enable LineLength
 
@@ -263,7 +274,9 @@ class Uglifier
     {
       :file => @options[:output_filename],
       :root => @options[:source_root],
-      :orig => @options[:input_source_map]
+      :orig => @options[:input_source_map],
+      :map_url => @options[:source_map_url],
+      :url => @options[:source_url]
     }
   end
 

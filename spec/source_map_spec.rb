@@ -3,6 +3,18 @@ require 'stringio'
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Uglifier" do
+  let(:source) do
+    <<-JS
+      function hello () {
+        function world () {
+          return 2;
+        };
+
+        return world() + world();
+      };
+    JS
+  end
+
   it "generates source maps" do
     source = File.open("lib/uglify.js", "r:UTF-8").read
     minified, map = Uglifier.new.compile_with_map(source)
@@ -12,16 +24,6 @@ describe "Uglifier" do
   end
 
   it "generates source maps with the correct meta-data" do
-    source = <<-JS
-      function hello () {
-        function world () {
-          return 2;
-        };
-
-        return world() + world();
-      };
-    JS
-
     _, map = Uglifier.compile_with_map(source,
                                        :source_filename => "ahoy.js",
                                        :output_filename => "ahoy.min.js",
@@ -82,5 +84,27 @@ describe "Uglifier" do
     expect(map.sources).to eq(["http://localhost/ahoy.js"])
     expect(map.mappings.first[:source_line]).to eq(1)
     expect(map.mappings.last[:source_line]).to eq(6)
+  end
+
+  it "appens source map url" do
+    minified, map = Uglifier.compile_with_map(
+      source,
+      :source_filename => "ahoy.js",
+      :output_filename => "ahoy.min.js",
+      :source_root => "http://localhost/",
+      :source_map_url => "http://example.com/map"
+    )
+    expect(minified).to include("\n//# sourceMappingURL=http://example.com/map")
+  end
+
+  it "appens source url" do
+    minified, map = Uglifier.compile_with_map(
+      source,
+      :source_filename => "ahoy.js",
+      :output_filename => "ahoy.min.js",
+      :source_root => "http://localhost/",
+      :source_url => "http://example.com/source"
+    )
+    expect(minified).to include("\n//# sourceURL=http://example.com/source")
   end
 end
