@@ -87,7 +87,7 @@ describe "Uglifier" do
   end
 
   it "appens source map url" do
-    minified, map = Uglifier.compile_with_map(
+    minified, _ = Uglifier.compile_with_map(
       source,
       :source_filename => "ahoy.js",
       :output_filename => "ahoy.min.js",
@@ -98,7 +98,7 @@ describe "Uglifier" do
   end
 
   it "appens source url" do
-    minified, map = Uglifier.compile_with_map(
+    minified, _ = Uglifier.compile_with_map(
       source,
       :source_filename => "ahoy.js",
       :output_filename => "ahoy.min.js",
