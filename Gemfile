@@ -13,4 +13,3 @@ if RUBY_VERSION >= '1.9'
 else
   gem 'execjs', '~> 2.0.2'
 end
-
