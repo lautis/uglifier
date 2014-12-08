@@ -1,3 +1,7 @@
+## 2.6.0 (8 December 2014)
+
+- allow metadata to be appended to minified code
+
 ## 2.5.3 (18 July 2014)
 
 - no changes
