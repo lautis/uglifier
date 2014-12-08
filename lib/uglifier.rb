@@ -167,9 +167,6 @@ class Uglifier
       raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
-    @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read +
-                              File.open(SplitFallbackPath, "r:UTF-8").read +
-                              File.open(SourcePath, "r:UTF-8").read)
     @context = ExecJS.compile(uglifyjs_source)
   end
 
@@ -191,6 +188,12 @@ class Uglifier
   end
 
   private
+
+  def uglifyjs_source
+    [ES5FallbackPath, SplitFallbackPath, SourcePath].map do |file|
+      File.open(file, "r:UTF-8") { |f| f.read }
+    end.join("\n")
+  end
 
   # Run UglifyJS for given source code
   def run_uglifyjs(source, generate_map)
