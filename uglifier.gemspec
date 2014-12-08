@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "execjs", ">= 0.3.0"
   spec.add_runtime_dependency "json", ">= 1.8.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rake", "~> 10.3.0"
+  spec.add_development_dependency "rake", "~> 10.4"
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rdoc", ">= 3.11"
   spec.add_development_dependency "source_map", ">= 0"
