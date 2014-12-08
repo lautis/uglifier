@@ -6,7 +6,9 @@ require "uglifier/version"
 
 # A wrapper around the UglifyJS interface
 class Uglifier
+  # Error class for compilation errors.
   Error = ExecJS::Error
+  # JavaScript code to call UglifyJS
   JS = <<-JS
     function comments(option) {
       if (Object.prototype.toString.call(option) === '[object Array]') {
@@ -71,7 +73,7 @@ class Uglifier
     }
   JS
 
-  # UglifyJS source patch
+  # UglifyJS source path
   SourcePath = File.expand_path("../uglify.js", __FILE__)
   # ES5 shims source path
   ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
@@ -141,27 +143,25 @@ class Uglifier
 
   # Minifies JavaScript code using implicit context.
   #
-  # source should be a String or IO object containing valid JavaScript.
-  # options contain optional overrides to Uglifier::DEFAULTS
-  #
-  # Returns minified code as String
+  # @param source [IO, String] valid JS source code.
+  # @param options [Hash] optional overrides to +Uglifier::DEFAULTS+
+  # @return [String] minified code.
   def self.compile(source, options = {})
     new(options).compile(source)
   end
 
   # Minifies JavaScript code and generates a source map using implicit context.
   #
-  # source should be a String or IO object containing valid JavaScript.
-  # options contain optional overrides to Uglifier::DEFAULTS
-  #
-  # Returns a pair of [minified code as String, source map as a String]
+  # @param source [IO, String] valid JS source code.
+  # @param options [Hash] optional overrides to +Uglifier::DEFAULTS+
+  # @return [Array(String, String)] minified code and source map.
   def self.compile_with_map(source, options = {})
     new(options).compile_with_map(source)
   end
 
   # Initialize new context for Uglifier with given options
   #
-  # options - Hash of options to override Uglifier::DEFAULTS
+  # @param options [Hash] optional overrides to +Uglifier::DEFAULTS+
   def initialize(options = {})
     (options.keys - DEFAULTS.keys - [:comments, :squeeze, :copyright])[0..1].each do |missing|
       raise ArgumentError, "Invalid option: #{missing}"
@@ -170,13 +170,13 @@ class Uglifier
     @context = ExecJS.compile(File.open(ES5FallbackPath, "r:UTF-8").read +
                               File.open(SplitFallbackPath, "r:UTF-8").read +
                               File.open(SourcePath, "r:UTF-8").read)
+    @context = ExecJS.compile(uglifyjs_source)
   end
 
   # Minifies JavaScript code
   #
-  # source should be a String or IO object containing valid JavaScript.
-  #
-  # Returns minified code as String
+  # @param source [IO, String] valid JS source code.
+  # @return [String] minified code.
   def compile(source)
     run_uglifyjs(source, false)
   end
@@ -184,9 +184,8 @@ class Uglifier
 
   # Minifies JavaScript code and generates a source map
   #
-  # source should be a String or IO object containing valid JavaScript.
-  #
-  # Returns a pair of [minified code as String, source map as a String]
+  # @param source [IO, String] valid JS source code.
+  # @return [Array(String, String)] minified code and source map.
   def compile_with_map(source)
     run_uglifyjs(source, true)
   end
