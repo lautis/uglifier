@@ -3,6 +3,7 @@ AllCops:
     - uglifier.gemspec
     - lib/uglifier/version.rb
     - "vendor/**/*"
+    - "gemfiles/vendor/**/*"
 
 Metrics/ClassLength:
   Enabled: false
