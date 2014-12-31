@@ -32,7 +32,6 @@ end
 
 desc "Rebuild lib/uglify.js"
 task :js do
-
   cd 'vendor/source-map/' do
     `npm install`
     `node Makefile.dryice.js`

@@ -225,7 +225,6 @@ describe "Uglifier" do
 
     keep_fargs = Uglifier.compile(code, :mangle => false, :compress => { :keep_fargs => true })
     expect(keep_fargs).to include("c)")
-
   end
 
   describe "Input Formats" do
