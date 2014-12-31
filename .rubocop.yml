@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - uglifier.gemspec
     - lib/uglifier/version.rb
+    - "vendor/**/*"
 
 ClassLength:
   Enabled: false
