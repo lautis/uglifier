@@ -1,3 +1,7 @@
+## next
+
+- update UglifyJS to 2.4.16
+
 ## 2.6.0 (8 December 2014)
 
 - allow metadata to be appended to minified code
