@@ -8,7 +8,7 @@ rvm:
   - 2.1.5
   - 2.2.0
   - jruby
-  #- rbx-2 # Fails on Travis
+  - rbx-2
 git:
   submodules: false
 gemfile:
