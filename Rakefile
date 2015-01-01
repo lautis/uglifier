@@ -51,10 +51,10 @@ task :js do
   File.write("lib/uglify.js", source)
 end
 
-if RUBY_VERSION < '1.9.3'
-  task :default => [:spec]
-else
+begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new(:rubocop)
   task :default => [:rubocop, :spec]
+rescue LoadError
+  task :default => [:spec]
 end
