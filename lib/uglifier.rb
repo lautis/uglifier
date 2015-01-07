@@ -237,7 +237,7 @@ class Uglifier
     when :jsdoc
       "jsdoc"
     when :copyright
-      encode_regexp(/Copyright/i)
+      encode_regexp(/(^!)|Copyright/i)
     when Regexp
       encode_regexp(comment_setting)
     else

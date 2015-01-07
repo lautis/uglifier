@@ -45,7 +45,7 @@ Available options and their defaults are
 {
   :output => {
     :ascii_only => true,        # Escape non-ASCII characters
-    :comments => :copyright,    # Preserve comments (:all, :jsdoc, :copyright, :none)
+    :comments => :copyright,    # Preserve comments (:all, :jsdoc, :copyright, :none, Regexp (see below))
     :inline_script => false,    # Escape occurrences of </script in strings
     :quote_keys => false,       # Quote keys in object literals
     :max_line_len => 32 * 1024, # Maximum line length in minified code
@@ -100,6 +100,18 @@ Available options and their defaults are
   :source_url => false          # Url to original source to be appended in minified source
 }
 ```
+
+When passing a regular expression to the output => comments option, be sure to pass a valid Ruby Regexp.
+The beginning and ending of comments are removed and cannot be matched (/*, */, //). For example:
+When matching
+
+```
+/*!
+ * comment
+ */
+```
+
+use `Uglifier.new(output: {comments: /^!/})`.
 
 ## Development
 
