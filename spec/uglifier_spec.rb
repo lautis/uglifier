@@ -64,6 +64,7 @@ describe "Uglifier" do
         function identity(p) { return p; }
         /* Another Copyright */
         /*! Another Bang */
+        // A comment!
         function add(a, b) { return a + b; }
       EOS
     end
@@ -88,6 +89,7 @@ describe "Uglifier" do
 
       it "ignores other comments" do
         expect(subject).not_to match(/INCLUDED/)
+        expect(subject).not_to match(/A comment!/)
       end
     end
 
