@@ -60,8 +60,11 @@ describe "Uglifier" do
         /* @preserve Copyright Notice */
         /* (c) 2011 */
         // INCLUDED
+        //! BANG
         function identity(p) { return p; }
         /* Another Copyright */
+        /*! Another Bang */
+        // A comment!
         function add(a, b) { return a + b; }
       EOS
     end
@@ -79,8 +82,14 @@ describe "Uglifier" do
         expect(subject).to match(/Another Copyright/)
       end
 
+      it "preserves comments that start with a bang (!)" do
+        expect(subject).to match(/! BANG/)
+        expect(subject).to match(/! Another Bang/)
+      end
+
       it "ignores other comments" do
         expect(subject).not_to match(/INCLUDED/)
+        expect(subject).not_to match(/A comment!/)
       end
     end
 
