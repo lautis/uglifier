@@ -1,3 +1,7 @@
+## 2.7.0 (8 January 2015)
+
+- copyright comment preservation also includes comments starting with a bang (!)
+
 ## 2.6.1 (1 January 2015)
 
 - update UglifyJS to 2.4.16
