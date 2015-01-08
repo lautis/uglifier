@@ -17,7 +17,9 @@ Gem::Specification.new do |spec|
 
   spec.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
   ]
   spec.files = `git ls-files`.split($/)
   spec.test_files = spec.files.grep(%r{^spec/})
