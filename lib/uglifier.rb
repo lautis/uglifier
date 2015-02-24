@@ -10,7 +10,7 @@ class Uglifier
   Error = ExecJS::Error
   # JavaScript code to call UglifyJS
   JS = <<-JS
-    (function() {
+    (function(options) {
       function comments(option) {
         if (Object.prototype.toString.call(option) === '[object Array]') {
           return new RegExp(option[0], option[1]);
@@ -27,7 +27,6 @@ class Uglifier
         }
       }
 
-      var options = %s;
       var source = options.source;
       var ast = UglifyJS.parse(source, options.parse_options);
       ast.figure_out_scope();
@@ -72,7 +71,7 @@ class Uglifier
       } else {
           return stream.toString();
       }
-    })()
+    })
   JS
 
   # UglifyJS source path
@@ -199,7 +198,7 @@ class Uglifier
 
   # Run UglifyJS for given source code
   def run_uglifyjs(source, generate_map)
-    @context.exec(Uglifier::JS % json_encode(
+    options = {
       :source => read_source(source),
       :output => output_options,
       :compress => compressor_options,
@@ -208,7 +207,9 @@ class Uglifier
       :source_map_options => source_map_options,
       :generate_map => generate_map,
       :enclose => enclose_options
-    ))
+    }
+
+    @context.call(Uglifier::JS, options)
   end
 
   def read_source(source)
@@ -296,10 +297,6 @@ class Uglifier
     else
       false
     end
-  end
-
-  def json_encode(obj)
-    JSON.dump(obj)
   end
 
   def encode_regexp(regexp)
