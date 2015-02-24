@@ -7,6 +7,11 @@ require 'source_map'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
+if ENV["ALASKA"]
+  require 'alaska'
+  ExecJS.runtime = Alaska.new
+end
+
 RSpec.configure do |config|
   config.mock_with :rspec do |mock|
     mock.syntax = :expect

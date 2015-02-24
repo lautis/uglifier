@@ -21,3 +21,7 @@ matrix:
       gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
       gemfile: gemfiles/rubyrhino
+  allow_failures:
+    - rvm: 2.2.0
+      gemfile: gemfiles/alaska
+      env: ALASKA=1
