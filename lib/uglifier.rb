@@ -10,67 +10,68 @@ class Uglifier
   Error = ExecJS::Error
   # JavaScript code to call UglifyJS
   JS = <<-JS
-    function comments(option) {
-      if (Object.prototype.toString.call(option) === '[object Array]') {
-        return new RegExp(option[0], option[1]);
-      } else if (option == "jsdoc") {
-        return function(node, comment) {
-          if (comment.type == "comment2") {
-            return /@preserve|@license|@cc_on/i.test(comment.value);
-          } else {
-            return false;
+    (function(options) {
+      function comments(option) {
+        if (Object.prototype.toString.call(option) === '[object Array]') {
+          return new RegExp(option[0], option[1]);
+        } else if (option == "jsdoc") {
+          return function(node, comment) {
+            if (comment.type == "comment2") {
+              return /@preserve|@license|@cc_on/i.test(comment.value);
+            } else {
+              return false;
+            }
           }
+        } else {
+          return option;
         }
-      } else {
-        return option;
       }
-    }
 
-    var options = %s;
-    var source = options.source;
-    var ast = UglifyJS.parse(source, options.parse_options);
-    ast.figure_out_scope();
-
-    if (options.compress) {
-      var compressor = UglifyJS.Compressor(options.compress);
-      ast = ast.transform(compressor);
+      var source = options.source;
+      var ast = UglifyJS.parse(source, options.parse_options);
       ast.figure_out_scope();
-    }
 
-    if (options.mangle) {
-      ast.compute_char_frequency();
-      ast.mangle_names(options.mangle);
-    }
+      if (options.compress) {
+        var compressor = UglifyJS.Compressor(options.compress);
+        ast = ast.transform(compressor);
+        ast.figure_out_scope();
+      }
 
-    if (options.enclose) {
-      ast = ast.wrap_enclose(options.enclose);
-    }
+      if (options.mangle) {
+        ast.compute_char_frequency();
+        ast.mangle_names(options.mangle);
+      }
 
-    var gen_code_options = options.output;
-    gen_code_options.comments = comments(options.output.comments);
+      if (options.enclose) {
+        ast = ast.wrap_enclose(options.enclose);
+      }
 
-    if (options.generate_map) {
-        var source_map = UglifyJS.SourceMap(options.source_map_options);
-        gen_code_options.source_map = source_map;
-    }
+      var gen_code_options = options.output;
+      gen_code_options.comments = comments(options.output.comments);
 
-    var stream = UglifyJS.OutputStream(gen_code_options);
+      if (options.generate_map) {
+          var source_map = UglifyJS.SourceMap(options.source_map_options);
+          gen_code_options.source_map = source_map;
+      }
 
-    ast.print(stream);
+      var stream = UglifyJS.OutputStream(gen_code_options);
 
-    if (options.source_map_options.map_url) {
-      stream += "\\n//# sourceMappingURL=" + options.source_map_options.map_url;
-    }
+      ast.print(stream);
 
-    if (options.source_map_options.url) {
-      stream += "\\n//# sourceURL=" + options.source_map_options.url;
-    }
+      if (options.source_map_options.map_url) {
+        stream += "\\n//# sourceMappingURL=" + options.source_map_options.map_url;
+      }
 
-    if (options.generate_map) {
-        return [stream.toString(), source_map.toString()];
-    } else {
-        return stream.toString();
-    }
+      if (options.source_map_options.url) {
+        stream += "\\n//# sourceURL=" + options.source_map_options.url;
+      }
+
+      if (options.generate_map) {
+          return [stream.toString(), source_map.toString()];
+      } else {
+          return stream.toString();
+      }
+    })
   JS
 
   # UglifyJS source path
@@ -197,7 +198,7 @@ class Uglifier
 
   # Run UglifyJS for given source code
   def run_uglifyjs(source, generate_map)
-    @context.exec(Uglifier::JS % json_encode(
+    options = {
       :source => read_source(source),
       :output => output_options,
       :compress => compressor_options,
@@ -206,7 +207,9 @@ class Uglifier
       :source_map_options => source_map_options,
       :generate_map => generate_map,
       :enclose => enclose_options
-    ))
+    }
+
+    @context.call(Uglifier::JS, options)
   end
 
   def read_source(source)
@@ -294,10 +297,6 @@ class Uglifier
     else
       false
     end
-  end
-
-  def json_encode(obj)
-    JSON.dump(obj)
   end
 
   def encode_regexp(regexp)
