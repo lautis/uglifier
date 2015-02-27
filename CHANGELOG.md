@@ -1,3 +1,8 @@
+## next
+
+- drop support for Ruby 1.8
+- remove json as dependency
+
 ## 2.7.1 (27 February 2015)
 
 - fix compatibility with experimental Alaska ExecJS runtime

@@ -1,7 +1,6 @@
 # encoding: UTF-8
 
 require "execjs"
-require "json"
 require "uglifier/version"
 
 # A wrapper around the UglifyJS interface
