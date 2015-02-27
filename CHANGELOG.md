@@ -1,3 +1,7 @@
+## 2.7.1 (27 February 2015)
+
+- fix compatibility with experimental Alaska ExecJS runtime
+
 ## 2.7.0 (8 January 2015)
 
 - copyright comment preservation also includes comments starting with a bang (!)
