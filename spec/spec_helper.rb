@@ -9,7 +9,8 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 if ENV["ALASKA"]
   require 'alaska'
-  ExecJS.runtime = Alaska.new
+  require 'tempfile'
+  ExecJS.runtime = Alaska::Runtime.new
 end
 
 RSpec.configure do |config|
