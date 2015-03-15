@@ -1,3 +1,7 @@
+## next
+
+- update UglifyJS to 2.4.17
+
 ## 2.7.1 (27 February 2015)
 
 - fix compatibility with experimental Alaska ExecJS runtime

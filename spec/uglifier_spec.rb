@@ -145,8 +145,8 @@ describe "Uglifier" do
 
   it "honors max line length" do
     code = "var foo = 123;function bar() { return foo; }"
-    uglifier = Uglifier.new(:output => { :max_line_len => 16 }, :compress => false)
-    expect(uglifier.compile(code).split("\n").length).to eq(2)
+    uglifier = Uglifier.new(:output => { :max_line_len => 20 }, :compress => false)
+    expect(uglifier.compile(code).split("\n").map(&:length)).to all(be < 28)
   end
 
   it "hoists vars to top of the scope" do
