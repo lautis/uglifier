@@ -3,6 +3,7 @@
 - drop support for Ruby 1.8
 - remove json as dependency
 - update UglifyJS to 2.4.17
+- add `keep_fnames` option to preserve function names in compressed code
 
 ## 2.7.1 (27 February 2015)
 
