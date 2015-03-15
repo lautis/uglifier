@@ -1,5 +1,6 @@
 # encoding: UTF-8
 
+require "base64"
 require "execjs"
 require "uglifier/version"
 
@@ -75,7 +76,9 @@ class Uglifier
     :input_source_map => nil, # The contents of the source map describing the input
     :screw_ie8 => false, # Don't bother to generate safe code for IE8
     :source_map_url => false, # Url for source mapping to be appended in minified source
-    :source_url => false # Url for original source to be appended in minified source
+    :source_url => false, # Url for original source to be appended in minified source
+    :source_map => false,
+    :source_map_include_sources => false
   }
   # rubocop:enable LineLength
 
@@ -113,7 +116,14 @@ class Uglifier
   # @param source [IO, String] valid JS source code.
   # @return [String] minified code.
   def compile(source)
-    run_uglifyjs(source, false)
+    if @options[:source_map]
+      compiled, source_map = run_uglifyjs(source, true)
+      source_map_uri = Base64.strict_encode64(source_map)
+      source_map_mime = "application/json;charset=utf-8;base64"
+      compiled + "\n//# sourceMappingURL=data:#{source_map_mime},#{source_map_uri}"
+    else
+      run_uglifyjs(source, false)
+    end
   end
   alias_method :compress, :compile
 
@@ -143,7 +153,8 @@ class Uglifier
       :parse_options => parse_options,
       :source_map_options => source_map_options,
       :generate_map => generate_map,
-      :enclose => enclose_options
+      :enclose => enclose_options,
+      :source_map_include_sources => @options[:source_map_include_sources]
     }
 
     @context.call("uglifier", options)

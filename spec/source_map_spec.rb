@@ -107,4 +107,17 @@ describe "Uglifier" do
     )
     expect(minified).to include("\n//# sourceURL=http://example.com/source")
   end
+
+  it "inlines source map" do
+    minified = Uglifier.compile(
+      source,
+      :source_map => true,
+      :source_filename => "ahoy.js",
+      :output_filename => "ahoy.min.js",
+      :source_root => "http://localhost/",
+      :source_url => "http://example.com/source"
+    )
+    source_map_mime = "application/json;charset=utf-8;base64,"
+    expect(minified).to include("\n//# sourceMappingURL=data:#{source_map_mime}")
+  end
 end
