@@ -81,7 +81,7 @@ describe "Uglifier" do
     expect(minified1.lines.to_a.length).to eq(1)
 
     map = SourceMap.from_s(map2)
-    expect(map.sources).to eq(["http://localhost/ahoy.js"])
+    expect(map.sources).to eq(["ahoy.js", "http://localhost/ahoy.js"])
     expect(map.mappings.first[:source_line]).to eq(1)
     expect(map.mappings.last[:source_line]).to eq(6)
   end
