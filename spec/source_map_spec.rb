@@ -86,7 +86,7 @@ describe "Uglifier" do
     expect(map.mappings.last[:source_line]).to eq(6)
   end
 
-  it "appens source map url" do
+  it "appends source map url" do
     minified, _ = Uglifier.compile_with_map(
       source,
       :source_filename => "ahoy.js",
@@ -97,7 +97,7 @@ describe "Uglifier" do
     expect(minified).to include("\n//# sourceMappingURL=http://example.com/map")
   end
 
-  it "appens source url" do
+  it "appends source url" do
     minified, _ = Uglifier.compile_with_map(
       source,
       :source_filename => "ahoy.js",
