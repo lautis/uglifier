@@ -56,7 +56,7 @@ describe "Uglifier" do
 
   describe "comment preservation" do
     let(:source) do
-      <<-EOS
+      <<-JS
         /* @preserve Copyright Notice */
         /* (c) 2011 */
         // INCLUDED
@@ -65,8 +65,8 @@ describe "Uglifier" do
         /* Another Copyright */
         /*! Another Bang */
         // A comment!
-        function add(a, b) { return a + b; }
-      EOS
+        function add(a, b) { return a + b; }
+      JS
     end
 
     it "handles copyright option" do
@@ -213,12 +213,12 @@ describe "Uglifier" do
   end
 
   it "processes @ngInject annotations" do
-    code = <<-EOF
+    code = <<-JS
     /**
      * @ngInject
      */
     var f = function(foo, bar) { return foo + bar};
-    EOF
+    JS
     with_angular = Uglifier.compile(code, :compress => { :angular => true })
     without_angular = Uglifier.compile(code, :compress => { :angular => false })
     expect(with_angular).to include("f.$inject")
@@ -226,10 +226,10 @@ describe "Uglifier" do
   end
 
   it "keeps unused function arguments when keep_fargs option is set" do
-    code = <<-EOF
+    code = <<-JS
     function plus(a, b, c) { return a + b};
     plus(1, 2);
-    EOF
+    JS
     expect(Uglifier.compile(code, :mangle => false)).not_to include("c)")
 
     keep_fargs = Uglifier.compile(code, :mangle => false, :compress => { :keep_fargs => true })
