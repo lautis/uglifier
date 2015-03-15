@@ -90,8 +90,9 @@ Available options and their defaults are
     :pure_getters => false,     # Assume that object property access does not have any side-effects
     :pure_funcs => nil,         # List of functions without side-effects. Can safely discard function calls when the result value is not used
     :drop_console => false,     # Drop calls to console.* functions
-    :angular => false           # Process @ngInject annotations
-    :keep_fargs => false        # Preserve unused function arguments
+    :angular => false,          # Process @ngInject annotations
+    :keep_fargs => false,       # Preserve unused function arguments
+    :keep_fnames => false       # Preserve function names
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs

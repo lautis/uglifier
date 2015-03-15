@@ -236,6 +236,16 @@ describe "Uglifier" do
     expect(keep_fargs).to include("c)")
   end
 
+  it "keeps function names in output when keep_fnames is set" do
+    code = <<-JS
+    (function plus(a, b) { return a + b})(1, 2);
+    JS
+    expect(Uglifier.compile(code, :compress => true)).not_to include("plus")
+
+    keep_fargs = Uglifier.compile(code, :mangle => false, :compress => { :keep_fnames => true })
+    expect(keep_fargs).to include("plus")
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 
