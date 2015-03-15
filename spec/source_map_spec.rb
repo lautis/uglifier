@@ -120,4 +120,15 @@ describe "Uglifier" do
     source_map_mime = "application/json;charset=utf-8;base64,"
     expect(minified).to include("\n//# sourceMappingURL=data:#{source_map_mime}")
   end
+
+  it "parses inline source maps" do
+    minified = Uglifier.compile(
+      source,
+      :source_map => true,
+      :source_filename => "ahoy.js",
+      :source_map_include_sources => true
+    )
+    _, map = Uglifier.compile_with_map(minified)
+    expect(JSON.load(map)["sourcesContent"]).to include(source)
+  end
 end

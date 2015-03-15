@@ -144,14 +144,15 @@ class Uglifier
   end
 
   # Run UglifyJS for given source code
-  def run_uglifyjs(source, generate_map)
+  def run_uglifyjs(input, generate_map)
+    source = read_source(input)
     options = {
-      :source => read_source(source),
+      :source => source,
       :output => output_options,
       :compress => compressor_options,
       :mangle => mangle_options,
       :parse_options => parse_options,
-      :source_map_options => source_map_options,
+      :source_map_options => source_map_options(source),
       :generate_map => generate_map,
       :enclose => enclose_options,
       :source_map_include_sources => @options[:source_map_include_sources]
@@ -223,11 +224,11 @@ class Uglifier
     end
   end
 
-  def source_map_options
+  def source_map_options(source)
     {
       :file => @options[:output_filename],
       :root => @options[:source_root],
-      :orig => @options[:input_source_map],
+      :orig => input_source_map(source),
       :map_url => @options[:source_map_url],
       :url => @options[:source_url]
     }
@@ -265,5 +266,29 @@ class Uglifier
     else
       false
     end
+  end
+
+  def sanitize_map_root(map)
+    if map.nil?
+      nil
+    elsif map.is_a? String
+      sanitize_map_root(JSON.load(map))
+    else
+      if map["sourceRoot"] == ""
+        map.merge("sourceRoot" => nil)
+      else
+        map
+      end
+    end
+  end
+
+  def input_source_map(source)
+    sanitize_map_root(@options.fetch(:input_source_map) do
+      regex = %r{//[@#]\ssourceMappingURL=\s*(\S*?)\s*$}m
+      match = regex.match(source)
+      if match && match[1].start_with?("data:")
+        Base64.strict_decode64(match[1].split(",", 2)[-1])
+      end
+    end)
   end
 end
