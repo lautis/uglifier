@@ -77,7 +77,8 @@ class Uglifier
     :screw_ie8 => false, # Don't bother to generate safe code for IE8
     :source_map_url => false, # Url for source mapping to be appended in minified source
     :source_url => false, # Url for original source to be appended in minified source
-    :source_map => false
+    :source_map => false,
+    :source_map_include_sources => false
   }
   # rubocop:enable LineLength
 
@@ -152,7 +153,8 @@ class Uglifier
       :parse_options => parse_options,
       :source_map_options => source_map_options,
       :generate_map => generate_map,
-      :enclose => enclose_options
+      :enclose => enclose_options,
+      :source_map_include_sources => @options[:source_map_include_sources]
     }
 
     @context.call("uglifier", options)
