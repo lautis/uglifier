@@ -2,6 +2,7 @@
 
 - drop support for Ruby 1.8
 - remove json as dependency
+- update UglifyJS to 2.4.17
 
 ## 2.7.1 (27 February 2015)
 
