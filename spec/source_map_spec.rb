@@ -146,7 +146,7 @@ describe "Uglifier" do
       source,
       :source_map => {
         :source_filename => "ahoy.js",
-        :source_map_include_sources => true
+        :sources_content => true
       }
     )
     _, map = Uglifier.compile_with_map(minified)

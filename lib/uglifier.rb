@@ -75,9 +75,17 @@ class Uglifier
   }
 
   SOURCE_MAP_DEFAULTS = {
+    :mapping_url => false,
+    :source_url => false,
+    #:include_sources => false,
+    :root => nil,
+    :output_filename => nil,
+    :filename => nil,
+    :input_source_map => nil,
+
     :source_map_url => false, # Url for source mapping to be appended in minified source
     :source_url => false, # Url for original source to be appended in minified source
-    :source_map_include_sources => false,
+    :sources_content => false, # Include original source content in map
     :source_filename => nil, # The filename of the input file
     :source_root => nil, # The URL of the directory which contains :source_filename
     :output_filename => nil, # The filename or URL where the minified output can be found
@@ -236,7 +244,7 @@ class Uglifier
       :orig => input_source_map(source),
       :map_url => options[:source_map_url],
       :url => options[:source_url],
-      :include_source => options[:source_map_include_sources]
+      :sources_content => options[:sources_content]
     }
   end
 
