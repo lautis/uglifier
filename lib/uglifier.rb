@@ -70,16 +70,20 @@ class Uglifier
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
-    :source_filename => nil, # The filename of the input file
-    :source_root => nil, # The URL of the directory which contains :source_filename
-    :output_filename => nil, # The filename or URL where the minified output can be found
-    :input_source_map => nil, # The contents of the source map describing the input
     :screw_ie8 => false, # Don't bother to generate safe code for IE8
-    :source_map_url => false, # Url for source mapping to be appended in minified source
-    :source_url => false, # Url for original source to be appended in minified source
-    :source_map => false,
-    :source_map_include_sources => false
+    :source_map => false # Generate source map
   }
+
+  SOURCE_MAP_DEFAULTS = {
+    :map_url => false, # Url for source mapping to be appended in minified source
+    :url => false, # Url for original source to be appended in minified source
+    :sources_content => false, # Include original source content in map
+    :filename => nil, # The filename of the input file
+    :root => nil, # The URL of the directory which contains :filename
+    :output_filename => nil, # The filename or URL where the minified output can be found
+    :input_source_map => nil # The contents of the source map describing the input
+  }
+
   # rubocop:enable LineLength
 
   # Minifies JavaScript code using implicit context.
@@ -154,8 +158,7 @@ class Uglifier
       :parse_options => parse_options,
       :source_map_options => source_map_options(source),
       :generate_map => generate_map,
-      :enclose => enclose_options,
-      :source_map_include_sources => @options[:source_map_include_sources]
+      :enclose => enclose_options
     }
 
     @context.call("uglifier", options)
@@ -225,17 +228,24 @@ class Uglifier
   end
 
   def source_map_options(source)
+    options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS)
+
     {
-      :file => @options[:output_filename],
-      :root => @options[:source_root],
+      :file => options[:output_filename],
+      :root => options[:root],
       :orig => input_source_map(source),
-      :map_url => @options[:source_map_url],
-      :url => @options[:source_url]
+      :map_url => options[:map_url],
+      :url => options[:url],
+      :sources_content => options[:sources_content]
     }
   end
 
   def parse_options
-    { :filename => @options[:source_filename] }
+    if @options[:source_map].respond_to?(:[])
+      { :filename => @options[:source_map][:filename] }
+    else
+      {}
+    end
   end
 
   def enclose_options
@@ -283,7 +293,7 @@ class Uglifier
   end
 
   def input_source_map(source)
-    sanitize_map_root(@options.fetch(:input_source_map) do
+    sanitize_map_root(@options.fetch(:source_map, {}).fetch(:input_source_map) do
       regex = %r{//[@#]\ssourceMappingURL=\s*(\S*?)\s*$}m
       match = regex.match(source)
       if match && match[1].start_with?("data:")

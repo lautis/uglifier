@@ -24,10 +24,14 @@ describe "Uglifier" do
   end
 
   it "generates source maps with the correct meta-data" do
-    _, map = Uglifier.compile_with_map(source,
-                                       :source_filename => "ahoy.js",
-                                       :output_filename => "ahoy.min.js",
-                                       :source_root => "http://localhost/")
+    _, map = Uglifier.compile_with_map(
+      source,
+      :source_map => {
+        :filename => "ahoy.js",
+        :output_filename => "ahoy.min.js",
+        :root => "http://localhost/"
+      }
+    )
 
     map = SourceMap.from_s(map)
     expect(map.file).to eq("ahoy.min.js")
@@ -49,9 +53,14 @@ describe "Uglifier" do
       };
     JS
 
-    _, map = Uglifier.compile_with_map(source,
-                                       :source_filename => "ahoy.js",
-                                       :source_root => "http://localhost/")
+    _, map = Uglifier.compile_with_map(
+      source,
+      :source_map => {
+        :filename => "ahoy.js",
+        :root => "http://localhost/"
+      }
+    )
+
     map = SourceMap.from_s(map)
     expect(map.mappings.first[:generated_line]).to eq(2)
   end
@@ -69,14 +78,20 @@ describe "Uglifier" do
 
     minified1, map1 = Uglifier.compile_with_map(
       source,
-      :source_filename => "ahoy.js",
-      :source_root => "http://localhost/",
+      :source_map => {
+        :filename => "ahoy.js",
+        :root => "http://localhost/"
+      },
       :mangle => false
     )
 
-    _, map2 = Uglifier.compile_with_map(source,
-                                        :input_source_map => map1,
-                                        :mangle => true)
+    _, map2 = Uglifier.compile_with_map(
+      source,
+      :source_map => {
+        :input_source_map => map1
+      },
+      :mangle => true
+    )
 
     expect(minified1.lines.to_a.length).to eq(1)
 
@@ -89,10 +104,12 @@ describe "Uglifier" do
   it "appends source map url" do
     minified, = Uglifier.compile_with_map(
       source,
-      :source_filename => "ahoy.js",
-      :output_filename => "ahoy.min.js",
-      :source_root => "http://localhost/",
-      :source_map_url => "http://example.com/map"
+      :source_map => {
+        :filename => "ahoy.js",
+        :output_filename => "ahoy.min.js",
+        :root => "http://localhost/",
+        :map_url => "http://example.com/map"
+      }
     )
     expect(minified).to include("\n//# sourceMappingURL=http://example.com/map")
   end
@@ -100,10 +117,12 @@ describe "Uglifier" do
   it "appends source url" do
     minified, = Uglifier.compile_with_map(
       source,
-      :source_filename => "ahoy.js",
-      :output_filename => "ahoy.min.js",
-      :source_root => "http://localhost/",
-      :source_url => "http://example.com/source"
+      :source_map => {
+        :filename => "ahoy.js",
+        :output_filename => "ahoy.min.js",
+        :root => "http://localhost/",
+        :url => "http://example.com/source"
+      }
     )
     expect(minified).to include("\n//# sourceURL=http://example.com/source")
   end
@@ -111,11 +130,12 @@ describe "Uglifier" do
   it "inlines source map" do
     minified = Uglifier.compile(
       source,
-      :source_map => true,
-      :source_filename => "ahoy.js",
-      :output_filename => "ahoy.min.js",
-      :source_root => "http://localhost/",
-      :source_url => "http://example.com/source"
+      :source_map => {
+        :filename => "ahoy.js",
+        :output_filename => "ahoy.min.js",
+        :root => "http://localhost/",
+        :url => "http://example.com/source"
+      }
     )
     source_map_mime = "application/json;charset=utf-8;base64,"
     expect(minified).to include("\n//# sourceMappingURL=data:#{source_map_mime}")
@@ -124,9 +144,10 @@ describe "Uglifier" do
   it "parses inline source maps" do
     minified = Uglifier.compile(
       source,
-      :source_map => true,
-      :source_filename => "ahoy.js",
-      :source_map_include_sources => true
+      :source_map => {
+        :filename => "ahoy.js",
+        :sources_content => true
+      }
     )
     _, map = Uglifier.compile_with_map(minified)
     expect(JSON.load(map)["sourcesContent"]).to include(source)
