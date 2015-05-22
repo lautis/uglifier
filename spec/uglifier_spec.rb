@@ -230,10 +230,19 @@ describe "Uglifier" do
     function plus(a, b, c) { return a + b};
     plus(1, 2);
     JS
-    expect(Uglifier.compile(code, :mangle => false)).not_to include("c)")
 
-    keep_fargs = Uglifier.compile(code, :mangle => false, :compress => { :keep_fargs => true })
-    expect(keep_fargs).to include("c)")
+    options = lambda do |keep_fargs|
+      {
+        :mangle => false,
+        :compress => {
+          :keep_fargs => keep_fargs,
+          :unsafe => true
+        }
+      }
+    end
+
+    expect(Uglifier.compile(code, options.call(false))).not_to include("c)")
+    expect(Uglifier.compile(code, options.call(true))).to include("c)")
   end
 
   it "keeps function names in output when keep_fnames is set" do
