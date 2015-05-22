@@ -118,8 +118,8 @@ describe "Uglifier" do
       subject { Uglifier.compile(source, :comments => :none) }
 
       it "omits all comments" do
-        expect(subject).not_to match %r{//}
-        expect(subject).not_to match(/\/\*/)
+        expect(subject).not_to match(%r{//})
+        expect(subject).not_to match(%r{/\*})
       end
     end
 
