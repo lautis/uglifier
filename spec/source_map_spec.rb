@@ -27,9 +27,9 @@ describe "Uglifier" do
     _, map = Uglifier.compile_with_map(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
+        :filename => "ahoy.js",
         :output_filename => "ahoy.min.js",
-        :source_root => "http://localhost/"
+        :root => "http://localhost/"
       }
     )
 
@@ -56,8 +56,8 @@ describe "Uglifier" do
     _, map = Uglifier.compile_with_map(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
-        :source_root => "http://localhost/"
+        :filename => "ahoy.js",
+        :root => "http://localhost/"
       }
     )
 
@@ -79,8 +79,8 @@ describe "Uglifier" do
     minified1, map1 = Uglifier.compile_with_map(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
-        :source_root => "http://localhost/"
+        :filename => "ahoy.js",
+        :root => "http://localhost/"
       },
       :mangle => false
     )
@@ -105,10 +105,10 @@ describe "Uglifier" do
     minified, = Uglifier.compile_with_map(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
+        :filename => "ahoy.js",
         :output_filename => "ahoy.min.js",
-        :source_root => "http://localhost/",
-        :source_map_url => "http://example.com/map"
+        :root => "http://localhost/",
+        :map_url => "http://example.com/map"
       }
     )
     expect(minified).to include("\n//# sourceMappingURL=http://example.com/map")
@@ -118,10 +118,10 @@ describe "Uglifier" do
     minified, = Uglifier.compile_with_map(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
+        :filename => "ahoy.js",
         :output_filename => "ahoy.min.js",
-        :source_root => "http://localhost/",
-        :source_url => "http://example.com/source"
+        :root => "http://localhost/",
+        :url => "http://example.com/source"
       }
     )
     expect(minified).to include("\n//# sourceURL=http://example.com/source")
@@ -131,10 +131,10 @@ describe "Uglifier" do
     minified = Uglifier.compile(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
+        :filename => "ahoy.js",
         :output_filename => "ahoy.min.js",
-        :source_root => "http://localhost/",
-        :source_url => "http://example.com/source"
+        :root => "http://localhost/",
+        :url => "http://example.com/source"
       }
     )
     source_map_mime = "application/json;charset=utf-8;base64,"
@@ -145,7 +145,7 @@ describe "Uglifier" do
     minified = Uglifier.compile(
       source,
       :source_map => {
-        :source_filename => "ahoy.js",
+        :filename => "ahoy.js",
         :sources_content => true
       }
     )

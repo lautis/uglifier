@@ -75,21 +75,13 @@ class Uglifier
   }
 
   SOURCE_MAP_DEFAULTS = {
-    :mapping_url => false,
-    :source_url => false,
-    #:include_sources => false,
-    :root => nil,
-    :output_filename => nil,
-    :filename => nil,
-    :input_source_map => nil,
-
-    :source_map_url => false, # Url for source mapping to be appended in minified source
-    :source_url => false, # Url for original source to be appended in minified source
+    :map_url => false, # Url for source mapping to be appended in minified source
+    :url => false, # Url for original source to be appended in minified source
     :sources_content => false, # Include original source content in map
-    :source_filename => nil, # The filename of the input file
-    :source_root => nil, # The URL of the directory which contains :source_filename
+    :filename => nil, # The filename of the input file
+    :root => nil, # The URL of the directory which contains :filename
     :output_filename => nil, # The filename or URL where the minified output can be found
-    :input_source_map => nil, # The contents of the source map describing the input
+    :input_source_map => nil # The contents of the source map describing the input
   }
 
   # rubocop:enable LineLength
@@ -240,17 +232,17 @@ class Uglifier
 
     {
       :file => options[:output_filename],
-      :root => options[:source_root],
+      :root => options[:root],
       :orig => input_source_map(source),
-      :map_url => options[:source_map_url],
-      :url => options[:source_url],
+      :map_url => options[:map_url],
+      :url => options[:url],
       :sources_content => options[:sources_content]
     }
   end
 
   def parse_options
     if @options[:source_map].respond_to?(:[])
-      { :filename => @options[:source_map][:source_filename] }
+      { :filename => @options[:source_map][:filename] }
     else
       {}
     end

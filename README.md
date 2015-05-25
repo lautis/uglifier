@@ -96,13 +96,15 @@ Available options and their defaults are
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs
-  :source_filename => nil,      # The filename of the input file
-  :source_root => nil,          # The URL of the directory which contains :source_filename
-  :output_filename => nil,      # The filename or URL where the minified output can be found
-  :input_source_map => nil,     # The contents of the source map describing the input
-  :screw_ie8 => false,          # Don't bother to generate safe code for IE8
-  :source_map_url => false,     # Url for source mapping to be appended in minified source
-  :source_url => false          # Url to original source to be appended in minified source
+  :source_map => {
+    :map_url => false,          # Url for source mapping to be appended in minified source
+    :url => false,              # Url for original source to be appended in minified source
+    :sources_content => false,  # Include original source content in map
+    :filename => nil,           # The filename of the input file
+    :root => nil,               # The URL of the directory which contains :filename
+    :output_filename => nil,    # The filename or URL where the minified output can be found
+    :input_source_map => nil    # The contents of the source map describing the input
+  }
 }
 ```
 
