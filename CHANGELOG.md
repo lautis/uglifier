@@ -4,6 +4,8 @@
 - remove json as dependency
 - discard unused function arguments only in unsafe mode
 - add `keep_fnames` option to preserve function names in compressed code
+- backwards incompatible changes to source map options
+- support for inline base64 encoded source maps
 
 ## 2.7.2 (26 August 2015)
 
