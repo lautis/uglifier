@@ -2,3 +2,4 @@ source "https://rubygems.org"
 
 gemspec :path=> "../"
 gem 'therubyracer'
+gem 'libv8', '3.16.14.8'
