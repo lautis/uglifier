@@ -41,7 +41,7 @@ describe "Uglifier" do
     expect(map.mappings.first[:generated_line]).to eq(1)
   end
 
-  it "should skip copyright lines in source maps" do
+  it "skips copyright lines in source maps" do
     source = <<-JS
       /* @copyright Conrad Irwin */
       function hello () {
@@ -65,7 +65,7 @@ describe "Uglifier" do
     expect(map.mappings.first[:generated_line]).to eq(2)
   end
 
-  it "should be able to handle an input source map" do
+  it "proceses an input source map" do
     source = <<-JS
       function hello () {
         function world () {
@@ -101,7 +101,7 @@ describe "Uglifier" do
     expect(map.mappings.last[:source_line]).to eq(6)
   end
 
-  it "appends source map url" do
+  it "appends source map url to minified JS" do
     minified, = Uglifier.compile_with_map(
       source,
       :source_map => {
@@ -114,7 +114,7 @@ describe "Uglifier" do
     expect(minified).to include("\n//# sourceMappingURL=http://example.com/map")
   end
 
-  it "appends source url" do
+  it "appends source url to minified JS" do
     minified, = Uglifier.compile_with_map(
       source,
       :source_map => {
