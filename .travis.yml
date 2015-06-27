@@ -14,16 +14,16 @@ gemfile:
   - Gemfile
 matrix:
   include:
-    - rvm: 2.2.1
+    - rvm: 2.2.2
       gemfile: gemfiles/rubyracer
-    - rvm: 2.1.5
+    - rvm: 2.1.6
       gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
       gemfile: gemfiles/rubyrhino
-    - rvm: 2.2.0
+    - rvm: 2.2.2
       gemfile: gemfiles/alaska
       env: ALASKA=1
   allow_failures:
-    - rvm: 2.2.1
+    - rvm: 2.2.2
       gemfile: gemfiles/alaska
       env: ALASKA=1
