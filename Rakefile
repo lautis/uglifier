@@ -30,7 +30,7 @@ end
 begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new(:rubocop)
-  task :default => [:spec]
+  task :default => [:rubocop, :spec]
 rescue LoadError
   task :default => [:spec]
 end
