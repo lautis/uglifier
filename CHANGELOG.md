@@ -1,4 +1,5 @@
-## next
+## 2.7.2 (26 August 2015)
+
 - update UglifyJS to 2.4.24
 
 ## 2.7.1 (27 February 2015)
