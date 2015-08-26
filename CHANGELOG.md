@@ -2,9 +2,12 @@
 
 - drop support for Ruby 1.8
 - remove json as dependency
-- update UglifyJS to 2.4.24
 - discard unused function arguments only in unsafe mode
 - add `keep_fnames` option to preserve function names in compressed code
+
+## 2.7.2 (26 August 2015)
+
+- update UglifyJS to 2.4.24
 
 ## 2.7.1 (27 February 2015)
 
