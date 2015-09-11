@@ -143,7 +143,7 @@ class Uglifier
 
   def uglifyjs_source
     [ES5FallbackPath, SplitFallbackPath, SourcePath, UglifyJSWrapperPath].map do |file|
-      File.open(file, "r:UTF-8") { |f| f.read }
+      File.open(file, "r:UTF-8", &:read)
     end.join("\n")
   end
 
