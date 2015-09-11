@@ -24,7 +24,7 @@ describe "Uglifier" do
   end
 
   it "generates source maps with the correct meta-data" do
-    _, map = Uglifier.compile_with_map(
+    _, json = Uglifier.compile_with_map(
       source,
       :source_map => {
         :filename => "ahoy.js",
@@ -33,12 +33,12 @@ describe "Uglifier" do
       }
     )
 
-    map = SourceMap.from_s(map)
-    expect(map.file).to eq("ahoy.min.js")
+    map = SourceMap::Map.from_json(json)
+    expect(map.filename).to eq("ahoy.min.js")
     expect(map.sources).to eq(["ahoy.js"])
     expect(map.names).to eq(%w(hello world))
-    expect(map.source_root).to eq("http://localhost/")
-    expect(map.mappings.first[:generated_line]).to eq(1)
+    expect(JSON.load(json)["sourceRoot"]).to eq("http://localhost/")
+    expect(map[0].generated.line).to eq(1)
   end
 
   it "skips copyright lines in source maps" do
@@ -53,7 +53,7 @@ describe "Uglifier" do
       };
     JS
 
-    _, map = Uglifier.compile_with_map(
+    _, json = Uglifier.compile_with_map(
       source,
       :source_map => {
         :filename => "ahoy.js",
@@ -61,8 +61,8 @@ describe "Uglifier" do
       }
     )
 
-    map = SourceMap.from_s(map)
-    expect(map.mappings.first[:generated_line]).to eq(2)
+    map = SourceMap::Map.from_json(json)
+    expect(map[0].generated.line).to eq(2)
   end
 
   it "proceses an input source map" do
@@ -95,10 +95,10 @@ describe "Uglifier" do
 
     expect(minified1.lines.to_a.length).to eq(1)
 
-    map = SourceMap.from_s(map2)
+    map = SourceMap::Map.from_json(map2)
     expect(map.sources).to eq(["ahoy.js", "http://localhost/ahoy.js"])
-    expect(map.mappings.first[:source_line]).to eq(1)
-    expect(map.mappings.last[:source_line]).to eq(6)
+    expect(map[0].generated.line).to eq(1)
+    expect(map[-1].original.line).to eq(6)
   end
 
   it "appends source map url to minified JS" do

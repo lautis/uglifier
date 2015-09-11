@@ -1,7 +1,7 @@
 # encoding: UTF-8
 require 'uglifier'
 require 'rspec'
-require 'source_map'
+require 'sourcemap'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
