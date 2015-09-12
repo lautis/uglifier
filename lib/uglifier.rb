@@ -292,12 +292,22 @@ class Uglifier
     end
   end
 
+  def extract_source_mapping_url(source)
+    new_line = /[\s\r\n]*/
+    comment_start = %r{(?://|/\*#{new_line})}
+    comment_end = %r{\s*(?:\r?\n?\*/|$)?}
+    source_mapping_regex = /#{comment_start}[@#]\ssourceMappingURL=\s*(\S*?)#{comment_end}/
+    rest = /\s#{comment_start}[@#]\s[a-zA-Z]+=\s*(?:\S*?)#{comment_end}/
+    regex = /#{source_mapping_regex}(?:#{rest})*\Z/m
+    match = regex.match(source)
+    match && match[1]
+  end
+
   def input_source_map(source)
     sanitize_map_root(@options.fetch(:source_map, {}).fetch(:input_source_map) do
-      regex = %r{(?://|/\*\n?)[@#]\ssourceMappingURL=\s*(\S*?)\s*(?:\n?\*/)?\Z}m
-      match = regex.match(source)
-      if match && match[1].start_with?("data:")
-        Base64.strict_decode64(match[1].split(",", 2)[-1])
+      url = extract_source_mapping_url(source)
+      if url && url.start_with?("data:")
+        Base64.strict_decode64(url.split(",", 2)[-1])
       end
     end)
   end

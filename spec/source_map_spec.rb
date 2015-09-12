@@ -185,5 +185,14 @@ describe "Uglifier" do
       _, map = Uglifier.compile_with_map(minified)
       expect(JSON.load(map)["sourcesContent"]).to be_nil
     end
+
+    it "handles other source map declarations at end of file" do
+      minified = "#{code}\n
+        //#{source_mapping_url}\n
+        //# sourceURL=http://example.com/source.js
+        //# sourceURL=http://example.com/source.js
+      "
+      expect_to_have_inline_source_map(minified, source)
+    end
   end
 end
