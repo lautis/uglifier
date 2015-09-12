@@ -157,8 +157,8 @@ describe "Uglifier" do
       )
     end
 
-    let(:code) { minified.lines[0] }
-    let(:source_mapping_url) { minified.lines[1][2..-1] }
+    let(:code) { minified.split("\n")[0] }
+    let(:source_mapping_url) { minified.split("\n")[1][2..-1] }
 
     it "parses inline source maps from line comments" do
       minified = "#{code}\n//#{source_mapping_url}"
