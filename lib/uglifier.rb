@@ -294,7 +294,7 @@ class Uglifier
 
   def input_source_map(source)
     sanitize_map_root(@options.fetch(:source_map, {}).fetch(:input_source_map) do
-      regex = %r{//[@#]\ssourceMappingURL=\s*(\S*?)\s*$}m
+      regex = %r{(?://|/\*\n?)[@#]\ssourceMappingURL=\s*(\S*?)\s*(?:\n?\*/)?\Z}m
       match = regex.match(source)
       if match && match[1].start_with?("data:")
         Base64.strict_decode64(match[1].split(",", 2)[-1])

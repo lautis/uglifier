@@ -2,6 +2,11 @@
 require 'stringio'
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
+def expect_to_have_inline_source_map(minified, original)
+  _, map = Uglifier.compile_with_map(minified)
+  expect(JSON.load(map)["sourcesContent"]).to include(original)
+end
+
 describe "Uglifier" do
   let(:source) do
     <<-JS
@@ -141,15 +146,44 @@ describe "Uglifier" do
     expect(minified).to include("\n//# sourceMappingURL=data:#{source_map_mime}")
   end
 
-  it "parses inline source maps" do
-    minified = Uglifier.compile(
-      source,
-      :source_map => {
-        :filename => "ahoy.js",
-        :sources_content => true
-      }
-    )
-    _, map = Uglifier.compile_with_map(minified)
-    expect(JSON.load(map)["sourcesContent"]).to include(source)
+  describe "inline source map parsing" do
+    let(:minified) do
+      Uglifier.compile(
+        source,
+        :source_map => {
+          :filename => "ahoy.js",
+          :sources_content => true
+        }
+      )
+    end
+
+    let(:code) { minified.lines[0] }
+    let(:source_mapping_url) { minified.lines[1][2..-1] }
+
+    it "parses inline source maps from line comments" do
+      minified = "#{code}\n//#{source_mapping_url}"
+      expect_to_have_inline_source_map(minified, source)
+    end
+
+    it "parses inline source maps with block comments" do
+      minified = "#{code}\n/*#{source_mapping_url}*/"
+      expect_to_have_inline_source_map(minified, source)
+    end
+
+    it "parses inline source maps with multi-line block comments" do
+      minified = "#{code}\n/*\n#{source_mapping_url}\n*/"
+      expect_to_have_inline_source_map(minified, source)
+    end
+
+    it "parses inline source maps from mixed comments" do
+      minified = "#{code}\n/*\n//#{source_mapping_url}\n*/"
+      expect_to_have_inline_source_map(minified, source)
+    end
+
+    it "only parses source maps at end of file" do
+      minified = "#{code}\n//#{source_mapping_url}\nhello();"
+      _, map = Uglifier.compile_with_map(minified)
+      expect(JSON.load(map)["sourcesContent"]).to be_nil
+    end
   end
 end
