@@ -194,5 +194,11 @@ describe "Uglifier" do
       "
       expect_to_have_inline_source_map(minified, source)
     end
+
+    it "does not explode when data URI is invalid" do
+      minified = "#{code}\n//# sourceMappingURL=data:application/javascript,foobar"
+      _, map = Uglifier.compile_with_map(minified)
+      expect(JSON.load(map)["sourcesContent"]).to be_nil
+    end
   end
 end

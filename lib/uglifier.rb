@@ -310,5 +310,7 @@ class Uglifier
         Base64.strict_decode64(url.split(",", 2)[-1])
       end
     end)
+  rescue ArgumentError
+    nil
   end
 end
