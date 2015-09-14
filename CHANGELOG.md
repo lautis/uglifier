@@ -6,6 +6,7 @@
 - add `keep_fnames` option to preserve function names in compressed code
 - backwards incompatible changes to source map options
 - support for inline base64 encoded source maps
+- mangle property names
 
 ## 2.7.2 (26 August 2015)
 

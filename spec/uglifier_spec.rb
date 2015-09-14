@@ -27,6 +27,33 @@ describe "Uglifier" do
     expect(Uglifier.new.compile(source)[-1]).to eql(";"[0])
   end
 
+  describe "property name mangling" do
+    let(:source) do
+      <<-JS
+        var obj = {
+          _hidden: false,
+          name: 'value'
+        };
+
+        alert(object.name);
+      JS
+    end
+
+    it "does not mangle property names by default" do
+      expect(Uglifier.compile(source, :mangle => true)).to include("object.name")
+    end
+
+    it "can be configured to mangle properties" do
+      expect(Uglifier.compile(source, :mangle => { :properties => true }))
+        .not_to include("object.name")
+    end
+
+    it "can configure a regex for mangling" do
+      expect(Uglifier.compile(source, :mangle => { :properties => true, :regex => /^_/ }))
+        .to include("object.name")
+    end
+  end
+
   describe "argument name mangling" do
     it "doesn't try to mangle $super by default to avoid breaking PrototypeJS" do
       expect(Uglifier.compile('function foo($super) {return $super}')).to include("$super")
@@ -34,7 +61,8 @@ describe "Uglifier" do
 
     it "allows variables to be excluded from mangling" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => { :except => ["foo"] })).to include("(foo)")
+      expect(Uglifier.compile(code, :mangle => { :names => true, :except => ["foo"] }))
+        .to include("(foo)")
     end
 
     it "skips mangling when set to false" do
@@ -44,13 +72,15 @@ describe "Uglifier" do
 
     it "mangles argumen names by default" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => true)).not_to include("(foo)")
+      expect(Uglifier.compile(code, :mangle => { :names => true })).not_to include("(foo)")
     end
 
     it "mangles top-level names when explicitly instructed" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => { :toplevel => false })).to include("bar(")
-      expect(Uglifier.compile(code, :mangle => { :toplevel => true })).not_to include("bar(")
+      expect(Uglifier.compile(code, :mangle => { :names => true, :toplevel => false }))
+        .to include("bar(")
+      expect(Uglifier.compile(code, :mangle => { :names => true, :toplevel => true }))
+        .not_to include("bar(")
     end
   end
 

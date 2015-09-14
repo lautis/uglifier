@@ -38,10 +38,13 @@ class Uglifier
       :preamble => nil # Preamble for the generated JS file. Can be used to insert any code or comment.
     },
     :mangle => {
+      :names => false, # Mangle names
+      :regex => nil, # A regular expression to filter property names to be mangled
       :eval => false, # Mangle names when eval of when is used in scope
       :except => ["$super"], # Argument names to be excluded from mangling
       :sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
-      :toplevel => false # Mangle names declared in the toplevel scope
+      :toplevel => false, # Mangle names declared in the toplevel scope
+      :properties => false # Mangle property names
     }, # Mangle variable and function names, set to false to skip mangling
     :compress => {
       :sequences => true, # Allow statements to be joined by commas
@@ -173,7 +176,12 @@ class Uglifier
   end
 
   def mangle_options
-    conditional_option(@options[:mangle], DEFAULTS[:mangle])
+    options = conditional_option(@options[:mangle], DEFAULTS[:mangle])
+    if options && options[:regex]
+      options.merge(:regex => encode_regexp(options[:regex]))
+    else
+      options
+    end
   end
 
   def compressor_options
