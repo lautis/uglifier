@@ -1,5 +1,6 @@
 # encoding: UTF-8
 
+require "json"
 require "base64"
 require "execjs"
 require "uglifier/version"
@@ -318,7 +319,7 @@ class Uglifier
         Base64.strict_decode64(url.split(",", 2)[-1])
       end
     end)
-  rescue ArgumentError
+  rescue ArgumentError, JSON::ParserError
     nil
   end
 end
