@@ -4,8 +4,8 @@ cache: bundler
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.6
-  - 2.2.2
+  - 2.1.7
+  - 2.2.3
   - jruby-19mode
   - jruby-9.0.1.0
   - rbx-2
@@ -15,16 +15,16 @@ gemfile:
   - Gemfile
 matrix:
   include:
-    - rvm: 2.2.2
+    - rvm: 2.2.3
       gemfile: gemfiles/rubyracer
     - rvm: 2.1.6
       gemfile: gemfiles/rubyracer
     - rvm: jruby-19mode
       gemfile: gemfiles/rubyrhino
-    - rvm: 2.2.2
+    - rvm: 2.2.3
       gemfile: gemfiles/alaska
       env: ALASKA=1
   allow_failures:
-    - rvm: 2.2.2
+    - rvm: 2.2.3
       gemfile: gemfiles/alaska
       env: ALASKA=1
