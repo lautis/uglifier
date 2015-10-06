@@ -7,6 +7,7 @@
 - backwards incompatible changes to source map options
 - support for inline base64 encoded source maps
 - mangle property names
+- rename name mangle option to mangle_names
 
 ## 2.7.2 (26 August 2015)
 

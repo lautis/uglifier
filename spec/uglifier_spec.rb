@@ -40,16 +40,16 @@ describe "Uglifier" do
     end
 
     it "does not mangle property names by default" do
-      expect(Uglifier.compile(source, :mangle => true)).to include("object.name")
+      expect(Uglifier.compile(source)).to include("object.name")
     end
 
     it "can be configured to mangle properties" do
-      expect(Uglifier.compile(source, :mangle => { :properties => true }))
+      expect(Uglifier.compile(source, :mangle_properties => true))
         .not_to include("object.name")
     end
 
     it "can configure a regex for mangling" do
-      expect(Uglifier.compile(source, :mangle => { :properties => true, :regex => /^_/ }))
+      expect(Uglifier.compile(source, :mangle_properties => { :regex => /^_/ }))
         .to include("object.name")
     end
   end
@@ -61,26 +61,31 @@ describe "Uglifier" do
 
     it "allows variables to be excluded from mangling" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => { :names => true, :except => ["foo"] }))
+      expect(Uglifier.compile(code, :mangle_names => { :except => ["foo"] }))
         .to include("(foo)")
     end
 
     it "skips mangling when set to false" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => false)).to include("(foo)")
+      expect(Uglifier.compile(code, :mangle_names => false)).to include("(foo)")
     end
 
-    it "mangles argumen names by default" do
+    it "mangles argument names by default" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => { :names => true })).not_to include("(foo)")
+      expect(Uglifier.compile(code)).not_to include("(foo)")
     end
 
     it "mangles top-level names when explicitly instructed" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle => { :names => true, :toplevel => false }))
+      expect(Uglifier.compile(code, :mangle_names => { :toplevel => false }))
         .to include("bar(")
-      expect(Uglifier.compile(code, :mangle => { :names => true, :toplevel => true }))
+      expect(Uglifier.compile(code, :mangle_names => { :toplevel => true }))
         .not_to include("bar(")
+    end
+
+    it "can be controlled with mangle option" do
+      code = "function bar(foo) {return foo + 'bar'};"
+      expect(Uglifier.compile(code, :mangle => false)).to include("(foo)")
     end
   end
 
