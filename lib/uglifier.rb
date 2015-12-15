@@ -38,12 +38,14 @@ class Uglifier
       :width => 80, # Specify line width when beautifier is used (only with beautifier)
       :preamble => nil # Preamble for the generated JS file. Can be used to insert any code or comment.
     },
-    :mangle => {
+    :mangle_names => {
       :eval => false, # Mangle names when eval of when is used in scope
       :except => ["$super"], # Argument names to be excluded from mangling
       :sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
-      :toplevel => false # Mangle names declared in the toplevel scope
+      :toplevel => false, # Mangle names declared in the toplevel scope
+      :properties => false # Mangle property names
     }, # Mangle variable and function names, set to false to skip mangling
+    :mangle_properties => false, # Mangle property names
     :compress => {
       :sequences => true, # Allow statements to be joined by commas
       :properties => true, # Rewrite property access using the dot notation
@@ -73,6 +75,12 @@ class Uglifier
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
     :screw_ie8 => false, # Don't bother to generate safe code for IE8
     :source_map => false # Generate source map
+  }
+
+  LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle]
+
+  MANGLE_PROPERTIES_DEFAULTS = {
+    :regex => nil # A regular expression to filter property names to be mangled
   }
 
   SOURCE_MAP_DEFAULTS = {
@@ -109,7 +117,7 @@ class Uglifier
   #
   # @param options [Hash] optional overrides to +Uglifier::DEFAULTS+
   def initialize(options = {})
-    (options.keys - DEFAULTS.keys - [:comments, :squeeze, :copyright])[0..1].each do |missing|
+    (options.keys - DEFAULTS.keys - LEGACY_OPTIONS)[0..1].each do |missing|
       raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
@@ -155,7 +163,8 @@ class Uglifier
       :source => source,
       :output => output_options,
       :compress => compressor_options,
-      :mangle => mangle_options,
+      :mangle_names => mangle_names_options,
+      :mangle_properties => mangle_properties_options,
       :parse_options => parse_options,
       :source_map_options => source_map_options(source),
       :generate_map => generate_map,
@@ -173,8 +182,19 @@ class Uglifier
     end
   end
 
-  def mangle_options
-    conditional_option(@options[:mangle], DEFAULTS[:mangle])
+  def mangle_names_options
+    mangle_options = @options.fetch(:mangle_names, @options[:mangle])
+    conditional_option(mangle_options, DEFAULTS[:mangle_names])
+  end
+
+  def mangle_properties_options
+    mangle_options = @options.fetch(:mangle_properties, DEFAULTS[:mangle_properties])
+    options = conditional_option(mangle_options, MANGLE_PROPERTIES_DEFAULTS)
+    if options && options[:regex]
+      options.merge(:regex => encode_regexp(options[:regex]))
+    else
+      options
+    end
   end
 
   def compressor_options
