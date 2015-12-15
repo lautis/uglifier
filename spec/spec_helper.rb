@@ -8,7 +8,7 @@ require 'sourcemap'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 if ENV["ALASKA"]
-  require 'alaska'
+  require 'alaska/runtime'
   require 'tempfile'
   ExecJS.runtime = Alaska::Runtime.new
 end
