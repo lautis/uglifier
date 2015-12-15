@@ -8,6 +8,7 @@
 - support for inline base64 encoded source maps
 - mangle property names
 - rename name mangle option to mangle_names
+- update UglifyJS to 2.6.1
 
 ## 2.7.2 (26 August 2015)
 
