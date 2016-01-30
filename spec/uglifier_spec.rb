@@ -61,13 +61,13 @@ describe "Uglifier" do
 
     it "allows variables to be excluded from mangling" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle_names => { :except => ["foo"] }))
+      expect(Uglifier.compile(code, :mangle => { :except => ["foo"] }))
         .to include("(foo)")
     end
 
     it "skips mangling when set to false" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle_names => false)).to include("(foo)")
+      expect(Uglifier.compile(code, :mangle => false)).to include("(foo)")
     end
 
     it "mangles argument names by default" do
@@ -77,9 +77,9 @@ describe "Uglifier" do
 
     it "mangles top-level names when explicitly instructed" do
       code = "function bar(foo) {return foo + 'bar'};"
-      expect(Uglifier.compile(code, :mangle_names => { :toplevel => false }))
+      expect(Uglifier.compile(code, :mangle => { :toplevel => false }))
         .to include("bar(")
-      expect(Uglifier.compile(code, :mangle_names => { :toplevel => true }))
+      expect(Uglifier.compile(code, :mangle => { :toplevel => true }))
         .not_to include("bar(")
     end
 

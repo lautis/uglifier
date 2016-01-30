@@ -38,7 +38,7 @@ class Uglifier
       :width => 80, # Specify line width when beautifier is used (only with beautifier)
       :preamble => nil # Preamble for the generated JS file. Can be used to insert any code or comment.
     },
-    :mangle_names => {
+    :mangle => {
       :eval => false, # Mangle names when eval of when is used in scope
       :except => ["$super"], # Argument names to be excluded from mangling
       :sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
@@ -163,7 +163,7 @@ class Uglifier
       :source => source,
       :output => output_options,
       :compress => compressor_options,
-      :mangle_names => mangle_names_options,
+      :mangle => mangle_options,
       :mangle_properties => mangle_properties_options,
       :parse_options => parse_options,
       :source_map_options => source_map_options(source),
@@ -182,9 +182,9 @@ class Uglifier
     end
   end
 
-  def mangle_names_options
-    mangle_options = @options.fetch(:mangle_names, @options[:mangle])
-    conditional_option(mangle_options, DEFAULTS[:mangle_names])
+  def mangle_options
+    mangle_options = @options.fetch(:mangle, @options[:mangle])
+    conditional_option(mangle_options, DEFAULTS[:mangle])
   end
 
   def mangle_properties_options
