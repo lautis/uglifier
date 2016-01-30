@@ -1,10 +1,10 @@
-[![Gem Version](https://badge.fury.io/rb/uglifier.svg)](http://badge.fury.io/rb/uglifier)
-[![Build Status](https://travis-ci.org/lautis/uglifier.svg?branch=master)](https://travis-ci.org/lautis/uglifier)
-[![Dependency Status](https://gemnasium.com/lautis/uglifier.svg)](https://gemnasium.com/lautis/uglifier)
-
 # Uglifier
 
 Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS2) JavaScript compressor.
+
+[![Gem Version](https://badge.fury.io/rb/uglifier.svg)](http://badge.fury.io/rb/uglifier)
+[![Build Status](https://travis-ci.org/lautis/uglifier.svg?branch=master)](https://travis-ci.org/lautis/uglifier)
+[![Dependency Status](https://gemnasium.com/lautis/uglifier.svg)](https://gemnasium.com/lautis/uglifier)
 
 ## Installation
 
