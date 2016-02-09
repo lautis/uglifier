@@ -304,12 +304,10 @@ class Uglifier
       nil
     elsif map.is_a? String
       sanitize_map_root(JSON.load(map))
+    elsif map["sourceRoot"] == ""
+      map.merge("sourceRoot" => nil)
     else
-      if map["sourceRoot"] == ""
-        map.merge("sourceRoot" => nil)
-      else
-        map
-      end
+      map
     end
   end
 
