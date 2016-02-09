@@ -314,8 +314,7 @@ class Uglifier
   end
 
   def extract_source_mapping_url(source)
-    new_line = /[\s\r\n]*/
-    comment_start = %r{(?://|/\*#{new_line})}
+    comment_start = %r{(?://|/\*\s*)}
     comment_end = %r{\s*(?:\r?\n?\*/|$)?}
     source_mapping_regex = /#{comment_start}[@#]\ssourceMappingURL=\s*(\S*?)#{comment_end}/
     rest = /\s#{comment_start}[@#]\s[a-zA-Z]+=\s*(?:\S*?)#{comment_end}/
