@@ -166,7 +166,7 @@ class Uglifier
       :mangle => mangle_options,
       :mangle_properties => mangle_properties_options,
       :parse_options => parse_options,
-      :source_map_options => source_map_options(source),
+      :source_map_options => source_map_options(source, generate_map),
       :generate_map => generate_map,
       :enclose => enclose_options
     }
@@ -248,13 +248,13 @@ class Uglifier
     end
   end
 
-  def source_map_options(source)
+  def source_map_options(source, generate_map)
     options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS)
 
     {
       :file => options[:output_filename],
       :root => options[:root],
-      :orig => input_source_map(source),
+      :orig => input_source_map(source, generate_map),
       :map_url => options[:map_url],
       :url => options[:url],
       :sources_content => options[:sources_content]
@@ -323,7 +323,8 @@ class Uglifier
     match && match[1]
   end
 
-  def input_source_map(source)
+  def input_source_map(source, generate_map)
+    return nil unless generate_map
     sanitize_map_root(@options.fetch(:source_map, {}).fetch(:input_source_map) do
       url = extract_source_mapping_url(source)
       if url && url.start_with?("data:")
