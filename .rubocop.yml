@@ -25,3 +25,9 @@ Style/SignalException:
 
 Style/StringLiterals:
   Enabled: false
+
+Style/Alias:
+  Enabled: false
+
+Style/MutableConstant:
+  Enabled: false
