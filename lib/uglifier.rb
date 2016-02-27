@@ -159,6 +159,7 @@ class Uglifier
   # Run UglifyJS for given source code
   def run_uglifyjs(input, generate_map)
     source = read_source(input)
+    input_map = input_source_map(source, generate_map)
     options = {
       :source => source,
       :output => output_options,
@@ -166,7 +167,7 @@ class Uglifier
       :mangle => mangle_options,
       :mangle_properties => mangle_properties_options,
       :parse_options => parse_options,
-      :source_map_options => source_map_options(source, generate_map),
+      :source_map_options => source_map_options(input_map),
       :generate_map => generate_map,
       :enclose => enclose_options
     }
@@ -248,13 +249,13 @@ class Uglifier
     end
   end
 
-  def source_map_options(source, generate_map)
+  def source_map_options(input_map)
     options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS)
 
     {
       :file => options[:output_filename],
-      :root => options[:root],
-      :orig => input_source_map(source, generate_map),
+      :root => options.fetch(:root) { input_map ? input_map["sourceRoot"] : nil },
+      :orig => input_map,
       :map_url => options[:map_url],
       :url => options[:url],
       :sources_content => options[:sources_content]
