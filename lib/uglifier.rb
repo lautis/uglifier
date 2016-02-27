@@ -201,7 +201,7 @@ class Uglifier
     defaults = conditional_option(
       DEFAULTS[:compress],
       :global_defs => @options[:define] || {},
-      :screw_ie8 => @options[:screw_ie8] || DEFAULTS[:screw_ie8]
+      :screw_ie8 => screw_ie8?
     )
     conditional_option(@options[:compress] || @options[:squeeze], defaults)
   end
@@ -242,9 +242,9 @@ class Uglifier
 
   def screw_ie8?
     if (@options[:output] || {}).has_key?(:ie_proof)
-      false
+      !@options[:output][:ie_proof]
     else
-      @options[:screw_ie8] || DEFAULTS[:screw_ie8]
+      @options.fetch(:screw_ie8, DEFAULTS[:screw_ie8])
     end
   end
 

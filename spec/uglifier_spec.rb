@@ -190,10 +190,22 @@ describe "Uglifier" do
     expect(minified).to match(/var \w,\w/)
   end
 
-  it "forwards screw_ie8 option to UglifyJS" do
-    code = "function something() { return g['switch']; }"
-    expect(Uglifier.compile(code, :mangle => false, :screw_ie8 => true)).to match(/g\.switch/)
-    expect(Uglifier.compile(code, :compress => false, :screw_ie8 => true)).to match(/g\.switch/)
+  describe "screw_ie8 option" do
+    let(:code) { "function something() { return g['switch']; }" }
+
+    it "defaults to not screw IE8" do
+      expect(Uglifier.compile(code)).to match(".switch")
+    end
+
+    it "forwards screw_ie8 option to UglifyJS" do
+      expect(Uglifier.compile(code, :mangle => false, :screw_ie8 => true)).to match(/g\.switch/)
+      expect(Uglifier.compile(code, :compress => false, :screw_ie8 => true)).to match(/g\.switch/)
+    end
+
+    it "supports legacy ie_proof output option as opposite for screw_ie8" do
+      minified = Uglifier.compile(code, :output => { :ie_proof => true })
+      expect(minified).to include('["switch"]')
+    end
   end
 
   it "can be configured to output only ASCII" do
