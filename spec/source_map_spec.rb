@@ -106,6 +106,27 @@ describe "Uglifier" do
     expect(map[-1].original.line).to eq(6)
   end
 
+  it "handles empty string as input map sourceRoot" do
+    _, map1 = Uglifier.compile_with_map(
+      source,
+      :source_map => {
+        :filename => "ahoy.js",
+        :root => ""
+      },
+      :mangle => false
+    )
+
+    _, map = Uglifier.compile_with_map(
+      source,
+      :source_map => {
+        :input_source_map => map1
+      },
+      :mangle => true
+    )
+
+    expect(SourceMap::Map.from_json(map).sources).to eq(["ahoy.js"])
+  end
+
   it "appends source map url to minified JS" do
     minified, = Uglifier.compile_with_map(
       source,
