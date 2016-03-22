@@ -7,7 +7,7 @@
 - backwards incompatible changes to source map options
 - support for inline base64 encoded source maps
 - mangle property names option (disabled by default)
-- update UglifyJS to 2.6.1
+- update UglifyJS to 2.6.2
 
 ## 2.7.2 (26 August 2015)
 
