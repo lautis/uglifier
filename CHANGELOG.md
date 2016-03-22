@@ -4,6 +4,7 @@
 - remove json as dependency
 - discard unused function arguments only in unsafe mode
 - add `keep_fnames` option to preserve function names in compressed code
+- add `collapse_vars` option to collapse single-use variables
 - backwards incompatible changes to source map options
 - support for inline base64 encoded source maps
 - mangle property names option (disabled by default)

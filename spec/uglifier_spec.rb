@@ -259,6 +259,26 @@ describe "Uglifier" do
     expect(compiled).not_to include("console")
   end
 
+  describe "collapse_vars option" do
+    let(:code) do
+      <<-JS
+        function a() {
+          var win = window;
+          return win.Handlebars;
+        }
+      JS
+    end
+
+    it "collapses vars when collapse_vars is enabled" do
+      compiled = Uglifier.compile(code, :compress => { :collapse_vars => true })
+      expect(compiled).to include("return window.Handlebars")
+    end
+
+    it "defaults to not collapsing variables" do
+      expect(Uglifier.compile(code)).not_to include("return window.Handlebars")
+    end
+  end
+
   it "processes @ngInject annotations" do
     code = <<-JS
     /**
