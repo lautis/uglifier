@@ -1,4 +1,4 @@
-## next
+## 3.0.0 (22 March 2016)
 
 - drop support for Ruby 1.8
 - remove json as dependency
