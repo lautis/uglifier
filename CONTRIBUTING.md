@@ -32,7 +32,7 @@ After that, UglifyJS and source-map are checked out under `vendor/uglifyjs` and 
 
 Use Git commands (e.g. git checkout master) to change the included version. You can even write custom code to yourself. After changing the dependencies, compile new version of the bundled JS file using
 
-    rake js
+    bundle exec rake js
 
 After this, the new JS is used in your development version.
 
