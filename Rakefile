@@ -19,9 +19,10 @@ task :js do
 
   source = ""
   source << File.read("vendor/source-map/dist/source-map.js")
-  source << "MOZ_SourceMap = sourceMap;"
-  source << `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
+  File.write("lib/source-map.js", source)
 
+  source = ""
+  source << `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
   File.write("lib/uglify.js", source)
 end
 
