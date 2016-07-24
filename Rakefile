@@ -18,7 +18,6 @@ task :js do
   end
 
   source = ""
-  source << "window = this;"
   source << File.read("vendor/source-map/dist/source-map.js")
   source << "MOZ_SourceMap = sourceMap;"
   source << `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
