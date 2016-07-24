@@ -1,3 +1,7 @@
+## next
+
+- update UglifyJS to 2.7.0
+
 ## 3.0.0 (22 March 2016)
 
 - drop support for Ruby 1.8

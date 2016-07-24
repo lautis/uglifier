@@ -19,7 +19,7 @@ describe "Uglifier" do
   end
 
   it "doesn't omit null character in strings" do
-    expect(Uglifier.new.compile('var foo="\0bar"')).to include("\\x00bar")
+    expect(Uglifier.new.compile('var foo="\0bar"')).to include("\\0bar")
   end
 
   it "adds trailing semicolon to minified source" do
