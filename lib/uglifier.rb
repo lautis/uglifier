@@ -12,6 +12,8 @@ class Uglifier
 
   # UglifyJS source path
   SourcePath = File.expand_path("../uglify.js", __FILE__)
+  # Source Map path
+  SourceMapPath = File.expand_path("../source-map.js", __FILE__)
   # ES5 shims source path
   ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
   # String.split shim source path
@@ -152,7 +154,8 @@ class Uglifier
   private
 
   def uglifyjs_source
-    [ES5FallbackPath, SplitFallbackPath, SourcePath, UglifyJSWrapperPath].map do |file|
+    [ES5FallbackPath, SplitFallbackPath, SourceMapPath, SourcePath,
+     UglifyJSWrapperPath].map do |file|
       File.open(file, "r:UTF-8", &:read)
     end.join("\n")
   end
