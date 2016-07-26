@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'fileutils'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |spec|
@@ -17,12 +18,9 @@ task :js do
     `npm install`
   end
 
-  source = ""
-  source << File.read("vendor/source-map/dist/source-map.js")
-  File.write("lib/source-map.js", source)
+  FileUtils.cp("vendor/source-map/dist/source-map.js", "lib/source-map.js")
 
-  source = ""
-  source << `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
+  source = `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
   File.write("lib/uglify.js", source)
 end
 
