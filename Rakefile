@@ -22,6 +22,9 @@ task :js do
 
   source = `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
   File.write("lib/uglify.js", source)
+
+  FileUtils.cp("vendor/split/split.js", "lib/split.js")
+  `patch -p1 -i patches/es5-string-split.patch`
 end
 
 begin
