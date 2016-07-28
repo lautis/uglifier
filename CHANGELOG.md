@@ -1,4 +1,4 @@
-## next
+## 3.0.1 (28 July 2016)
 
 - update UglifyJS to 2.7.0
 - split JS dependencies to separate files
