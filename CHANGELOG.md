@@ -1,6 +1,7 @@
 ## next
 
 - update UglifyJS to 2.7.0
+- split JS dependencies to separate files
 
 ## 3.0.0 (22 March 2016)
 
