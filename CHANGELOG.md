@@ -1,4 +1,4 @@
-## next
+## 3.0.2 (20 August 2016)
 
 - add top-level keep_fnames option that implies both compressor and mangler keep_fnames
 - update UglifyJS to 2.7.3
