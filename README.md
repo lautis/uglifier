@@ -67,7 +67,8 @@ Available options and their defaults are
     :eval => false,             # Mangle names when eval of when is used in scope
     :except => ["$super"],      # Argument names to be excluded from mangling
     :sort => false,             # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
-    :toplevel => false          # Mangle names declared in the toplevel scope
+    :toplevel => false,         # Mangle names declared in the toplevel scope
+    :keep_fnames => false       # Do not modify function names
   },                            # Mangle variable and function names, set to false to skip mangling
   :mangle_properties => {
     :regex => nil               # A regular expression to filter property names to be mangled
@@ -96,7 +97,7 @@ Available options and their defaults are
     :drop_console => false,     # Drop calls to console.* functions
     :angular => false,          # Process @ngInject annotations
     :keep_fargs => false,       # Preserve unused function arguments
-    :keep_fnames => false       # Preserve function names
+    :keep_fnames => false       # Do not drop names in function definitions
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs
