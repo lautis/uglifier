@@ -335,6 +335,16 @@ describe "Uglifier" do
     expect(keep_fnames).to include("plus")
   end
 
+  it "sets sets both compress and mangle keep_fnames when toplevel keep_fnames is true" do
+    code = <<-JS
+    (function plus(a, b) { return a + b})(1, 2);
+    JS
+    expect(Uglifier.compile(code)).not_to include("plus")
+
+    keep_fnames = Uglifier.compile(code, :keep_fnames => true)
+    expect(keep_fnames).to include("plus")
+  end
+
   describe "Input Formats" do
     let(:code) { "function hello() { return 'hello world'; }" }
 

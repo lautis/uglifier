@@ -102,6 +102,7 @@ Available options and their defaults are
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs
+  :keep_fnames => false,        # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
   :source_map => {
     :map_url => false,          # Url for source mapping to be appended in minified source
     :url => false,              # Url for original source to be appended in minified source

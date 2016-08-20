@@ -77,6 +77,7 @@ class Uglifier
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
+    :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
     :screw_ie8 => false, # Don't bother to generate safe code for IE8
     :source_map => false # Generate source map
   }
@@ -189,8 +190,16 @@ class Uglifier
   end
 
   def mangle_options
-    mangle_options = @options.fetch(:mangle, @options[:mangle])
-    conditional_option(mangle_options, DEFAULTS[:mangle])
+    defaults = conditional_option(
+      DEFAULTS[:mangle],
+      :keep_fnames => keep_fnames?(:mangle)
+    )
+
+    conditional_option(
+      @options.fetch(:mangle, DEFAULTS[:mangle]),
+      defaults,
+      :keep_fnames => keep_fnames?(:mangle)
+    )
   end
 
   def mangle_properties_options
@@ -209,7 +218,12 @@ class Uglifier
       :global_defs => @options[:define] || {},
       :screw_ie8 => screw_ie8?
     )
-    conditional_option(@options[:compress] || @options[:squeeze], defaults)
+
+    conditional_option(
+      @options[:compress] || @options[:squeeze],
+      defaults,
+      :keep_fnames => keep_fnames?(:compress)
+    )
   end
 
   def comment_options
@@ -254,6 +268,15 @@ class Uglifier
     end
   end
 
+  def keep_fnames?(type)
+    if @options[:keep_fnames] || DEFAULTS[:keep_fnames]
+      true
+    else
+      @options[type].respond_to?(:[]) && @options[type][:keep_fnames] ||
+        DEFAULTS[type].respond_to?(:[]) && DEFAULTS[type][:keep_fnames]
+    end
+  end
+
   def source_map_options(input_map)
     options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS)
 
@@ -295,11 +318,11 @@ class Uglifier
     [regexp.source, modifiers]
   end
 
-  def conditional_option(value, defaults)
+  def conditional_option(value, defaults, overrides = {})
     if value == true || value.nil?
-      defaults
+      defaults.merge(overrides)
     elsif value
-      defaults.merge(value)
+      defaults.merge(value).merge(overrides)
     else
       false
     end
