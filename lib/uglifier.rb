@@ -332,7 +332,7 @@ class Uglifier
     if map.nil?
       nil
     elsif map.is_a? String
-      sanitize_map_root(JSON.load(map))
+      sanitize_map_root(JSON.parse(map))
     elsif map["sourceRoot"] == ""
       map.merge("sourceRoot" => nil)
     else

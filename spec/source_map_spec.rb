@@ -5,7 +5,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 def expect_to_have_inline_source_map(minified, original)
   options = { :source_map => { :sources_content => true } }
   _, map = Uglifier.compile_with_map(minified, options)
-  expect(JSON.load(map).fetch("sourcesContent", [])).to include(original)
+  expect(JSON.parse(map).fetch("sourcesContent", [])).to include(original)
 end
 
 describe "Uglifier" do
@@ -43,7 +43,7 @@ describe "Uglifier" do
     expect(map.filename).to eq("ahoy.min.js")
     expect(map.sources).to eq(["ahoy.js"])
     expect(map.names).to eq(%w(hello world))
-    expect(JSON.load(json)["sourceRoot"]).to eq("http://localhost/")
+    expect(JSON.parse(json)["sourceRoot"]).to eq("http://localhost/")
     expect(map[0].generated.line).to eq(1)
   end
 
@@ -205,7 +205,7 @@ describe "Uglifier" do
     it "only parses source maps at end of file" do
       minified = "#{code}\n//#{source_mapping_url}\nhello();"
       _, map = Uglifier.compile_with_map(minified)
-      expect(JSON.load(map)["sourcesContent"]).to be_nil
+      expect(JSON.parse(map)["sourcesContent"]).to be_nil
     end
 
     it "handles other source map declarations at end of file" do
@@ -220,7 +220,7 @@ describe "Uglifier" do
     it "does not explode when data URI is invalid" do
       minified = "#{code}\n//# sourceMappingURL=data:application/javascript,foobar"
       _, map = Uglifier.compile_with_map(minified)
-      expect(JSON.load(map)["sourcesContent"]).to be_nil
+      expect(JSON.parse(map)["sourcesContent"]).to be_nil
     end
   end
 end
