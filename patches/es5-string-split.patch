@@ -1,0 +1,23 @@
+diff --git a/lib/split.js b/lib/split.js
+index 43d13a2..8cc2924 100644
+--- a/lib/split.js
++++ b/lib/split.js
+@@ -106,10 +106,11 @@ split = split || function (undef) {
+         return output.length > limit ? output.slice(0, limit) : output;
+     };
+ 
+-    // For convenience
+-    String.prototype.split = function (separator, limit) {
+-        return self(this, separator, limit);
+-    };
++    if ("\n".split(/\n/).length == 0) {
++        String.prototype.split = function (separator, limit) {
++            return self(this, separator, limit);
++        };
++    }
+ 
+     return self;
+ 
+-- 
+2.5.5
+
