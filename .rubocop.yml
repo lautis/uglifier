@@ -14,11 +14,11 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 20
 
-Style/DeprecatedHashMethods:
-  Enabled: false
-
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
+
+Style/PreferredHashMethods:
+  Enabled: false
 
 Style/SignalException:
   Enabled: false
