@@ -38,7 +38,8 @@ class Uglifier
       :indent_start => 0, # Starting indent level
       :space_colon => false, # Insert space before colons (only with beautifier)
       :width => 80, # Specify line width when beautifier is used (only with beautifier)
-      :preamble => nil # Preamble for the generated JS file. Can be used to insert any code or comment.
+      :preamble => nil, # Preamble for the generated JS file. Can be used to insert any code or comment.
+      :wrap_iife => false # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
     },
     :mangle => {
       :eval => false, # Mangle names when eval of when is used in scope
@@ -222,8 +223,17 @@ class Uglifier
     conditional_option(
       @options[:compress] || @options[:squeeze],
       defaults,
-      :keep_fnames => keep_fnames?(:compress)
+      { :keep_fnames => keep_fnames?(:compress) }.merge(negate_iife_block)
     )
+  end
+
+  # Prevent negate_iife when wrap_iife is true
+  def negate_iife_block
+    if output_options[:wrap_iife]
+      { :negate_iife => false }
+    else
+      {}
+    end
   end
 
   def comment_options

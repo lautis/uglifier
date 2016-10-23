@@ -377,4 +377,26 @@ describe "Uglifier" do
       expect(minified).to match(/function\(/)
     end
   end
+
+  describe "wrap_iife option" do
+    let(:code) do
+      <<-JS
+        (function() {
+          return function() {
+            console.log('test')
+          };
+        })()();
+      JS
+    end
+
+    it "defaults to not wrap IIFEs" do
+      expect(Uglifier.compile(code))
+        .to match("!function(){return function(){console.log(\"test\")}}()();")
+    end
+
+    it "wraps IIFEs" do
+      expect(Uglifier.compile(code, :output => { :wrap_iife => true }))
+        .to match("(function(){return function(){console.log(\"test\")}})()();")
+    end
+  end
 end

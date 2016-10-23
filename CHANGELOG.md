@@ -1,6 +1,7 @@
 ## next
 
 - update UglifyJS to 2.7.4
+- add wrap_iife output option to wrap IIFEs in parenthesis
 
 ## 3.0.2 (20 August 2016)
 
