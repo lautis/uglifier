@@ -21,8 +21,10 @@ Gem::Specification.new do |spec|
     "CHANGELOG.md",
     "CONTRIBUTING.md"
   ]
-  spec.files = `git ls-files`.split($/)
-  spec.test_files = spec.files.grep(%r{^spec/})
+
+  spec.files = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(spec|vendor|gemfiles|patches)/})
+  end
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "execjs", [">= 0.3.0", "< 3"]
