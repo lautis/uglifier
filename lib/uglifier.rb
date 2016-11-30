@@ -86,7 +86,9 @@ class Uglifier
   LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle]
 
   MANGLE_PROPERTIES_DEFAULTS = {
-    :regex => nil # A regular expression to filter property names to be mangled
+    :regex => nil, # A regular expression to filter property names to be mangled
+    :ignore_quoted => false, # Only mangle unquoted property names
+    :debug => false # Mangle names with the original name still present
   }
 
   SOURCE_MAP_DEFAULTS = {

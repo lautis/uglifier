@@ -73,7 +73,9 @@ Available options and their defaults are
     :keep_fnames => false       # Do not modify function names
   },                            # Mangle variable and function names, set to false to skip mangling
   :mangle_properties => {
-    :regex => nil               # A regular expression to filter property names to be mangled
+    :regex => nil,              # A regular expression to filter property names to be mangled
+    :ignore_quoted => false,    # Only mangle unquoted property names
+    :debug => false,            # Mangle names with the original name still present
   }                             # Mangle property names, disabled by default
   :compress => {
     :sequences => true,         # Allow statements to be joined by commas

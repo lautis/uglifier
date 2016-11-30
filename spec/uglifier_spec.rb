@@ -32,7 +32,7 @@ describe "Uglifier" do
       <<-JS
         var obj = {
           _hidden: false,
-          name: 'value'
+          "name": 'value'
         };
 
         alert(object.name);
@@ -51,6 +51,16 @@ describe "Uglifier" do
     it "can configure a regex for mangling" do
       expect(Uglifier.compile(source, :mangle_properties => { :regex => /^_/ }))
         .to include("object.name")
+    end
+
+    it "can be configured to ignore quotes properties" do
+      expect(Uglifier.compile(source, :mangle_properties => { :ignore_quoted => true }))
+        .to include("object.name")
+    end
+
+    it "can be configured to include debug in mangled properties" do
+      expect(Uglifier.compile(source, :mangle_properties => { :debug => true }))
+        .to include("_$name$_")
     end
   end
 

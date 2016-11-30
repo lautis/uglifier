@@ -1,6 +1,7 @@
 ## next
 
 - update UglifyJS to 2.7.5
+- implement ignore_quoted and debug options for mangle_properties
 
 ## 3.0.3 (24 October 2016)
 
