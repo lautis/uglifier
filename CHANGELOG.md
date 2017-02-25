@@ -1,3 +1,7 @@
+## 3.0.4.harmony1 (25 February 2016)
+
+- use WIP Harmony-version of UglifyJs 2.7.5
+
 ## 3.0.4 (30 November 2016)
 
 - update UglifyJS to 2.7.5
