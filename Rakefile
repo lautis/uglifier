@@ -16,6 +16,7 @@ task :js do
   cd 'vendor/uglifyjs/' do
     # required to run ./uglifyjs2 --self; not bundled.
     `npm install`
+    `npm install cliui`
   end
 
   FileUtils.cp("vendor/source-map/dist/source-map.js", "lib/source-map.js")
