@@ -195,7 +195,7 @@ describe "Uglifier" do
   end
 
   it "hoists vars to top of the scope" do
-    code = "function something() { var a = 1; a = 2; var b = 3; return a + b;}"
+    code = "function something() { var a = foo(); a = bar(); var b = baz(); return a + b;}"
     minified = Uglifier.compile(code, :compress => { :hoist_vars => true })
     expect(minified).to match(/var \w,\w/)
   end
