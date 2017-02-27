@@ -214,10 +214,10 @@ describe "Uglifier" do
       expect(minified).to match(/console.log\(\w+-5\)/)
     end
 
-    it "defaults to variable reducing being enabled" do
+    it "defaults to variable reducing being disabled" do
       code = "function something() { var a = 2; console.log(a - 5); }"
-      minified = Uglifier.compile(code)
-      expect(minified).to include("console.log(-3)")
+      expect(Uglifier.compile(code))
+        .to eq(Uglifier.compile(code, :compress => { :reduce_vars => false }))
     end
   end
 

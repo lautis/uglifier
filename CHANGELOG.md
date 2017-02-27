@@ -1,3 +1,7 @@
+## next
+
+- disable `reduce_vars` by default as it causes JS errors (#110)
+
 ## 3.1.0 (27 February 2017)
 
 - update UglifyJS to 2.8.0
