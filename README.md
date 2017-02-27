@@ -89,6 +89,8 @@ Available options and their defaults are
     :booleans => true,          # Various optimizations to boolean contexts
     :loops => true,             # Optimize loops when condition can be statically determined
     :unused => true,            # Drop unreferenced functions and variables
+    :toplevel => false,         # Drop unreferenced top-level functions and variables
+    :top_retain => [],          # prevent specific toplevel functions and variables from `unused` removal
     :hoist_funs => true,        # Hoist function declarations
     :hoist_vars => false,       # Hoist var declarations
     :if_return => true,         # Optimizations for if/return and if/continue

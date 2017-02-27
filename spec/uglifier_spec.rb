@@ -435,4 +435,46 @@ describe "Uglifier" do
         .to match("(function(){return function(){console.log(\"test\")}})()();")
     end
   end
+
+  describe 'removing unused top-level functions and variables' do
+    let(:code) do
+      <<-JS
+        var a, b = 1, c = g;
+        function f(d) {
+          return function() {
+            c = 2;
+          }
+        }
+        a = 2;
+        function g() {}
+        function h() {}
+        console.log(b = 3);
+      JS
+    end
+
+    it 'removes unused top-level functions and variables when toplevel is set' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => { :toplevel => true }
+      )
+      expect(compiled).not_to include("function h()")
+      expect(compiled).not_to include("var a")
+    end
+
+    it 'does not unused top-level functions and variables by default' do
+      expect(Uglifier.compile(code, :mangle => false))
+        .to include("var a").and(include("function h()"))
+    end
+
+    it 'keeps variables specified in top_retain' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => { :toplevel => true, :top_retain => %w(a h) }
+      )
+      expect(compiled).to include("var a").and(include("function h()"))
+      expect(compiled).not_to include("function g")
+    end
+  end
 end
