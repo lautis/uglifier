@@ -1,6 +1,7 @@
 ## next
 
 - fix `reduce_vars` compressor option
+- add `passes` compressor option
 
 ## 3.1.1 (27 February 2017)
 

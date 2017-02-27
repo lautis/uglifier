@@ -4,10 +4,10 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Uglifier" do
   it "minifies JS" do
-    source = File.open("lib/uglify.js", "r:UTF-8").read
+    source = File.open("lib/uglify.js", "r:UTF-8", &:read)
     minified = Uglifier.new.compile(source)
     expect(minified.length).to be < source.length
-    expect { Uglifier.new.compile(minified) }.not_to raise_error
+    expect { ExecJS.compile(minified) }.not_to raise_error
   end
 
   it "throws an exception when compilation fails" do
@@ -527,5 +527,12 @@ describe "Uglifier" do
       compiled = Uglifier.compile(code, :compress => { :unsafe_proto => true })
       expect(compiled).to include("[].slice.call")
     end
+  end
+
+  it 'forwards passes option to compressor' do
+    code = File.open("lib/uglify.js", "r:UTF-8", &:read)
+    one_pass = Uglifier.compile(code, :mangle => false, :compress => { :passes => 1 })
+    two_pass = Uglifier.compile(code, :mangle => false, :compress => { :passes => 2 })
+    expect(two_pass.length).to be < one_pass.length
   end
 end

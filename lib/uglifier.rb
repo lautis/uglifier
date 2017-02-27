@@ -79,7 +79,8 @@ class Uglifier
       :drop_console => false, # Drop calls to console.* functions
       :angular => false, # Process @ngInject annotations
       :keep_fargs => false, # Preserve unused function arguments
-      :keep_fnames => false # Do not drop names in function definitions
+      :keep_fnames => false, # Do not drop names in function definitions
+      :passes => 2
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
