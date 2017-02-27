@@ -5,6 +5,7 @@
 - enable `reduce_vars` and `collapse_vars` compress options by default
 - unused top-level function and variable removal with `toplevel` compress option
 - add `top_retain` compress option to specify list of top-level variables to always retain
+- add `unsafe_comps` and `unsafe_proto` options
 
 ## 3.0.4 (30 November 2016)
 

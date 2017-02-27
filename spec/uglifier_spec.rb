@@ -477,4 +477,52 @@ describe "Uglifier" do
       expect(compiled).not_to include("function g")
     end
   end
+
+  describe 'unsafe_comps' do
+    let(:code) do
+      <<-JS
+        var obj1 = {
+            valueOf: function() {triggeredFirst();}
+        }
+        var obj2 = 2;
+        var result1 = obj1 <= obj2;
+      JS
+    end
+
+    let(:options) do
+      { :comparisons => true, :reduce_vars => false, :collapse_vars => false }
+    end
+
+    it 'keeps unsafe comparisons by default' do
+      compiled = Uglifier.compile(code, :mangle => false, :compress => options)
+      expect(compiled).to include("result1=obj1<=obj2")
+    end
+
+    it 'optimises unsafe comparisons when unsafe_comps is enabled' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => options.merge(:unsafe_comps => true)
+      )
+      expect(compiled).to include("result1=obj2>=obj1")
+    end
+  end
+
+  describe 'unsafe_proto' do
+    let(:code) do
+      <<-JS
+        Array.prototype.slice.call([1,2,3], 1)
+      JS
+    end
+
+    it 'keeps unsafe prototype references by default' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).to include("Array.prototype.slice.call")
+    end
+
+    it 'optimises unsafe comparisons when unsafe_comps is enabled' do
+      compiled = Uglifier.compile(code, :compress => { :unsafe_proto => true })
+      expect(compiled).to include("[].slice.call")
+    end
+  end
 end
