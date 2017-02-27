@@ -200,6 +200,27 @@ describe "Uglifier" do
     expect(minified).to match(/var \w,\w/)
   end
 
+  describe 'reduce_vars' do
+    let(:code) { "function something() { var a = 2; console.log(a - 5); }" }
+
+    it "reduces vars when compress options is set" do
+      minified = Uglifier.compile(code, :compress => { :reduce_vars => true })
+      expect(minified).to include("console.log(-3)")
+    end
+
+    it "does not reduces vars when compress options is false" do
+      code = "function something() { var a = 2; console.log(a - 5); return a - 1; }"
+      minified = Uglifier.compile(code, :compress => { :reduce_vars => false })
+      expect(minified).to match(/console.log\(\w+-5\)/)
+    end
+
+    it "defaults to variable reducing being enabled" do
+      code = "function something() { var a = 2; console.log(a - 5); }"
+      minified = Uglifier.compile(code)
+      expect(minified).to include("console.log(-3)")
+    end
+  end
+
   describe "screw_ie8 option" do
     let(:code) { "function something() { return g['switch']; }" }
 

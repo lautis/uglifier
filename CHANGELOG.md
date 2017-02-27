@@ -1,7 +1,8 @@
 ## next
 
 - update UglifyJS to 2.8.0
-- enable collapse_vars compress options by default
+- add reduce_vars compress option
+- enable reduce_vars and collapse_vars compress options by default
 
 ## 3.0.4 (30 November 2016)
 

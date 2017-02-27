@@ -68,6 +68,7 @@ class Uglifier
       :join_vars => true, # Join consecutive var statements
       :cascade => true, # Cascade sequences
       :collapse_vars => true, # Collapse single-use var and const definitions when possible.
+      :reduce_vars => true, # Collapse variables assigned with and used as constant values.
       :negate_iife => true, # Negate immediately invoked function expressions to avoid extra parens
       :pure_getters => false, # Assume that object property access does not have any side-effects
       :pure_funcs => nil, # List of functions without side-effects. Can safely discard function calls when the result value is not used
