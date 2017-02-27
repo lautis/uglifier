@@ -1,4 +1,4 @@
-## next
+## 3.1.0 (27 February 2017)
 
 - update UglifyJS to 2.8.0
 - add reduce_vars compress option
