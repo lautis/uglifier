@@ -284,8 +284,13 @@ describe "Uglifier" do
       expect(compiled).to include("return window.Handlebars")
     end
 
+    it "does not collapse variables when disable" do
+      compiled = Uglifier.compile(code, :compress => { :collapse_vars => false })
+      expect(compiled).not_to include("return window.Handlebars")
+    end
+
     it "defaults to not collapsing variables" do
-      expect(Uglifier.compile(code)).not_to include("return window.Handlebars")
+      expect(Uglifier.compile(code)).to include("return window.Handlebars")
     end
   end
 
