@@ -1,3 +1,7 @@
+## next
+
+- fix `reduce_vars` compressor option
+
 ## 3.1.1 (27 February 2017)
 
 - disable `reduce_vars` by default as it causes JS errors (#110)
