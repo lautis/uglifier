@@ -2,7 +2,7 @@
 
 - fix `reduce_vars` compressor option
 - add `passes` compressor option
-- update UglifyJS to 2.8.1
+- update UglifyJS to 2.8.2
 
 ## 3.1.1 (27 February 2017)
 
