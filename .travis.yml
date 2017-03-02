@@ -9,23 +9,21 @@ rvm:
   - 2.3.3
   - 2.4.0
   - jruby-19mode
-  - jruby-9.1.6.0
+  - jruby-9.1.7.0
 git:
   submodules: false
 gemfile:
   - Gemfile
 matrix:
   include:
-    - rvm: 2.3.1
+    - rvm: 2.4.0
       gemfile: gemfiles/rubyracer
-    - rvm: 2.1.9
-      gemfile: gemfiles/rubyracer
-    - rvm: jruby-19mode
+    - rvm: jruby-9.1.7.0
       gemfile: gemfiles/rubyrhino
-    - rvm: 2.3.1
+    - rvm: 2.4.0
       gemfile: gemfiles/alaska
       env: ALASKA=1
   allow_failures:
-    - rvm: 2.3.1
+    - rvm: 2.4.0
       gemfile: gemfiles/alaska
       env: ALASKA=1
