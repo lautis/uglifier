@@ -1,4 +1,4 @@
-## next
+## 3.1.3 (2 March 2017)
 
 - update UglifyJS to 2.8.5
 - default passes to 1
