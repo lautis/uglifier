@@ -1,6 +1,7 @@
 ## next
 
 - default passes to 1
+- allow source_map option to be `true` instead of a hash
 
 ## 3.1.2 (1 March 2017)
 

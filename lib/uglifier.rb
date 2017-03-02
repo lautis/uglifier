@@ -370,7 +370,8 @@ class Uglifier
 
   def input_source_map(source, generate_map)
     return nil unless generate_map
-    sanitize_map_root(@options.fetch(:source_map, {}).fetch(:input_source_map) do
+    source_map_options = @options[:source_map].is_a?(Hash) ? @options[:source_map] : {}
+    sanitize_map_root(source_map_options.fetch(:input_source_map) do
       url = extract_source_mapping_url(source)
       if url && url.start_with?("data:")
         Base64.strict_decode64(url.split(",", 2)[-1])
