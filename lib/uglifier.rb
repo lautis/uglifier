@@ -80,7 +80,7 @@ class Uglifier
       :angular => false, # Process @ngInject annotations
       :keep_fargs => false, # Preserve unused function arguments
       :keep_fnames => false, # Do not drop names in function definitions
-      :passes => 2
+      :passes => 1 # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
