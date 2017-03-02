@@ -1,5 +1,6 @@
 ## next
 
+- update UglifyJS to 2.8.5
 - default passes to 1
 - allow source_map option to be `true` instead of a hash
 
