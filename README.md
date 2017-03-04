@@ -83,18 +83,23 @@ Available options and their defaults are
     :dead_code => true,         # Remove unreachable code
     :drop_debugger => true,     # Remove debugger; statements
     :unsafe => false,           # Apply "unsafe" transformations
+    :unsafe_comps => false,     # Reverse < and <= to > and >= to allow improved compression. This might be unsafe when an at least one of two operands is an object with computed values due the use of methods like get, or valueOf. This could cause change in execution order after operands in the comparison are switching. Compression only works if both comparisons and unsafe_comps are both set to true.
+    :unsafe_proto => false,     # Optimize expressions like Array.prototype.slice.call(a) into [].slice.call(a)
     :conditionals => true,      # Optimize for if-s and conditional expressions
     :comparisons => true,       # Apply binary node optimizations for comparisons
     :evaluate => true,          # Attempt to evaluate constant expressions
     :booleans => true,          # Various optimizations to boolean contexts
     :loops => true,             # Optimize loops when condition can be statically determined
     :unused => true,            # Drop unreferenced functions and variables
+    :toplevel => false,         # Drop unreferenced top-level functions and variables
+    :top_retain => [],          # prevent specific toplevel functions and variables from `unused` removal
     :hoist_funs => true,        # Hoist function declarations
     :hoist_vars => false,       # Hoist var declarations
     :if_return => true,         # Optimizations for if/return and if/continue
     :join_vars => true,         # Join consecutive var statements
     :cascade => true,           # Cascade sequences
     :collapse_vars => false,    # Collapse single-use var and const definitions when possible.
+    :reduce_vars => false,      # Collapse variables assigned with and used as constant values.
     :negate_iife => true,       # Negate immediately invoked function expressions to avoid extra parens
     :pure_getters => false,     # Assume that object property access does not have any side-effects
     :pure_funcs => nil,         # List of functions without side-effects. Can safely discard function calls when the result value is not used
@@ -102,6 +107,7 @@ Available options and their defaults are
     :angular => false,          # Process @ngInject annotations
     :keep_fargs => false,       # Preserve unused function arguments
     :keep_fnames => false       # Do not drop names in function definitions
+    :passes => 1                # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
   },                            # Apply transformations to code, set to false to skip
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs

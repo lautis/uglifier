@@ -1,6 +1,32 @@
-## 3.0.4.harmony1 (25 February 2016)
+## 3.1.3.harmony1 (4 March 2017)
 
-- use WIP Harmony-version of UglifyJs 2.7.5
+- use WIP Harmony-version of UglifyJs 2.8.5
+
+## 3.1.3 (2 March 2017)
+
+- update UglifyJS to 2.8.5
+- default passes to 1
+- allow source_map option to be `true` instead of a hash
+
+## 3.1.2 (1 March 2017)
+
+- fix `reduce_vars` compressor option
+- add `passes` compressor option
+- update UglifyJS to 2.8.4
+
+## 3.1.1 (27 February 2017)
+
+- disable `reduce_vars` by default as it causes JS errors (#110)
+
+## 3.1.0 (27 February 2017)
+
+- update UglifyJS to 2.8.0
+- add reduce_vars compress option
+- enable `reduce_vars` and `collapse_vars` compress options by default
+- unused top-level function and variable removal with `toplevel` compress option
+- add `top_retain` compress option to specify list of top-level variables to always retain
+- add `unsafe_comps` and `unsafe_proto` options
+>>>>>>> origin/master
 
 ## 3.0.4 (30 November 2016)
 

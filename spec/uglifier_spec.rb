@@ -4,10 +4,10 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Uglifier" do
   it "minifies JS" do
-    source = File.open("lib/uglify.js", "r:UTF-8").read
+    source = File.open("lib/uglify.js", "r:UTF-8", &:read)
     minified = Uglifier.new.compile(source)
     expect(minified.length).to be < source.length
-    expect { Uglifier.new.compile(minified) }.not_to raise_error
+    expect { ExecJS.compile(minified) }.not_to raise_error
   end
 
   it "throws an exception when compilation fails" do
@@ -195,9 +195,33 @@ describe "Uglifier" do
   end
 
   it "hoists vars to top of the scope" do
-    code = "function something() { var a = 1; a = 2; var b = 3; return a + b;}"
+    code = "function something() { var a = foo(); a = bar(); var b = baz(); return a + b;}"
     minified = Uglifier.compile(code, :compress => { :hoist_vars => true })
     expect(minified).to match(/var \w,\w/)
+  end
+
+  describe 'reduce_vars' do
+    let(:code) { "var a = 2;function something() { console.log(a - 5); };" }
+
+    it "reduces vars when compress option is set" do
+      minified = Uglifier.compile(code, :compress => { :reduce_vars => true })
+      expect(minified).to include("console.log(-3)")
+    end
+
+    it "does not reduce vars when compress option is false" do
+      minified = Uglifier.compile(code, :compress => { :reduce_vars => false })
+      expect(minified).to match(/console.log\(\w+-5\)/)
+    end
+
+    it "defaults to variable reducing being disabled" do
+      expect(Uglifier.compile(code))
+        .to eq(Uglifier.compile(code, :compress => { :reduce_vars => false }))
+    end
+
+    it "does not reduce variables that are assigned to" do
+      options = { :mangle => false, :compress => { :reduce_vars => true } }
+      expect(Uglifier.compile(code + "a=3", options)).to match(/console.log\(\w+-5\)/)
+    end
   end
 
   describe "screw_ie8 option" do
@@ -284,8 +308,13 @@ describe "Uglifier" do
       expect(compiled).to include("return window.Handlebars")
     end
 
+    it "does not collapse variables when disable" do
+      compiled = Uglifier.compile(code, :compress => { :collapse_vars => false })
+      expect(compiled).not_to include("return window.Handlebars")
+    end
+
     it "defaults to not collapsing variables" do
-      expect(Uglifier.compile(code)).not_to include("return window.Handlebars")
+      expect(Uglifier.compile(code)).to include("return window.Handlebars")
     end
   end
 
@@ -408,5 +437,102 @@ describe "Uglifier" do
       expect(Uglifier.compile(code, :output => { :wrap_iife => true }))
         .to match("(function(){return function(){console.log(\"test\")}})()();")
     end
+  end
+
+  describe 'removing unused top-level functions and variables' do
+    let(:code) do
+      <<-JS
+        var a, b = 1, c = g;
+        function f(d) {
+          return function() {
+            c = 2;
+          }
+        }
+        a = 2;
+        function g() {}
+        function h() {}
+        console.log(b = 3);
+      JS
+    end
+
+    it 'removes unused top-level functions and variables when toplevel is set' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => { :toplevel => true }
+      )
+      expect(compiled).not_to include("function h()")
+      expect(compiled).not_to include("var a")
+    end
+
+    it 'does not unused top-level functions and variables by default' do
+      expect(Uglifier.compile(code, :mangle => false))
+        .to include("var a").and(include("function h()"))
+    end
+
+    it 'keeps variables specified in top_retain' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => { :toplevel => true, :top_retain => %w(a h) }
+      )
+      expect(compiled).to include("var a").and(include("function h()"))
+      expect(compiled).not_to include("function g")
+    end
+  end
+
+  describe 'unsafe_comps' do
+    let(:code) do
+      <<-JS
+        var obj1 = {
+            valueOf: function() {triggeredFirst();}
+        }
+        var obj2 = 2;
+        var result1 = obj1 <= obj2;
+      JS
+    end
+
+    let(:options) do
+      { :comparisons => true, :reduce_vars => false, :collapse_vars => false }
+    end
+
+    it 'keeps unsafe comparisons by default' do
+      compiled = Uglifier.compile(code, :mangle => false, :compress => options)
+      expect(compiled).to include("result1=obj1<=obj2")
+    end
+
+    it 'optimises unsafe comparisons when unsafe_comps is enabled' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => options.merge(:unsafe_comps => true)
+      )
+      expect(compiled).to include("result1=obj2>=obj1")
+    end
+  end
+
+  describe 'unsafe_proto' do
+    let(:code) do
+      <<-JS
+        Array.prototype.slice.call([1,2,3], 1)
+      JS
+    end
+
+    it 'keeps unsafe prototype references by default' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).to include("Array.prototype.slice.call")
+    end
+
+    it 'optimises unsafe comparisons when unsafe_comps is enabled' do
+      compiled = Uglifier.compile(code, :compress => { :unsafe_proto => true })
+      expect(compiled).to include("[].slice.call")
+    end
+  end
+
+  it 'forwards passes option to compressor' do
+    code = File.open("lib/uglify.js", "r:UTF-8", &:read)
+    one_pass = Uglifier.compile(code, :mangle => false, :compress => { :passes => 1 })
+    two_pass = Uglifier.compile(code, :mangle => false, :compress => { :passes => 2 })
+    expect(two_pass.length).to be < one_pass.length
   end
 end

@@ -222,5 +222,15 @@ describe "Uglifier" do
       _, map = Uglifier.compile_with_map(minified)
       expect(JSON.parse(map)["sourcesContent"]).to be_nil
     end
+
+    it "works with source_map: true" do
+      minified = Uglifier.compile(
+        "#{code}\n//#{source_mapping_url}",
+        :source_map => true
+      )
+
+      source_map_mime = "application/json;charset=utf-8;base64,"
+      expect(minified).to include("\n//# sourceMappingURL=data:#{source_map_mime}")
+    end
   end
 end
