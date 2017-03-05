@@ -351,37 +351,36 @@ describe "Uglifier" do
     expect(Uglifier.compile(code, options.call(true))).to include("c)")
   end
 
-  it "keeps function names in output when compressor keep_fnames is set" do
-    code = <<-JS
-    (function plus(a, b) { return a + b})(1, 2);
-    JS
-    expect(Uglifier.compile(code, :compress => true)).not_to include("plus")
+  describe 'keep_fnames' do
+    let(:code) do
+      <<-JS
+      (function() {
+        function plus(a, b) { return a + b; };
+        plus(1, 2);
+      })();
+      JS
+    end
 
-    keep_fnames = Uglifier.compile(code, :mangle => false, :compress => { :keep_fnames => true })
-    expect(keep_fnames).to include("plus")
-  end
+    it "keeps function names in output when compressor keep_fnames is set" do
+      expect(Uglifier.compile(code, :compress => true)).not_to include("plus")
 
-  it "does not mangle function names in output when mangler keep_fnames is set" do
-    code = <<-JS
-    (function() {
-      function plus(a, b) { return a + b}
-      plus(1, 2);
-    })();
-    JS
-    expect(Uglifier.compile(code, :mangle => true)).not_to include("plus")
+      keep_fnames = Uglifier.compile(code, :mangle => false, :compress => { :keep_fnames => true })
+      expect(keep_fnames).to include("plus")
+    end
 
-    keep_fnames = Uglifier.compile(code, :mangle => { :keep_fnames => true })
-    expect(keep_fnames).to include("plus")
-  end
+    it "does not mangle function names in output when mangler keep_fnames is set" do
+      expect(Uglifier.compile(code, :mangle => true)).not_to include("plus")
 
-  it "sets sets both compress and mangle keep_fnames when toplevel keep_fnames is true" do
-    code = <<-JS
-    (function plus(a, b) { return a + b})(1, 2);
-    JS
-    expect(Uglifier.compile(code)).not_to include("plus")
+      keep_fnames = Uglifier.compile(code, :mangle => { :keep_fnames => true })
+      expect(keep_fnames).to include("plus")
+    end
 
-    keep_fnames = Uglifier.compile(code, :keep_fnames => true)
-    expect(keep_fnames).to include("plus")
+    it "sets sets both compress and mangle keep_fnames when toplevel keep_fnames is true" do
+      expect(Uglifier.compile(code)).not_to include("plus")
+
+      keep_fnames = Uglifier.compile(code, :keep_fnames => true)
+      expect(keep_fnames).to include("plus")
+    end
   end
 
   describe "Input Formats" do
