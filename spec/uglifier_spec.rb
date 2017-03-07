@@ -203,26 +203,27 @@ describe "Uglifier" do
   describe 'reduce_vars' do
     let(:code) do
       <<-JS
-        var something = (function() {
-          var a = 2;
-          return function () { console.log(a - 5); };
+        var a = 2;
+        (function () {
+          console.log(a - 5);
+          console.log(a - 1);
         })();
       JS
     end
 
     it "reduces vars when compress option is set" do
-      minified = Uglifier.compile(code, :compress => { :reduce_vars => true })
+      minified = Uglifier.compile(code, :compress => { :reduce_vars => true, :toplevel => true })
       expect(minified).to include("console.log(-3)")
     end
 
     it "does not reduce vars when compress option is false" do
-      minified = Uglifier.compile(code, :compress => { :reduce_vars => false })
+      minified = Uglifier.compile(code, :compress => { :reduce_vars => false, :toplevel => true })
       expect(minified).to match(/console.log\(\w+-5\)/)
     end
 
     it "defaults to variable reducing being disabled" do
       expect(Uglifier.compile(code))
-        .to eq(Uglifier.compile(code, :compress => { :reduce_vars => false }))
+        .to eq(Uglifier.compile(code, :compress => { :reduce_vars => false, :toplevel => true }))
     end
 
     it "does not reduce variables that are assigned to" do
