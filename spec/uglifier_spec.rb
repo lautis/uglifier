@@ -201,7 +201,14 @@ describe "Uglifier" do
   end
 
   describe 'reduce_vars' do
-    let(:code) { "var a = 2;function something() { console.log(a - 5); };" }
+    let(:code) do
+      <<-JS
+        var something = (function() {
+          var a = 2;
+          return function () { console.log(a - 5); };
+        })();
+      JS
+    end
 
     it "reduces vars when compress option is set" do
       minified = Uglifier.compile(code, :compress => { :reduce_vars => true })
