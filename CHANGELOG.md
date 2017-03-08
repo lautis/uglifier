@@ -1,6 +1,6 @@
 ## next
 
-- update UglifyJS to 2.8.8
+- update UglifyJS to 2.8.9
 
 ## 3.1.4 (5 March 2017)
 
