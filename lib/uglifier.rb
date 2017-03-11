@@ -296,7 +296,7 @@ class Uglifier
   end
 
   def source_map_options(input_map)
-    options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS)
+    options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS) || SOURCE_MAP_DEFAULTS
 
     {
       :file => options[:output_filename],

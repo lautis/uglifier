@@ -1,5 +1,6 @@
 ## next
 
+- fix NoMethodError on `Uglifier.compile(source, source_map: false)` (#114)
 - update UglifyJS to 2.8.12
 
 ## 3.1.6 (9 March 2017)
