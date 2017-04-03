@@ -1,4 +1,4 @@
-## next
+## 3.1.13 (3 April 2017)
 
 - update UglifyJS to 2.8.21
 
