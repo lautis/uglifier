@@ -22,6 +22,9 @@ Metrics/MethodLength:
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
 Style/PreferredHashMethods:
   Enabled: false
 
