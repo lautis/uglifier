@@ -7,3 +7,6 @@
 [submodule "vendor/split"]
 	path = vendor/split
 	url = https://gist.github.com/2048056.git
+[submodule "vendor/uglifyjs-harmony"]
+	path = vendor/uglifyjs-harmony
+	url = https://github.com/mishoo/UglifyJS2.git

@@ -18,10 +18,18 @@ task :js do
     `npm install`
   end
 
+  cd 'vendor/uglifyjs-harmony' do
+    # required to run ./uglifyjs2 --self; not bundled.
+    `npm install`
+  end
+
   FileUtils.cp("vendor/source-map/dist/source-map.js", "lib/source-map.js")
 
   source = `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
   File.write("lib/uglify.js", source)
+
+  harmony_source = `./vendor/uglifyjs-harmony/bin/uglifyjs --self --comments /Copyright/`
+  File.write("lib/uglify-harmony.js", harmony_source)
 
   FileUtils.cp("vendor/split/split.js", "lib/split.js")
   `patch -p1 -i patches/es5-string-split.patch`
