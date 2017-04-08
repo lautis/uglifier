@@ -11,13 +11,19 @@ describe "Uglifier" do
     expect { ExecJS.compile(minified) }.not_to raise_error
   end
 
-  it "minifies JS with Harmony features when harmony flag is on" do
-    source = <<-JS
-      const foo = () => bar();
-    JS
+  describe 'harmony mode' do
+    let(:source) { "const foo = () => bar();" }
 
-    minified = Uglifier.new(:harmony => true, :compress => false).compile(source)
-    expect(minified.length).to be < source.length
+    it "minifies JS with Harmony features when harmony option is on" do
+      minified = Uglifier.new(:harmony => true, :compress => false).compile(source)
+      expect(minified.length).to be < source.length
+    end
+
+    it "raises an error when minifying JS with Harmony without harmony option" do
+      source = "const foo = () => bar();"
+      expect { Uglifier.new(:compress => false).compile(source) }
+        .to raise_error(Uglifier::Error)
+    end
   end
 
   it "throws an exception when compilation fails" do
