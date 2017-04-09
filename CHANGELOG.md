@@ -1,6 +1,7 @@
 ## next
 
-- Experimental ES6/Harmony mode based on UglifyJS2 Harmony branch
+- experimental ES6/Harmony mode based on UglifyJS2 Harmony branch
+- update UglifyJS to 2.8.22
 
 ## 3.1.13 (3 April 2017)
 
