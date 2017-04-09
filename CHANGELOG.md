@@ -1,4 +1,4 @@
-## next
+## 3.2.0 (9 April 2017)
 
 - experimental ES6/Harmony mode based on UglifyJS2 Harmony branch
 - update UglifyJS to 2.8.22
