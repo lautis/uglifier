@@ -1,8 +1,15 @@
 # Uglifier
 
-Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS2) JavaScript compressor.
+Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS2) JavaScript
+compressor.
 
-Uglifier is able to process ES5 JavaScript, with very limited support for ES6. Uglifier should be only applied to ES6 code after transpiling to ES5 (with e.g. [babel-transpiler](https://github.com/babel/ruby-babel-transpiler)). For directly minifying ES6 code, [Closure Compiler](https://github.com/documentcloud/closure-compiler) is a more suitable option.
+UglifyJS currently is known to work quite well with ES5. Experimental
+ES6/Harmony support can be enabled with `:harmony => true` option.
+See [UglifyJS2#448](https://github.com/mishoo/UglifyJS2/issues/448) for more
+details.
+
+Transpiling to ES5 (with e.g. [babel-transpiler](https://github.com/babel/ruby-babel-transpiler)) is
+recommended. For directly minifying ES6 code, [Closure Compiler](https://github.com/documentcloud/closure-compiler) is a more suitable option.
 
 [![Build Status](https://travis-ci.org/lautis/uglifier.svg?branch=master)](https://travis-ci.org/lautis/uglifier)
 
@@ -120,7 +127,8 @@ Available options and their defaults are
     :root => nil,               # The URL of the directory which contains :filename
     :output_filename => nil,    # The filename or URL where the minified output can be found
     :input_source_map => nil    # The contents of the source map describing the input
-  }
+  },
+  :harmony => false             # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
 }
 ```
 

@@ -12,6 +12,8 @@ class Uglifier
 
   # UglifyJS source path
   SourcePath = File.expand_path("../uglify.js", __FILE__)
+  # UglifyJS with Harmony source path
+  HarmonySourcePath = File.expand_path("../uglify-harmony.js", __FILE__)
   # Source Map path
   SourceMapPath = File.expand_path("../source-map.js", __FILE__)
   # ES5 shims source path
@@ -86,7 +88,8 @@ class Uglifier
     :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
     :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
     :screw_ie8 => false, # Don't bother to generate safe code for IE8
-    :source_map => false # Generate source map
+    :source_map => false, # Generate source map
+    :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
   }
 
   LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle]
@@ -135,7 +138,9 @@ class Uglifier
       raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
-    @context = ExecJS.compile(uglifyjs_source)
+
+    source = @options[:harmony] ? source_with(HarmonySourcePath) : source_with(SourcePath)
+    @context = ExecJS.compile(source)
   end
 
   # Minifies JavaScript code
@@ -164,8 +169,8 @@ class Uglifier
 
   private
 
-  def uglifyjs_source
-    [ES5FallbackPath, SplitFallbackPath, SourceMapPath, SourcePath,
+  def source_with(path)
+    [ES5FallbackPath, SplitFallbackPath, SourceMapPath, path,
      UglifyJSWrapperPath].map do |file|
       File.open(file, "r:UTF-8", &:read)
     end.join("\n")
