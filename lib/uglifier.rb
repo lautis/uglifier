@@ -173,6 +173,20 @@ class Uglifier
 
   private
 
+  def source_map_comments
+    return '' unless @options[:source_map].respond_to?(:[])
+
+    suffix = ''
+    if @options[:source_map][:map_url]
+      suffix += "\n//# sourceMappingURL=" + @options[:source_map][:map_url]
+    end
+
+    if @options[:source_map][:url]
+      suffix += "\n//# sourceURL=" + @options[:source_map][:url]
+    end
+    suffix
+  end
+
   def source_with(path)
     [ES5FallbackPath, SplitFallbackPath, SourceMapPath, path,
      UglifyJSWrapperPath].map do |file|
@@ -203,9 +217,9 @@ class Uglifier
     if result.has_key?('error')
       raise Error, result['error']['message']
     elsif generate_map
-      [result['code'], result['map']]
+      [result['code'] + source_map_comments, result['map']]
     else
-      result['code']
+      result['code'] + source_map_comments
     end
   end
 
@@ -319,6 +333,7 @@ class Uglifier
     options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS) || SOURCE_MAP_DEFAULTS
 
     {
+      :input => options[:filename],
       :filename => options[:output_filename],
       :root => options.fetch(:root) { input_map ? input_map["sourceRoot"] : nil },
       :content => input_map,
