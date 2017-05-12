@@ -1,3 +1,15 @@
+## next
+
+- update UglifyJS to 3.0.4
+
+Dropped options:
+
+- output: angular
+- mangle: except => reserved
+- mangle_properties: ignore_quoted => keep_quoted
+- enclose
+
+
 ## 3.2.0 (9 April 2017)
 
 - experimental ES6/Harmony mode based on UglifyJS2 Harmony branch

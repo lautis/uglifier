@@ -8,7 +8,7 @@ require "uglifier/version"
 # A wrapper around the UglifyJS interface
 class Uglifier
   # Error class for compilation errors.
-  Error = ExecJS::Error
+  class Error < StandardError; end
 
   # UglifyJS source path
   SourcePath = File.expand_path("../uglify.js", __FILE__)
@@ -44,12 +44,12 @@ class Uglifier
       :wrap_iife => false # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
     },
     :mangle => {
-      :eval => false, # Mangle names when eval of when is used in scope
-      :except => ["$super"], # Argument names to be excluded from mangling
-      :sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
-      :toplevel => false, # Mangle names declared in the toplevel scope
-      :properties => false, # Mangle property names
-      :keep_fnames => false # Do not modify function names
+      #:eval => false, # Mangle names when eval of when is used in scope
+      :reserved => ["$super"], # Argument names to be excluded from mangling
+      #:sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
+      #:toplevel => false, # Mangle names declared in the toplevel scope
+      #:properties => false, # Mangle property names
+      #:keep_fnames => false # Do not modify function names
     }, # Mangle variable and function names, set to false to skip mangling
     :mangle_properties => false, # Mangle property names
     :compress => {
@@ -79,25 +79,29 @@ class Uglifier
       :pure_getters => false, # Assume that object property access does not have any side-effects
       :pure_funcs => nil, # List of functions without side-effects. Can safely discard function calls when the result value is not used
       :drop_console => false, # Drop calls to console.* functions
-      :angular => false, # Process @ngInject annotations
+      #:angular => false, # Process @ngInject annotations
       :keep_fargs => false, # Preserve unused function arguments
       :keep_fnames => false, # Do not drop names in function definitions
       :passes => 1 # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
-    :enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
+    #:enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
     :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
-    :screw_ie8 => false, # Don't bother to generate safe code for IE8
+    :toplevel => false,
+    :ie8 => true, # Generate safe code for IE8
     :source_map => false, # Generate source map
     :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
   }
 
-  LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle]
+  LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle, :screw_ie8]
 
   MANGLE_PROPERTIES_DEFAULTS = {
+    :debug => false, # Add debug prefix and suffix to mangled properties
     :regex => nil, # A regular expression to filter property names to be mangled
-    :ignore_quoted => false, # Only mangle unquoted property names
-    :debug => false # Mangle names with the original name still present
+    :keep_quoted => false, # Keep quoted property names
+    :reserved => [], # List of properties that should not be mangled
+    :builtins => false, # Mangle properties that overlap with standard JS globals
+    :domprops => false, # Mangle properties that overlap with DOM properties
   }
 
   SOURCE_MAP_DEFAULTS = {
@@ -185,14 +189,24 @@ class Uglifier
       :output => output_options,
       :compress => compressor_options,
       :mangle => mangle_options,
-      :mangle_properties => mangle_properties_options,
-      :parse_options => parse_options,
-      :source_map_options => source_map_options(input_map),
-      :generate_map => generate_map,
-      :enclose => enclose_options
+      :parse => parse_options,
+      :sourceMap => source_map_options(input_map),
+      :ie8 => ie8?
+      #:generate_map => generate_map,
+      #:enclose => enclose_options
     }
 
-    @context.call("uglifier", options)
+    parse_result(@context.call("uglifier", options), generate_map)
+  end
+
+  def parse_result(result, generate_map)
+    if result.has_key?('error')
+      raise Error, result['error']['message']
+    elsif generate_map
+      [result['code'], result['map']]
+    else
+      result['code']
+    end
   end
 
   def read_source(source)
@@ -212,7 +226,8 @@ class Uglifier
     conditional_option(
       @options.fetch(:mangle, DEFAULTS[:mangle]),
       defaults,
-      :keep_fnames => keep_fnames?(:mangle)
+      :keep_fnames => keep_fnames?(:mangle),
+      :properties => mangle_properties_options
     )
   end
 
@@ -229,8 +244,7 @@ class Uglifier
   def compressor_options
     defaults = conditional_option(
       DEFAULTS[:compress],
-      :global_defs => @options[:define] || {},
-      :screw_ie8 => screw_ie8?
+      :global_defs => @options[:define] || {}
     )
 
     conditional_option(
@@ -278,16 +292,17 @@ class Uglifier
 
   def output_options
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
-      :comments => comment_options,
-      :screw_ie8 => screw_ie8?
+      :comments => comment_options
     ).reject { |key, _| key == :ie_proof }
   end
 
-  def screw_ie8?
+  def ie8?
     if (@options[:output] || {}).has_key?(:ie_proof)
-      !@options[:output][:ie_proof]
+      @options[:output][:ie_proof]
+    elsif @options.has_key?(:screw_ie8)
+      !@options[:screw_ie8]
     else
-      @options.fetch(:screw_ie8, DEFAULTS[:screw_ie8])
+      @options.fetch(:ie8, DEFAULTS[:ie8])
     end
   end
 
@@ -304,12 +319,12 @@ class Uglifier
     options = conditional_option(@options[:source_map], SOURCE_MAP_DEFAULTS) || SOURCE_MAP_DEFAULTS
 
     {
-      :file => options[:output_filename],
+      :filename => options[:output_filename],
       :root => options.fetch(:root) { input_map ? input_map["sourceRoot"] : nil },
-      :orig => input_map,
-      :map_url => options[:map_url],
+      :content => input_map,
+      #:map_url => options[:map_url],
       :url => options[:url],
-      :sources_content => options[:sources_content]
+      :includeSources => options[:sources_content]
     }
   end
 
