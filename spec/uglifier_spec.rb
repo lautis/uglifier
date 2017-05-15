@@ -528,6 +528,28 @@ describe "Uglifier" do
     end
   end
 
+  describe 'unsafe_math' do
+    let(:code) do
+      <<-JS
+        function compute(x) { return 2 * x * 3; }
+      JS
+    end
+
+    it 'keeps unsafe math by default' do
+      compiled = Uglifier.compile(code, :mangle => false)
+      expect(compiled).to include('2*x*3')
+    end
+
+    it 'optimises unsafe math when unsafe_math is enabled' do
+      compiled = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => { :unsafe_math => true }
+      )
+      expect(compiled).to include("6*x")
+    end
+  end
+
   describe 'unsafe_proto' do
     let(:code) do
       <<-JS
