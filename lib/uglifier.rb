@@ -77,7 +77,6 @@ class Uglifier
       :pure_getters => false, # Assume that object property access does not have any side-effects
       :pure_funcs => nil, # List of functions without side-effects. Can safely discard function calls when the result value is not used
       :drop_console => false, # Drop calls to console.* functions
-      #:angular => false, # Process @ngInject annotations
       :keep_fargs => false, # Preserve unused function arguments
       :keep_fnames => false, # Do not drop names in function definitions
       :passes => 1 # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.

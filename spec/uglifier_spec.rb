@@ -344,19 +344,6 @@ describe "Uglifier" do
     end
   end
 
-  xit "processes @ngInject annotations" do
-    code = <<-JS
-    /**
-     * @ngInject
-     */
-    var f = function(foo, bar) { return foo + bar};
-    JS
-    with_angular = Uglifier.compile(code, :compress => { :angular => true })
-    without_angular = Uglifier.compile(code, :compress => { :angular => false })
-    expect(with_angular).to include("f.$inject")
-    expect(without_angular).not_to include("f.$inject")
-  end
-
   it "keeps unused function arguments when keep_fargs option is set" do
     code = <<-JS
     function plus(a, b, c) { return a + b};

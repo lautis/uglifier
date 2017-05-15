@@ -1,6 +1,7 @@
 ## next
 
 - update UglifyJS to 3.0.4
+- remove Angular ngInject processing
 
 Dropped options:
 
