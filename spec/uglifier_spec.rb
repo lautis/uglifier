@@ -64,6 +64,11 @@ describe "Uglifier" do
         .not_to include("object.quoted")
     end
 
+    it "can be configured using old mangle_properties" do
+      expect(Uglifier.compile(source, :mangle_properties => true))
+        .not_to include("object.quoted")
+    end
+
     it "can configure a regex for mangling" do
       expect(Uglifier.compile(source, :mangle => { :properties => { :regex => /^_/ } }))
         .to include("object.quoted")

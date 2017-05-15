@@ -48,7 +48,6 @@ class Uglifier
       :reserved => ["$super"], # Argument names to be excluded from mangling
       :properties => false, # Mangle property names
       :toplevel => false, # Mangle names declared in the toplevel scope
-      #:properties => false, # Mangle property names
     }, # Mangle variable and function names, set to false to skip mangling
     :compress => {
       :sequences => true, # Allow statements to be joined by commas
@@ -90,7 +89,7 @@ class Uglifier
     :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
   }
 
-  LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle, :screw_ie8]
+  LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle, :screw_ie8, :mangle_properties]
 
   MANGLE_PROPERTIES_DEFAULTS = {
     :debug => false, # Add debug prefix and suffix to mangled properties
@@ -243,9 +242,15 @@ class Uglifier
 
   def mangle_properties_options
     mangle_options = conditional_option(@options[:mangle], DEFAULTS[:mangle])
-    return false unless mangle_options && mangle_options[:properties]
 
-    options = conditional_option(mangle_options[:properties], MANGLE_PROPERTIES_DEFAULTS)
+    mangle_properties_options =
+      if @options.has_key?(:mangle_properties)
+        @options[:mangle_properties]
+      else
+        mangle_options && mangle_options[:properties]
+      end
+
+    options = conditional_option(mangle_properties_options, MANGLE_PROPERTIES_DEFAULTS)
 
     if options && options[:regex]
       options.merge(:regex => encode_regexp(options[:regex]))
