@@ -44,14 +44,12 @@ class Uglifier
       :wrap_iife => false # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
     },
     :mangle => {
-      #:eval => false, # Mangle names when eval of when is used in scope
+      :eval => false, # Mangle names when eval of when is used in scope
       :reserved => ["$super"], # Argument names to be excluded from mangling
-      #:sort => false, # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
-      #:toplevel => false, # Mangle names declared in the toplevel scope
+      :properties => false, # Mangle property names
+      :toplevel => false, # Mangle names declared in the toplevel scope
       #:properties => false, # Mangle property names
-      #:keep_fnames => false # Do not modify function names
     }, # Mangle variable and function names, set to false to skip mangling
-    :mangle_properties => false, # Mangle property names
     :compress => {
       :sequences => true, # Allow statements to be joined by commas
       :properties => true, # Rewrite property access using the dot notation
@@ -238,16 +236,18 @@ class Uglifier
     )
 
     conditional_option(
-      @options.fetch(:mangle, DEFAULTS[:mangle]),
+      @options[:mangle],
       defaults,
-      :keep_fnames => keep_fnames?(:mangle),
       :properties => mangle_properties_options
     )
   end
 
   def mangle_properties_options
-    mangle_options = @options.fetch(:mangle_properties, DEFAULTS[:mangle_properties])
-    options = conditional_option(mangle_options, MANGLE_PROPERTIES_DEFAULTS)
+    mangle_options = conditional_option(@options[:mangle], DEFAULTS[:mangle])
+    return false unless mangle_options && mangle_options[:properties]
+
+    options = conditional_option(mangle_options[:properties], MANGLE_PROPERTIES_DEFAULTS)
+
     if options && options[:regex]
       options.merge(:regex => encode_regexp(options[:regex]))
     else

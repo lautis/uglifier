@@ -60,22 +60,22 @@ describe "Uglifier" do
     end
 
     it "can be configured to mangle properties" do
-      expect(Uglifier.compile(source, :mangle_properties => true))
+      expect(Uglifier.compile(source, :mangle => { :properties => true }))
         .not_to include("object.quoted")
     end
 
     it "can configure a regex for mangling" do
-      expect(Uglifier.compile(source, :mangle_properties => { :regex => /^_/ }))
+      expect(Uglifier.compile(source, :mangle => { :properties => { :regex => /^_/ } }))
         .to include("object.quoted")
     end
 
     it "can be configured to keep quoted properties" do
-      expect(Uglifier.compile(source, :mangle_properties => { :keep_quoted => true }))
+      expect(Uglifier.compile(source, :mangle => { :properties => { :keep_quoted => true } }))
         .to include("object.quoted")
     end
 
     it "can be configured to include debug in mangled properties" do
-      expect(Uglifier.compile(source, :mangle_properties => { :debug => true }))
+      expect(Uglifier.compile(source, :mangle => { :properties => { :debug => true } }))
         .to include("_$quoted$_")
     end
   end
