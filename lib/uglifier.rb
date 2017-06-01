@@ -38,7 +38,6 @@ class Uglifier
       :beautify => false, # Beautify output
       :indent_level => 4, # Indent level in spaces
       :indent_start => 0, # Starting indent level
-      :space_colon => false, # Insert space before colons (only with beautifier)
       :width => 80, # Specify line width when beautifier is used (only with beautifier)
       :preamble => nil, # Preamble for the generated JS file. Can be used to insert any code or comment.
       :wrap_iife => false # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
@@ -82,7 +81,6 @@ class Uglifier
       :passes => 1 # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
     }, # Apply transformations to code, set to false to skip
     :define => {}, # Define values for symbol replacement
-    #:enclose => false, # Enclose in output function wrapper, define replacements as key-value pairs
     :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
     :toplevel => false,
     :ie8 => true, # Generate safe code for IE8

@@ -66,7 +66,6 @@ Available options and their defaults are
     :beautify => false,         # Beautify output
     :indent_level => 4,         # Indent level in spaces
     :indent_start => 0,         # Starting indent level
-    :space_colon => false,      # Insert space before colons (only with beautifier)
     :width => 80,               # Specify line width when beautifier is used (only with beautifier)
     :preamble => nil,           # Preamble for the generated JS file. Can be used to insert any code or comment.
     :wrap_iife => false         # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
