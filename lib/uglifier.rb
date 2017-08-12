@@ -96,7 +96,6 @@ class Uglifier
     :keep_quoted => false, # Keep quoted property names
     :reserved => [], # List of properties that should not be mangled
     :builtins => false, # Mangle properties that overlap with standard JS globals
-    :domprops => false, # Mangle properties that overlap with DOM properties
   }
 
   SOURCE_MAP_DEFAULTS = {
