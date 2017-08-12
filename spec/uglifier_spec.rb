@@ -311,7 +311,7 @@ describe "Uglifier" do
   end
 
   it "can disable IIFE negation" do
-    code = "(function() { console.log('test')})();"
+    code = "(function(value) { console.log(value)})(value);"
     disabled_negation = Uglifier.compile(code, :compress => { :negate_iife => false })
     expect(disabled_negation).not_to include("!")
     negation = Uglifier.compile(code, :compress => { :negate_iife => true })
@@ -437,22 +437,22 @@ describe "Uglifier" do
   describe "wrap_iife option" do
     let(:code) do
       <<-JS
-        (function() {
+        (function(value) {
           return function() {
-            console.log('test')
+            console.log(value)
           };
-        })()();
+        })(1)();
       JS
     end
 
     it "defaults to not wrap IIFEs" do
       expect(Uglifier.compile(code))
-        .to match("!function(){return function(){console.log(\"test\")}}()();")
+        .to match("!function(n){return function(){console.log(n)}}(1)();")
     end
 
     it "wraps IIFEs" do
       expect(Uglifier.compile(code, :output => { :wrap_iife => true }))
-        .to match("(function(){return function(){console.log(\"test\")}})()();")
+        .to match("(function(n){return function(){console.log(n)}})(1)();")
     end
   end
 
