@@ -1,6 +1,6 @@
 ## next
 
-- update UglifyJS to 3.0.27
+- update UglifyJS to 3.0.28
 - remove Angular ngInject processing
 - add unsafe_math compress option
 
