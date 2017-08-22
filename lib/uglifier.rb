@@ -80,6 +80,13 @@ class Uglifier
       :keep_fnames => false, # Do not drop names in function definitions
       :passes => 1 # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
     }, # Apply transformations to code, set to false to skip
+    :parse => {
+      :bare_returns => false, # Allow top-level return statements.
+      :expression => false, # Parse a single expression, rather than a program (for parsing JSON).
+      :html5_comments => true, # Ignore HTML5 comments in input
+      :shebang => true, # support #!command as the first line
+      :strict => false
+    },
     :define => {}, # Define values for symbol replacement
     :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
     :toplevel => false,
@@ -346,6 +353,11 @@ class Uglifier
   end
 
   def parse_options
+    conditional_option(@options[:parse], DEFAULTS[:parse])
+      .merge(parse_source_map_options)
+  end
+
+  def parse_source_map_options
     if @options[:source_map].respond_to?(:[])
       { :filename => @options[:source_map][:filename] }
     else
