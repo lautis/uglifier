@@ -69,6 +69,7 @@ Available options and their defaults are
     :width => 80,               # Specify line width when beautifier is used (only with beautifier)
     :preamble => nil,           # Preamble for the generated JS file. Can be used to insert any code or comment.
     :wrap_iife => false         # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
+    :shebang => true            # Preserve shebang (#!) in preamble (shell scripts)
   },
   :mangle => {
     :eval => false,             # Mangle names when eval of when is used in scope

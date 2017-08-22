@@ -574,4 +574,19 @@ describe "Uglifier" do
     two_pass = Uglifier.compile(code, :mangle => false, :compress => { :passes => 2 })
     expect(two_pass.length).to be < one_pass.length
   end
+
+  describe 'shebang' do
+    let(:shebang) { '#!/usr/bin/env node' }
+    let(:code) { "#{shebang}\nconsole.log('Hello world!')" }
+
+    it 'is not removed by default' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).to include("#!")
+    end
+
+    it 'is removed when shebang option is set to false' do
+      compiled = Uglifier.compile(code, :output => { :shebang => false })
+      expect(compiled).not_to include("#!")
+    end
+  end
 end

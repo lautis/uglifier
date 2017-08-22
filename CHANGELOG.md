@@ -4,6 +4,7 @@
 - remove Angular ngInject processing
 - add unsafe_math compress option
 - add parse options
+- add shebang output option
 
 Dropped options:
 
