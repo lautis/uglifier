@@ -413,27 +413,6 @@ describe "Uglifier" do
     end
   end
 
-  xdescribe "enclose" do
-    let(:code) { "$.foo()" }
-
-    it "encloses code with given arguments" do
-      minified = Uglifier.compile(code, :enclose => { 'window.jQuery' => '$' })
-      expect(minified).to match(/window.jQuery/)
-    end
-
-    it "handles multiple definitions" do
-      definitions = [%w(lol lulz), %w(foo bar)]
-      minified = Uglifier.compile(code, :enclose => definitions)
-      expect(minified).to match(/lol,foo/)
-      expect(minified).to match(/lulz,bar/)
-    end
-
-    it "wraps with function when given empty object" do
-      minified = Uglifier.compile(code, :enclose => {})
-      expect(minified).to match(/function\(/)
-    end
-  end
-
   describe "wrap_iife option" do
     let(:code) do
       <<-JS
