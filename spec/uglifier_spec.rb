@@ -568,4 +568,28 @@ describe "Uglifier" do
       expect(compiled).not_to include("#!")
     end
   end
+
+  describe 'keep_infinity' do
+    let(:code) do
+      <<-JS
+        function fun() { return (123456789 / 0).toString(); }
+      JS
+    end
+
+    it 'compresses Infinity by default' do
+      compiled = Uglifier.compile(code, :compress => {
+        :evaluate => true,
+        :keep_infinity => false
+      })
+      expect(compiled).not_to include("Infinity")
+    end
+
+    it 'can be enabled to preserve Infinity' do
+      compiled = Uglifier.compile(code, :compress => {
+        :evaluate => true,
+        :keep_infinity => true
+      })
+      expect(compiled).to include("Infinity")
+    end
+  end
 end

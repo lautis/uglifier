@@ -5,6 +5,7 @@
 - add unsafe_math compress option
 - add parse options
 - add shebang output option
+- add keep_infinity compress option
 
 Dropped options:
 

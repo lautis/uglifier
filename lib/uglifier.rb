@@ -79,7 +79,8 @@ class Uglifier
       :drop_console => false, # Drop calls to console.* functions
       :keep_fargs => false, # Preserve unused function arguments
       :keep_fnames => false, # Do not drop names in function definitions
-      :passes => 1 # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
+      :passes => 1, # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
+      :keep_infinity => false # Prevent compression of Infinity to 1/0
     }, # Apply transformations to code, set to false to skip
     :parse => {
       :bare_returns => false, # Allow top-level return statements.
@@ -211,6 +212,8 @@ class Uglifier
       #:generate_map => generate_map,
       #:enclose => enclose_options
     }
+
+    puts compressor_options.inspect
 
     parse_result(@context.call("uglifier", options), generate_map)
   end
