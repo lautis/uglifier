@@ -1,4 +1,5 @@
 AllCops:
+  DisplayCopNames: true
   Exclude:
     - uglifier.gemspec
     - lib/uglifier/version.rb
@@ -18,6 +19,9 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   Max: 20
+
+Style/Encoding:
+  Enabled: false
 
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
