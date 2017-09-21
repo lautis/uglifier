@@ -578,17 +578,17 @@ describe "Uglifier" do
 
     it 'compresses Infinity by default' do
       compiled = Uglifier.compile(code, :compress => {
-        :evaluate => true,
-        :keep_infinity => false
-      })
+                                    :evaluate => true,
+                                    :keep_infinity => false
+                                  })
       expect(compiled).not_to include("Infinity")
     end
 
     it 'can be enabled to preserve Infinity' do
       compiled = Uglifier.compile(code, :compress => {
-        :evaluate => true,
-        :keep_infinity => true
-      })
+                                    :evaluate => true,
+                                    :keep_infinity => true
+                                  })
       expect(compiled).to include("Infinity")
     end
   end
