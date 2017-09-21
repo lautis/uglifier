@@ -213,8 +213,6 @@ class Uglifier
       #:enclose => enclose_options
     }
 
-    puts compressor_options.inspect
-
     parse_result(@context.call("uglifier", options), generate_map)
   end
 
