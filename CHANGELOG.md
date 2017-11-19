@@ -3,6 +3,7 @@
 - update UglifyJS to 3.1.10
 - remove Angular ngInject processing
 - add unsafe_math compress option
+- add reduce_funcs compress option
 - add parse options
 - add shebang output option
 - add keep_infinity compress option

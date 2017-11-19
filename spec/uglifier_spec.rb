@@ -218,6 +218,46 @@ describe "Uglifier" do
     expect(minified).to match(/var \w,\w/)
   end
 
+  describe 'reduce_funcs' do
+    let(:code) do
+      <<-JS
+        var foo = function(x, y, z) {
+          return x < y ? x * y + z : x * z - y;
+        }
+        var indirect = function(x, y, z) {
+          return foo(x, y, z);
+        }
+        var sum = 0;
+        for (var i = 0; i < 100; ++i)
+          sum += indirect(i, i + 1, 3 * i);
+        console.log(sum);
+      JS
+    end
+
+    it 'inlines function declaration' do
+      minified = Uglifier.compile(
+        code,
+        :compress => {
+          :reduce_funcs => true,
+          :reduce_vars => true,
+          :toplevel => true,
+          :unused => true
+        }
+      )
+      expect(minified).not_to include("foo(")
+    end
+
+    it 'defaults to not inlining function declarations' do
+      minified = Uglifier.compile(code, :compress => {
+                                    :reduce_funcs => false,
+                                    :reduce_vars => true,
+                                    :toplevel => true,
+                                    :unused => true
+                                  })
+      expect(minified).to include("foo(")
+    end
+  end
+
   describe 'reduce_vars' do
     let(:code) do
       <<-JS
