@@ -683,4 +683,23 @@ describe "Uglifier" do
       expect(compiled).to include('"foo"')
     end
   end
+
+  describe 'side_effects' do
+    let(:code) do
+      <<-JS
+        function fun() { /*@__PURE__*/foo(); }
+      JS
+    end
+
+    it 'defaults to dropping pure function calls' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).not_to include('foo()')
+    end
+
+    it 'function call dropping can be disabled' do
+      compiled = Uglifier.compile(code, :compress => { :side_effects => false })
+      expect(compiled).to include('foo()')
+    end
+  end
+
 end
