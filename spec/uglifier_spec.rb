@@ -278,7 +278,7 @@ describe "Uglifier" do
     end
   end
 
-  fdescribe "ie8 option" do
+  describe "ie8 option" do
     let(:code) { "function something() { return g.switch; }" }
 
     it "defaults to IE8-safe output" do
