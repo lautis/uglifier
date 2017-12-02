@@ -42,6 +42,7 @@ class Uglifier
       :preamble => nil, # Preamble for the generated JS file. Can be used to insert any code or comment.
       :wrap_iife => false, # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
       :shebang => true, # Preserve shebang (#!) in preamble (shell scripts)
+      :quote_style => 0, # Quote style, possible values :auto (default), :single, :double, :original
     },
     :mangle => {
       :eval => false, # Mangle names when eval of when is used in scope
@@ -304,6 +305,22 @@ class Uglifier
     end
   end
 
+  def quote_style
+    option = conditional_option(@options[:output], DEFAULTS[:output])[:quote_style]
+    case option
+    when :single
+      1
+    when :double
+      2
+    when :original
+      3
+    when Numeric
+      option
+    else # auto
+      0
+    end
+  end
+
   def comment_setting
     if @options.has_key?(:output) && @options[:output].has_key?(:comments)
       @options[:output][:comments]
@@ -318,7 +335,8 @@ class Uglifier
 
   def output_options
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
-      :comments => comment_options
+      :comments => comment_options,
+      :quote_style => quote_style
     ).reject { |key, _| key == :ie_proof }
   end
 

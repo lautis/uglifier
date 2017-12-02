@@ -7,6 +7,7 @@
 - add parse options
 - add shebang output option
 - add keep_infinity compress option
+- add quote_style output option
 
 Dropped options:
 

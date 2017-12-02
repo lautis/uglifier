@@ -632,4 +632,38 @@ describe "Uglifier" do
       expect(compiled).to include("Infinity")
     end
   end
+
+  describe 'quote style' do
+    let(:code) do
+      <<-JS
+        function fun() { return "foo \\\"bar\\\""; }
+      JS
+    end
+
+    it 'defaults to auto' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).to include("'foo \"bar\"'")
+    end
+
+    it 'can use numbers for configuration' do
+      compiled = Uglifier.compile(code, :output => { :quote_style => 2 })
+      expect(compiled).to include("\"foo \\\"bar\\\"\"")
+    end
+
+    it 'uses single quotes when single' do
+      compiled = Uglifier.compile(code, :output => { :quote_style => :single })
+      expect(compiled).to include("'foo \"bar\"'")
+    end
+
+    it 'uses double quotes when single' do
+      compiled = Uglifier.compile(code, :output => { :quote_style => :double })
+      expect(compiled).to include("\"foo \\\"bar\\\"\"")
+    end
+
+    it 'preserves original quoting when original' do
+      compiled = Uglifier.compile(code, :output => { :quote_style => :original })
+      expect(compiled).to include("\"foo \\\"bar\\\"\"")
+    end
+  end
+
 end
