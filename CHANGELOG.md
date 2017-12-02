@@ -1,3 +1,24 @@
+## next
+
+- update UglifyJS to 3.2.0
+- remove Angular ngInject processing
+- add unsafe_math compress option
+- add reduce_funcs compress option
+- add parse options
+- add shebang output option
+- add keep_infinity compress option
+- add quote_style output option
+- add side_effects compress option
+- add switches compress option
+
+Dropped options:
+
+- output: angular
+- mangle: except => reserved
+- mangle_properties: ignore_quoted => keep_quoted
+- enclose
+
+
 ## 3.2.0 (9 April 2017)
 
 - experimental ES6/Harmony mode based on UglifyJS2 Harmony branch

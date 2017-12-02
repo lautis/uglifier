@@ -66,10 +66,12 @@ Available options and their defaults are
     :beautify => false,         # Beautify output
     :indent_level => 4,         # Indent level in spaces
     :indent_start => 0,         # Starting indent level
-    :space_colon => false,      # Insert space before colons (only with beautifier)
     :width => 80,               # Specify line width when beautifier is used (only with beautifier)
     :preamble => nil,           # Preamble for the generated JS file. Can be used to insert any code or comment.
     :wrap_iife => false         # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
+    :shebang => true            # Preserve shebang (#!) in preamble (shell scripts)
+    :quote_style => 0,          # Quote style, possible values :auto (default), :single, :double, :original
+    :keep_quoted_props => false # Keep quotes property names
   },
   :mangle => {
     :eval => false,             # Mangle names when eval of when is used in scope
@@ -91,6 +93,7 @@ Available options and their defaults are
     :drop_debugger => true,     # Remove debugger; statements
     :unsafe => false,           # Apply "unsafe" transformations
     :unsafe_comps => false,     # Reverse < and <= to > and >= to allow improved compression. This might be unsafe when an at least one of two operands is an object with computed values due the use of methods like get, or valueOf. This could cause change in execution order after operands in the comparison are switching. Compression only works if both comparisons and unsafe_comps are both set to true.
+    :unsafe_math => false,      # Optimize numerical expressions like 2 * x * 3 into 6 * x, which may give imprecise floating point results.
     :unsafe_proto => false,     # Optimize expressions like Array.prototype.slice.call(a) into [].slice.call(a)
     :conditionals => true,      # Optimize for if-s and conditional expressions
     :comparisons => true,       # Apply binary node optimizations for comparisons
@@ -106,16 +109,26 @@ Available options and their defaults are
     :join_vars => true,         # Join consecutive var statements
     :cascade => true,           # Cascade sequences
     :collapse_vars => false,    # Collapse single-use var and const definitions when possible.
+    :reduce_funcs => false,     # Inline single-use functions as function expressions. Depends on reduce_vars.
     :reduce_vars => false,      # Collapse variables assigned with and used as constant values.
     :negate_iife => true,       # Negate immediately invoked function expressions to avoid extra parens
     :pure_getters => false,     # Assume that object property access does not have any side-effects
     :pure_funcs => nil,         # List of functions without side-effects. Can safely discard function calls when the result value is not used
     :drop_console => false,     # Drop calls to console.* functions
-    :angular => false,          # Process @ngInject annotations
     :keep_fargs => false,       # Preserve unused function arguments
-    :keep_fnames => false       # Do not drop names in function definitions
-    :passes => 1                # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
+    :keep_fnames => false,      # Do not drop names in function definitions
+    :passes => 1,               # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
+    :keep_infinity => false,    # Prevent compression of Infinity to 1/0
+    :side_effects => true,      # Pass false to disable potentially dropping functions marked as "pure" using pure comment annotation. See UglifyJS documentation for details.
+    :switches => true,          # de-duplicate and remove unreachable switch branches
   },                            # Apply transformations to code, set to false to skip
+  :parse => {
+    :bare_returns => false,     # Allow top-level return statements.
+    :expression => false,       # Parse a single expression, rather than a program (for parsing JSON).
+    :html5_comments => true,    # Ignore HTML5 comments in input
+    :shebang => true,           # support #!command as the first line
+    :strict => false
+  },
   :define => {},                # Define values for symbol replacement
   :enclose => false,            # Enclose in output function wrapper, define replacements as key-value pairs
   :keep_fnames => false,        # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
