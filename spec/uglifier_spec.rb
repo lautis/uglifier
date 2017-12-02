@@ -666,4 +666,21 @@ describe "Uglifier" do
     end
   end
 
+  describe 'keep quoted props' do
+    let(:code) do
+      <<-JS
+        function fun() { return {"foo": "bar"}; }
+      JS
+    end
+
+    it 'defaults to not keeping quotes' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).not_to include('"foo"')
+    end
+
+    it 'keeps properties when set to true' do
+      compiled = Uglifier.compile(code, :output => { :keep_quoted_props => true })
+      expect(compiled).to include('"foo"')
+    end
+  end
 end

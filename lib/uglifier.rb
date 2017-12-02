@@ -43,6 +43,7 @@ class Uglifier
       :wrap_iife => false, # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
       :shebang => true, # Preserve shebang (#!) in preamble (shell scripts)
       :quote_style => 0, # Quote style, possible values :auto (default), :single, :double, :original
+      :keep_quoted_props => false # Keep quotes property names
     },
     :mangle => {
       :eval => false, # Mangle names when eval of when is used in scope
