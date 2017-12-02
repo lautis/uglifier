@@ -151,7 +151,7 @@ class Uglifier
     end
     @options = options
 
-    source = @options[:harmony] ? source_with(HarmonySourcePath) : source_with(SourcePath)
+    source = harmony? ? source_with(HarmonySourcePath) : source_with(SourcePath)
     @context = ExecJS.compile(source)
   end
 
@@ -219,8 +219,22 @@ class Uglifier
     parse_result(@context.call("uglifier", options), generate_map)
   end
 
+  def harmony?
+    @options[:harmony]
+  end
+
+  def error_message(result)
+    result['error']['message'] +
+      if result['error']['message'].start_with?("Unexpected token:") && !harmony?
+        ". To use ES6 syntax, harmony mode must be enabled with " \
+        "Uglifier.new(:harmony => true)."
+      else
+        ""
+      end
+  end
+
   def parse_result(result, generate_map)
-    raise Error, result['error']['message'] if result.has_key?('error')
+    raise Error, error_message(result) if result.has_key?('error')
 
     if generate_map
       [result['code'] + source_map_comments, result['map']]

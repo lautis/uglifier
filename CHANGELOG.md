@@ -10,6 +10,8 @@
 - add quote_style output option
 - add side_effects compress option
 - add switches compress option
+- more helpful error Message in Harmony mode
+
 Dropped options:
 
 - output: angular
