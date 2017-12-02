@@ -102,7 +102,7 @@ class Uglifier
     :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
   }
 
-  LEGACY_OPTIONS = [:comments, :squeeze, :copyright, :mangle, :screw_ie8, :mangle_properties]
+  EXTRA_OPTIONS = [:comments, :mangle_properties]
 
   MANGLE_PROPERTIES_DEFAULTS = {
     :debug => false, # Add debug prefix and suffix to mangled properties
@@ -146,7 +146,7 @@ class Uglifier
   #
   # @param options [Hash] optional overrides to +Uglifier::DEFAULTS+
   def initialize(options = {})
-    (options.keys - DEFAULTS.keys - LEGACY_OPTIONS)[0..1].each do |missing|
+    (options.keys - DEFAULTS.keys - EXTRA_OPTIONS)[0..1].each do |missing|
       raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
@@ -214,8 +214,6 @@ class Uglifier
       :parse => parse_options,
       :sourceMap => source_map_options(input_map),
       :ie8 => ie8?
-      #:generate_map => generate_map,
-      #:enclose => enclose_options
     }
 
     parse_result(@context.call("uglifier", options), generate_map)
@@ -278,7 +276,7 @@ class Uglifier
     )
 
     conditional_option(
-      @options[:compress] || @options[:squeeze],
+      @options[:compress],
       defaults,
       { :keep_fnames => keep_fnames?(:compress) }.merge(negate_iife_block)
     )
@@ -329,8 +327,6 @@ class Uglifier
       @options[:output][:comments]
     elsif @options.has_key?(:comments)
       @options[:comments]
-    elsif @options[:copyright] == false
-      :none
     else
       DEFAULTS[:output][:comments]
     end
@@ -340,17 +336,11 @@ class Uglifier
     DEFAULTS[:output].merge(@options[:output] || {}).merge(
       :comments => comment_options,
       :quote_style => quote_style
-    ).reject { |key, _| key == :ie_proof }
+    )
   end
 
   def ie8?
-    if (@options[:output] || {}).has_key?(:ie_proof)
-      @options[:output][:ie_proof]
-    elsif @options.has_key?(:screw_ie8)
-      !@options[:screw_ie8]
-    else
-      @options.fetch(:ie8, DEFAULTS[:ie8])
-    end
+    @options.fetch(:ie8, DEFAULTS[:ie8])
   end
 
   def keep_fnames?(type)

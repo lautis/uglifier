@@ -132,11 +132,6 @@ describe "Uglifier" do
       JS
     end
 
-    it "handles copyright option" do
-      compiled = Uglifier.compile(source, :copyright => false)
-      expect(compiled).not_to match(/Copyright/)
-    end
-
     describe ":copyright" do
       subject { Uglifier.compile(source, :comments => :copyright) }
 
@@ -197,13 +192,6 @@ describe "Uglifier" do
         expect(subject).not_to match(/2011/)
       end
     end
-  end
-
-  it "squeezes code only if squeeze is set to true" do
-    code = "function a(a){if(a) { return 0; } else { return 1; }}"
-    minified = Uglifier.compile(code, :squeeze => false)
-    squeezed = Uglifier.compile(code, :squeeze => true)
-    expect(minified.length).to be > squeezed.length
   end
 
   it "honors max line length" do
@@ -290,26 +278,16 @@ describe "Uglifier" do
     end
   end
 
-  describe "ie8 option" do
-    let(:code) { "function something() { return g['switch']; }" }
+  fdescribe "ie8 option" do
+    let(:code) { "function something() { return g.switch; }" }
 
     it "defaults to IE8-safe output" do
-      expect(Uglifier.compile(code)).to match(".switch")
+      expect(Uglifier.compile(code)).to match("\"switch\"")
     end
 
     it "forwards ie8 option to UglifyJS" do
       expect(Uglifier.compile(code, :mangle => false, :ie8 => false)).to match(/g\.switch/)
       expect(Uglifier.compile(code, :compress => false, :ie8 => false)).to match(/g\.switch/)
-    end
-
-    it "supports legacy ie_proof output option" do
-      minified = Uglifier.compile(code, :output => { :ie_proof => true })
-      expect(minified).to include('["switch"]')
-    end
-
-    it "supports legacy screw_ie8 output option" do
-      minified = Uglifier.compile(code, :screw_ie8 => true)
-      expect(minified).to match(/g\.switch/)
     end
   end
 

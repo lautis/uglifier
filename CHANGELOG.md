@@ -10,13 +10,13 @@
 - add quote_style output option
 - add side_effects compress option
 - add switches compress option
-
 Dropped options:
 
 - output: angular
 - mangle: except => reserved
 - mangle_properties: ignore_quoted => keep_quoted
 - enclose
+- squeeze, copyright and screw_ie8 options
 
 
 ## 3.2.0 (9 April 2017)
