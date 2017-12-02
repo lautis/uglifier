@@ -702,4 +702,29 @@ describe "Uglifier" do
     end
   end
 
+  describe 'switches' do
+    let(:code) do
+      <<-JS
+        function fun() {
+          switch (1) {
+            case 1: foo();
+            case 1+1:
+              bar();
+              break;
+            case 1+1+1: baz();
+          }
+        }
+      JS
+    end
+
+    it 'drops unreachable switch branches by default' do
+      compiled = Uglifier.compile(code)
+      expect(compiled).not_to include('baz()')
+    end
+
+    it 'branch dropping can be disabled' do
+      compiled = Uglifier.compile(code, :compress => { :switches => false })
+      expect(compiled).to include('baz()')
+    end
+  end
 end

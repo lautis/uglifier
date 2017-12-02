@@ -85,6 +85,7 @@ class Uglifier
       :passes => 1, # Number of times to run compress. Raising the number of passes will increase compress time, but can produce slightly smaller code.
       :keep_infinity => false, # Prevent compression of Infinity to 1/0
       :side_effects => true, # Pass false to disable potentially dropping functions marked as "pure" using pure comment annotation. See UglifyJS documentation for details.
+      :switches => true, # de-duplicate and remove unreachable switch branches
     }, # Apply transformations to code, set to false to skip
     :parse => {
       :bare_returns => false, # Allow top-level return statements.
