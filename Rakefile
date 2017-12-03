@@ -10,17 +10,17 @@ end
 desc "Rebuild lib/uglify.js"
 task :js do
   cd 'vendor/source-map/' do
-    `npm install`
+    `npm install --no-package-lock --no-save`
   end
 
   cd 'vendor/uglifyjs/' do
     # required to run ./uglifyjs2 --self; not bundled.
-    `npm install`
+    `npm install --no-package-lock --no-save`
   end
 
   cd 'vendor/uglifyjs-harmony' do
     # required to run ./uglifyjs2 --self; not bundled.
-    `npm install`
+    `npm install --no-package-lock --no-save`
   end
 
   FileUtils.cp("vendor/source-map/dist/source-map.js", "lib/source-map.js")
