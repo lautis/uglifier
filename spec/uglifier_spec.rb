@@ -20,7 +20,7 @@ describe "Uglifier" do
     end
 
     it "raises an error when minifying JS with Harmony without harmony option" do
-      source = "const foo = () => bar();"
+      source = "for (var value of array) { doSomething(value) }"
       expect { Uglifier.new(:compress => false).compile(source) }
         .to raise_error(Uglifier::Error, /harmony/)
     end

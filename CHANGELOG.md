@@ -1,3 +1,7 @@
+## next
+
+- show harmony suggestion when using for-of loops
+
 ## 4.0.1 (3 December 2017)
 
 - update UglifyJS to 3.2.1
