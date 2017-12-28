@@ -1,9 +1,9 @@
-## next
+## 4.1.0 (28 December 2017)
 
 - update UglifyJS to 3.3.2
 - `cascade` compress option is merged into `collapse_vars`
 
-## 4.0.2
+## 4.0.2 (10 December 2017)
 
 - update UglifyJS to 3.2.2
 - show harmony suggestion when using for-of loops
