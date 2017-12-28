@@ -201,9 +201,17 @@ describe "Uglifier" do
   end
 
   it "hoists vars to top of the scope" do
-    code = "function something() { var a = foo(); a = bar(); var b = baz(); return a + b;}"
+    code = <<-JS
+      function f() {
+        var a = 1;
+        var b = 2;
+        var c = 3;
+        function g() {}
+        return g(a, b, c);
+      }
+    JS
     minified = Uglifier.compile(code, :compress => { :hoist_vars => true })
-    expect(minified).to match(/var \w,\w/)
+    expect(minified).to match(/var \w=\d+,\w=\d+/)
   end
 
   describe 'reduce_funcs' do
@@ -225,6 +233,7 @@ describe "Uglifier" do
     it 'inlines function declaration' do
       minified = Uglifier.compile(
         code,
+        :mangle => false,
         :compress => {
           :reduce_funcs => true,
           :reduce_vars => true,
@@ -236,12 +245,16 @@ describe "Uglifier" do
     end
 
     it 'defaults to not inlining function declarations' do
-      minified = Uglifier.compile(code, :compress => {
-                                    :reduce_funcs => false,
-                                    :reduce_vars => true,
-                                    :toplevel => true,
-                                    :unused => true
-                                  })
+      minified = Uglifier.compile(
+        code,
+        :mangle => false,
+        :compress => {
+          :reduce_funcs => false,
+          :reduce_vars => true,
+          :toplevel => true,
+          :unused => true
+        }
+      )
       expect(minified).to include("foo(")
     end
   end

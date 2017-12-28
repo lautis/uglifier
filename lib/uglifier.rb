@@ -72,7 +72,6 @@ class Uglifier
       :hoist_vars => false, # Hoist var declarations
       :if_return => true, # Optimizations for if/return and if/continue
       :join_vars => true, # Join consecutive var statements
-      :cascade => true, # Cascade sequences
       :collapse_vars => true, # Collapse single-use var and const definitions when possible.
       :reduce_funcs => false, # Inline single-use functions as function expressions. Depends on reduce_vars.
       :reduce_vars => false, # Collapse variables assigned with and used as constant values.

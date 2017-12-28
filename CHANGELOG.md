@@ -1,3 +1,8 @@
+## next
+
+- update UglifyJS to 3.3.2
+- `cascade` compress option is merged into `collapse_vars`
+
 ## 4.0.2
 
 - update UglifyJS to 3.2.2
