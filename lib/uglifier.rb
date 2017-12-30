@@ -188,9 +188,7 @@ class Uglifier
       suffix += "\n//# sourceMappingURL=" + @options[:source_map][:map_url]
     end
 
-    if @options[:source_map][:url]
-      suffix += "\n//# sourceURL=" + @options[:source_map][:url]
-    end
+    suffix += "\n//# sourceURL=" + @options[:source_map][:url] if @options[:source_map][:url]
     suffix
   end
 
@@ -449,9 +447,7 @@ class Uglifier
     source_map_options = @options[:source_map].is_a?(Hash) ? @options[:source_map] : {}
     sanitize_map_root(source_map_options.fetch(:input_source_map) do
       url = extract_source_mapping_url(source)
-      if url && url.start_with?("data:")
-        Base64.strict_decode64(url.split(",", 2)[-1])
-      end
+      Base64.strict_decode64(url.split(",", 2)[-1]) if url && url.start_with?("data:")
     end)
   rescue ArgumentError, JSON::ParserError
     nil

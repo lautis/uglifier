@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-# rubocop:disable Metrics/BlockLength
-
 require 'fileutils'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
@@ -24,6 +22,7 @@ def changelog_tail
   end
 end
 
+# rubocop:disable Metrics/BlockLength
 namespace :uglifyjs do
   desc "Update UglifyJS source to version specified in VERSION environment variable"
   task :update do
@@ -84,6 +83,7 @@ namespace :uglifyjs do
     `git commit -m "Update UglifyJS to #{version}"`
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 desc "Update UglifyJS to version specified in VERSION environment variable"
 task :uglifyjs => ['uglifyjs:update', 'uglifyjs:build', 'uglifyjs:changelog', 'uglifyjs:commit']
