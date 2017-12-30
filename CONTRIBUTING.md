@@ -28,14 +28,19 @@ Then run tests using rake:
 
     git submodule update --init
 
-After that, UglifyJS and source-map are checked out under `vendor/uglifyjs` and `vendor/source-map`.
+After that, UglifyJS can be updated to a specific version with rake task.
 
-Use Git commands (e.g. git checkout master) to change the included version. You can even write custom code to yourself. After changing the dependencies, compile new version of the bundled JS file using
+    rake uglifyjs:update VERSION=3.3.4
 
-    bundle exec rake js
+To compile JS with dependencies, run
 
-After this, the new JS is used in your development version.
+    rake uglifyjs:build
 
+You can even write custom patches to UglifyJS in `vendor/uglifyjs` and `vendor/uglifyjs-harmony` directories and compile the bundles JS using the command above. However, for the changes to be releasable, they should be in UglifyJS repository.
+
+To automatically update UglifyJS version and commit changes
+
+    rake uglifyjs VERSION=3.3.4
 
 ## Reporting issues
 
