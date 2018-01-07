@@ -1,4 +1,4 @@
-## next
+## 4.1.3 (7 January 2018)
 
 - update UglifyJS to 3.3.5
 
