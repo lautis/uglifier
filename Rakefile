@@ -22,6 +22,15 @@ def changelog_tail
   end
 end
 
+def compare_url(from, to)
+  "https://github.com/mishoo/UglifyJS2/compare/#{from}...#{to}"
+end
+
+def previous_version
+  match = File.read("CHANGELOG.md").scan(/- update UglifyJS to \[(.*)\]\(/)
+  match ? match[0][0].chomp : nil
+end
+
 # rubocop:disable Metrics/BlockLength
 namespace :uglifyjs do
   desc "Update UglifyJS source to version specified in VERSION environment variable"
@@ -65,7 +74,10 @@ namespace :uglifyjs do
 
   desc "Add UglifyJS version bump to changelog"
   task :changelog do
-    item = "- update UglifyJS to #{version}"
+    url = compare_url("v#{previous_version}", "v#{version}")
+    es_url = compare_url("harmony-v#{previous_version}", "harmony-v#{version}")
+    item = "- update UglifyJS to [#{version}](#{url})" \
+      "\n- update uglify-es to [#{version}](#{es_url})"
     changelog = "#{HEADER}\n\n#{item}\n#{changelog_tail}"
     File.write("CHANGELOG.md", changelog)
   end
