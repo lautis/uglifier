@@ -31,6 +31,11 @@ def previous_version
   match ? match[0][0].chomp : nil
 end
 
+def git_commit(files, message)
+  `git add #{files.join(' ')}`
+  `git commit -S -m "#{message.gsub('"', "\\\"")}"`
+end
+
 # rubocop:disable Metrics/BlockLength
 namespace :uglifyjs do
   desc "Update UglifyJS source to version specified in VERSION environment variable"
@@ -91,14 +96,43 @@ namespace :uglifyjs do
       'vendor/uglifyjs',
       'vendor/uglifyjs-harmony'
     ]
-    `git add #{files.join(' ')}`
-    `git commit -m "Update UglifyJS to #{version}"`
+    git_commit(files, "Update UglifyJS to #{version}")
   end
 end
 # rubocop:enable Metrics/BlockLength
 
 desc "Update UglifyJS to version specified in VERSION environment variable"
 task :uglifyjs => ['uglifyjs:update', 'uglifyjs:build', 'uglifyjs:changelog', 'uglifyjs:commit']
+
+namespace :version do
+  desc "Write version to CHANGELOG.md"
+  task :changelog do
+    content = File.read("CHANGELOG.md")
+    date = Time.now.strftime("%d %B %Y")
+    File.write("CHANGELOG.md", content.gsub("## next", "## #{version} (#{date})"))
+  end
+
+  desc "Write version to uglifier.rb"
+  task :ruby do
+    file = "lib/uglifier/version.rb"
+    content = File.read("lib/uglifier/version.rb")
+    File.write(file, content.gsub(/VERSION = "(.*)"/, "VERSION = \"#{version}\""))
+  end
+
+  desc "Commit changes from Uglifier version bump"
+  task :commit do
+    files = ["CHANGELOG.md", "lib/uglifier/version.rb"]
+    git_commit(files, "Bump version to #{version}")
+  end
+
+  desc "Create git tag for version"
+  task :tag do
+    `git tag -s -m "Version #{version}" v#{version}`
+  end
+end
+
+desc "Update Uglifier to version specified in VERSION environment variable"
+task :version => ['version:changelog', 'version:ruby', 'version:commit', 'version:tag']
 
 begin
   require 'rubocop/rake_task'
