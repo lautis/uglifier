@@ -1,4 +1,4 @@
-## next
+## 4.1.6 (08 February 2018)
 
 - update UglifyJS to [3.3.10](https://github.com/mishoo/UglifyJS2/compare/v3.3.9...v3.3.10)
 - update uglify-es to [3.3.10](https://github.com/mishoo/UglifyJS2/compare/harmony-v3.3.9...harmony-v3.3.10)
