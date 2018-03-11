@@ -511,21 +511,23 @@ describe "Uglifier" do
   describe 'unsafe_comps' do
     let(:code) do
       <<-JS
-        var obj1 = {
-            valueOf: function() {triggeredFirst();}
-        }
-        var obj2 = 2;
-        var result1 = obj1 <= obj2;
+        var obj1, obj2;
+        obj1 <= obj2 ? f1() : g1();
       JS
     end
 
     let(:options) do
-      { :comparisons => true, :reduce_vars => false, :collapse_vars => false }
+      {
+        :comparisons => true,
+        :conditionals => true,
+        :reduce_vars => false,
+        :collapse_vars => false
+      }
     end
 
     it 'keeps unsafe comparisons by default' do
       compiled = Uglifier.compile(code, :mangle => false, :compress => options)
-      expect(compiled).to include("result1=obj1<=obj2")
+      expect(compiled).to include("obj1<=obj2")
     end
 
     it 'optimises unsafe comparisons when unsafe_comps is enabled' do
@@ -534,7 +536,7 @@ describe "Uglifier" do
         :mangle => false,
         :compress => options.merge(:unsafe_comps => true)
       )
-      expect(compiled).to include("result1=obj2>=obj1")
+      expect(compiled).to include("obj2<obj1")
     end
   end
 
