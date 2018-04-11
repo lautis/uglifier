@@ -344,10 +344,16 @@ class Uglifier
   end
 
   def output_options
-    DEFAULTS[:output].merge(@options[:output] || {}).merge(
-      :comments => comment_options,
-      :quote_style => quote_style
-    )
+    migrate_braces(DEFAULTS[:output].merge(@options[:output] || {}))
+      .merge(:comments => comment_options, :quote_style => quote_style)
+  end
+
+  def migrate_braces(options)
+    if harmony?
+      options
+    else
+      options.merge(:braces => options[:bracketize]).delete_if { |key| key == :bracketize }
+    end
   end
 
   def ie8?
