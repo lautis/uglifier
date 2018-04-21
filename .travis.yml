@@ -5,13 +5,13 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.10
-  - 2.2.9
-  - 2.3.6
-  - 2.4.3
-  - 2.5.0
+  - 2.2.10
+  - 2.3.7
+  - 2.4.4
+  - 2.5.1
   - ruby-head
   - jruby-19mode
-  - jruby-9.1.15.0
+  - jruby-9.1.16.0
 before_install:
   - gem install bundler -v 1.16.1
 git:
@@ -20,15 +20,15 @@ gemfile:
   - Gemfile
 matrix:
   include:
-    - rvm: 2.5.0
+    - rvm: 2.5.1
       gemfile: gemfiles/rubyracer
-    - rvm: jruby-9.1.15.0
+    - rvm: jruby-9.1.16.0
       gemfile: gemfiles/rubyrhino
-    - rvm: 2.5.0
+    - rvm: 2.5.1
       gemfile: gemfiles/alaska
       env: ALASKA=1
   allow_failures:
-    - rvm: 2.5.0
+    - rvm: 2.5.1
       gemfile: gemfiles/alaska
       env: ALASKA=1
     - rvm: ruby-head
