@@ -46,3 +46,6 @@ Style/Alias:
 
 Style/MutableConstant:
   Enabled: false
+
+Style/ExpandPathArguments:
+  Enabled: false
