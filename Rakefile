@@ -43,10 +43,6 @@ namespace :uglifyjs do
     cd 'vendor/uglifyjs' do
       `git fetch && git checkout v#{version}`
     end
-
-    cd 'vendor/uglifyjs-harmony' do
-      `git fetch && git checkout harmony-v#{version}`
-    end
   end
 
   desc "Rebuild lib/uglify*.js"
@@ -80,9 +76,7 @@ namespace :uglifyjs do
   desc "Add UglifyJS version bump to changelog"
   task :changelog do
     url = compare_url("v#{previous_version}", "v#{version}")
-    es_url = compare_url("harmony-v#{previous_version}", "harmony-v#{version}")
-    item = "- update UglifyJS to [#{version}](#{url})" \
-      "\n- update uglify-es to [#{version}](#{es_url})"
+    item = "- update UglifyJS to [#{version}](#{url})"
     changelog = "#{HEADER}\n\n#{item}\n#{changelog_tail}"
     File.write("CHANGELOG.md", changelog)
   end
