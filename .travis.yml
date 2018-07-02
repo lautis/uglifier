@@ -10,7 +10,6 @@ rvm:
   - 2.4.4
   - 2.5.1
   - ruby-head
-  - jruby-19mode
   - jruby-9.2.0.0
 before_install:
   - gem install bundler -v 1.16.1
