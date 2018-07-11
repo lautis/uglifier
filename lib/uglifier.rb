@@ -96,7 +96,7 @@ class Uglifier
     :define => {}, # Define values for symbol replacement
     :keep_fnames => false, # Generate code safe for the poor souls relying on Function.prototype.name at run-time. Sets both compress and mangle keep_fanems to true.
     :toplevel => false,
-    :ie8 => true, # Generate safe code for IE8
+    :ie8 => false, # Generate safe code for IE8
     :source_map => false, # Generate source map
     :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
   }

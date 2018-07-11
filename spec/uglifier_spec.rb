@@ -294,8 +294,12 @@ describe "Uglifier" do
   describe "ie8 option" do
     let(:code) { "function something() { return g.switch; }" }
 
-    it "defaults to IE8-safe output" do
-      expect(Uglifier.compile(code)).to match("\"switch\"")
+    it "defaults to non-IE8-safe output" do
+      expect(Uglifier.compile(code)).to match(/g\.switch/)
+    end
+
+    it "handles IE8-safe output" do
+      expect(Uglifier.compile(code, :ie8 => true)).to match("\"switch\"")
     end
 
     it "forwards ie8 option to UglifyJS" do
@@ -324,7 +328,7 @@ describe "Uglifier" do
 
   it "quotes unsafe keys by default" do
     code = 'var code = {"class": "", "\u200c":"A"}'
-    expect(Uglifier.compile(code)).to include('"class"')
+    expect(Uglifier.compile(code)).to include('class')
     expect(Uglifier.compile(code)).to include('"\u200c"')
 
     uglifier = Uglifier.new(:output => { :ascii_only => false, :quote_keys => false })
