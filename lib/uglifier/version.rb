@@ -1,4 +1,4 @@
 class Uglifier
   # Current version of Uglifier.
-  VERSION = "4.1.15"
+  VERSION = "4.1.16"
 end
