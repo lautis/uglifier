@@ -103,7 +103,7 @@ Available options and their defaults are
   },
   :mangle => {
     :eval => false,             # Mangle names when eval of when is used in scope
-    :except => ["$super"],      # Argument names to be excluded from mangling
+    :reserved => ["$super"],    # Argument names to be excluded from mangling
     :sort => false,             # Assign shorter names to most frequently used variables. Often results in bigger output after gzip.
     :toplevel => false,         # Mangle names declared in the toplevel scope
     :properties => false,       # Mangle property names
