@@ -519,7 +519,7 @@ describe "Uglifier" do
     let(:options) do
       {
         :comparisons => true,
-        :conditionals => true,
+        :conditionals => false,
         :reduce_vars => false,
         :collapse_vars => false
       }
