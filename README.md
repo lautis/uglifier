@@ -123,7 +123,7 @@ Available options and their defaults are
     :unsafe_comps => false,     # Reverse < and <= to > and >= to allow improved compression. This might be unsafe when an at least one of two operands is an object with computed values due the use of methods like get, or valueOf. This could cause change in execution order after operands in the comparison are switching. Compression only works if both comparisons and unsafe_comps are both set to true.
     :unsafe_math => false,      # Optimize numerical expressions like 2 * x * 3 into 6 * x, which may give imprecise floating point results.
     :unsafe_proto => false,     # Optimize expressions like Array.prototype.slice.call(a) into [].slice.call(a)
-    :conditionals => true,      # Optimize for if-s and conditional expressions
+    :conditionals => false,     # Optimize for if-s and conditional expressions. 'false' for a while, see issue -> https://github.com/lautis/uglifier/issues/155
     :comparisons => true,       # Apply binary node optimizations for comparisons
     :evaluate => true,          # Attempt to evaluate constant expressions
     :booleans => true,          # Various optimizations to boolean contexts
