@@ -1,4 +1,4 @@
-## next
+## 4.1.20 (17 November 2018)
 
 - update UglifyJS to [3.4.8](https://github.com/mishoo/UglifyJS2/compare/v3.4.9...v3.4.8)
 
