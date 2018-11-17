@@ -1,3 +1,7 @@
+## next
+
+- update UglifyJS to [3.4.8](https://github.com/mishoo/UglifyJS2/compare/v3.4.9...v3.4.8)
+
 ## 4.1.19 (11 September 2018)
 
 - update UglifyJS to [3.4.9](https://github.com/mishoo/UglifyJS2/compare/v3.4.7...v3.4.9)
