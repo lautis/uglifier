@@ -4,6 +4,7 @@ require "json"
 require "base64"
 require "execjs"
 require "uglifier/version"
+require "uglifier/error_message_presenter"
 
 # A wrapper around the UglifyJS interface
 class Uglifier
@@ -98,7 +99,8 @@ class Uglifier
     :toplevel => false,
     :ie8 => true, # Generate safe code for IE8
     :source_map => false, # Generate source map
-    :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
+    :harmony => false, # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
+    :error_context_lines => 20 # How many source lines to show before and after the error
   }
 
   EXTRA_OPTIONS = [:comments, :mangle_properties]
@@ -213,25 +215,22 @@ class Uglifier
       :ie8 => ie8?
     }
 
-    parse_result(@context.call("uglifier", options), generate_map)
+    parse_result(@context.call("uglifier", options), generate_map, source)
   end
 
   def harmony?
     @options[:harmony]
   end
 
-  def error_message(result)
-    result['error']['message'] +
-      if result['error']['message'].start_with?("Unexpected token") && !harmony?
-        ". To use ES6 syntax, harmony mode must be enabled with " \
-        "Uglifier.new(:harmony => true)."
-      else
-        ""
-      end
+  def error_context_lines
+    @options[:error_context_lines] || DEFAULTS[:error_context_lines]
   end
 
-  def parse_result(result, generate_map)
-    raise Error, error_message(result) if result.has_key?('error')
+  def parse_result(result, generate_map, source)
+    if result.has_key?('error')
+      message_presenter = ErrorMessagePresenter.new(result, source, harmony?, error_context_lines)
+      raise Error, message_presenter.error_message
+    end
 
     if generate_map
       [result['code'] + source_map_comments, result['map']]
