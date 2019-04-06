@@ -10,12 +10,10 @@ class Uglifier
   # Error class for compilation errors.
   class Error < StandardError; end
 
-  # UglifyJS source path
-  SourcePath = File.expand_path("../uglify.js", __FILE__)
-  # UglifyJS with Harmony source path
-  HarmonySourcePath = File.expand_path("../uglify-harmony.js", __FILE__)
   # Source Map path
   SourceMapPath = File.expand_path("../source-map.js", __FILE__)
+  # Terser source path
+  SourcePath = File.expand_path("../terser.js", __FILE__)
   # ES5 shims source path
   ES5FallbackPath = File.expand_path("../es5.js", __FILE__)
   # String.split shim source path
@@ -28,22 +26,21 @@ class Uglifier
     # rubocop:disable LineLength
     :output => {
       :ascii_only => true, # Escape non-ASCII characterss
+      :braces => false, # Always insert braces in if, for, do, while or with statements, even if their body is a single statement.
       :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
-      :inline_script => false, # Escape occurrences of </script in strings
-      :quote_keys => false, # Quote keys in object literals
-      :max_line_len => 32 * 1024, # Maximum line length in minified code
-      :bracketize => false, # Bracketize if, for, do, while or with statements, even if their body is a single statement
-      :semicolons => true, # Separate statements with semicolons
-      :preserve_line => false, # Preserve line numbers in outputs
-      :beautify => false, # Beautify output
+      :ecma => 5, # Set output printing mode. Set ecma to 6 or greater to emit shorthand object properties - i.e.: {a} instead of {a: a}. Non-compatible features in the abstract syntax tree will still be output as is. For example: an ecma setting of 5 will not convert ES6+ code to ES5.
       :indent_level => 4, # Indent level in spaces
       :indent_start => 0, # Starting indent level
-      :width => 80, # Specify line width when beautifier is used (only with beautifier)
-      :preamble => nil, # Preamble for the generated JS file. Can be used to insert any code or comment.
-      :wrap_iife => false, # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
-      :shebang => true, # Preserve shebang (#!) in preamble (shell scripts)
+      :inline_script => true, # Escape occurrences of </script in strings
+      :keep_quoted_props => false, # Keep quotes property names
+      :max_line_len => 32 * 1024, # Maximum line length in minified code
+      :quote_keys => false, # Quote keys in object literals
       :quote_style => 0, # Quote style, possible values :auto (default), :single, :double, :original
-      :keep_quoted_props => false # Keep quotes property names
+      :safari10 => false, # Set this option to true to work around the Safari 10/11 await bug
+      :semicolons => true, # Separate statements with semicolons
+      :shebang => true, # Preserve shebang (#!) in preamble (shell scripts)
+      :webkit => false, # Enable workarounds for WebKit bugs.
+      :wrap_iife => false, # Wrap IIFEs in parenthesis. Note: this disables the negate_iife compression option.
     },
     :mangle => {
       :eval => false, # Mangle names when eval of when is used in scope
@@ -149,9 +146,7 @@ class Uglifier
       raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
-
-    source = harmony? ? source_with(HarmonySourcePath) : source_with(SourcePath)
-    @context = ExecJS.compile(source)
+    @context = ExecJS.compile(js_source)
   end
 
   # Minifies JavaScript code
@@ -192,9 +187,8 @@ class Uglifier
     suffix
   end
 
-  def source_with(path)
-    [ES5FallbackPath, SplitFallbackPath, SourceMapPath, path,
-     UglifyJSWrapperPath].map do |file|
+  def js_source
+    [ES5FallbackPath, SplitFallbackPath, SourceMapPath, SourcePath, UglifyJSWrapperPath].map do |file|
       File.open(file, "r:UTF-8", &:read)
     end.join("\n")
   end
@@ -220,18 +214,8 @@ class Uglifier
     @options[:harmony]
   end
 
-  def error_message(result)
-    result['error']['message'] +
-      if result['error']['message'].start_with?("Unexpected token") && !harmony?
-        ". To use ES6 syntax, harmony mode must be enabled with " \
-        "Uglifier.new(:harmony => true)."
-      else
-        ""
-      end
-  end
-
   def parse_result(result, generate_map)
-    raise Error, error_message(result) if result.has_key?('error')
+    raise Error, result['error']['message'] if result.has_key?('error')
 
     if generate_map
       [result['code'] + source_map_comments, result['map']]

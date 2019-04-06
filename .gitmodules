@@ -10,3 +10,6 @@
 [submodule "vendor/uglifyjs-harmony"]
 	path = vendor/uglifyjs-harmony
 	url = https://github.com/mishoo/UglifyJS2.git
+[submodule "vendor/terser"]
+	path = vendor/terser
+	url = https://github.com/terser-js/terser.git

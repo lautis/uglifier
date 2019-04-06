@@ -40,35 +40,17 @@ end
 namespace :uglifyjs do
   desc "Update UglifyJS source to version specified in VERSION environment variable"
   task :update do
-    cd 'vendor/uglifyjs' do
+    cd 'vendor/terser' do
       `git fetch && git checkout v#{version}`
     end
   end
 
-  desc "Rebuild lib/uglify*.js"
+  desc "Rebuild lib/terser.js"
   task :build do
-    cd 'vendor/source-map/' do
-      `npm install --no-package-lock --no-save`
+    Dir.chdir "vendor/terser" do
+      `npm install`
     end
-
-    cd 'vendor/uglifyjs/' do
-      # required to run ./uglifyjs2 --self; not bundled.
-      `npm install --no-package-lock --no-save`
-    end
-
-    cd 'vendor/uglifyjs-harmony' do
-      # required to run ./uglifyjs2 --self; not bundled.
-      `npm install --no-package-lock --no-save`
-    end
-
-    FileUtils.cp("vendor/source-map/dist/source-map.js", "lib/source-map.js")
-
-    source = `./vendor/uglifyjs/bin/uglifyjs --self --comments /Copyright/`
-    File.write("lib/uglify.js", source)
-
-    harmony_source = `./vendor/uglifyjs-harmony/bin/uglifyjs --self --comments /Copyright/`
-    File.write("lib/uglify-harmony.js", harmony_source)
-
+    FileUtils.cp("vendor/terser/dist/bundle.js", "lib/terser.js")
     FileUtils.cp("vendor/split/split.js", "lib/split.js")
     `patch -p1 -i patches/es5-string-split.patch`
   end
@@ -85,10 +67,8 @@ namespace :uglifyjs do
   task :commit do
     files = [
       'CHANGELOG.md',
-      'lib/uglify.js',
-      'lib/uglify-harmony.js',
-      'vendor/uglifyjs',
-      'vendor/uglifyjs-harmony'
+      'lib/terser.js',
+      'vendor/terser'
     ]
     git_commit(files, "Update UglifyJS to #{version}")
   end

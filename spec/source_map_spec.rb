@@ -23,7 +23,7 @@ describe "Uglifier" do
   end
 
   it "generates source maps" do
-    source = File.open("lib/uglify.js", "r:UTF-8").read
+    source = File.open("lib/terser.js", "r:UTF-8").read
     minified, map = Uglifier.new.compile_with_map(source)
     expect(minified.length).to be < source.length
     expect(map.length).to be > 0
