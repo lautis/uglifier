@@ -98,6 +98,7 @@ class Uglifier
     :toplevel => false,
     :ie8 => true, # Generate safe code for IE8
     :source_map => false, # Generate source map
+    :error_context_lines => 8, # How many lines surrounding the error line
     :harmony => false # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
   }
 
@@ -213,25 +214,79 @@ class Uglifier
       :ie8 => ie8?
     }
 
-    parse_result(@context.call("uglifier", options), generate_map)
+    parse_result(@context.call("uglifier", options), generate_map, options)
   end
 
   def harmony?
     @options[:harmony]
   end
 
-  def error_message(result)
-    result['error']['message'] +
-      if result['error']['message'].start_with?("Unexpected token") && !harmony?
-        ". To use ES6 syntax, harmony mode must be enabled with " \
-        "Uglifier.new(:harmony => true)."
-      else
-        ""
-      end
+  def harmony_error_message(message)
+    if message.start_with?("Unexpected token")
+      ". To use ES6 syntax, harmony mode must be enabled with " \
+      "Uglifier.new(:harmony => true)."
+    else
+      ""
+    end
   end
 
-  def parse_result(result, generate_map)
-    raise Error, error_message(result) if result.has_key?('error')
+  def populate_surround_size
+    surround_size = ENV['ERROR_CONTEXT_LINES'].to_i
+    surround_size = @options[:error_context_lines].to_i if surround_size <= 0
+    surround_size = DEFAULTS[:error_context_lines] if surround_size <= 0
+    surround_size
+  end
+
+  def populate_format_options(low, high, line_index, col)
+    line_width = high.to_s.size
+    {
+      :line_index => line_index,
+      :base_index => low,
+      :line_width => line_width,
+      :line_format => "\e[36m%#{line_width + 1}d\e[0m ", # cyan
+      :col => col
+    }
+  end
+
+  def format_error_line(line, options)
+    # light red
+    indicator = ' => '.rjust(options[:line_width] + 2)
+    colored_line = "#{line[0...options[:col]]}\e[91m#{line[options[:col]..-1]}"
+    "\e[91m#{indicator}\e[0m#{colored_line}\e[0m"
+  end
+
+  def format_lines(lines, options)
+    lines.map.with_index do |line, index|
+      if options[:base_index] + index == options[:line_index]
+        format_error_line(line, options)
+      else
+        "#{options[:line_format] % (options[:base_index] + index + 1)}#{line}"
+      end
+    end
+  end
+
+  def cotext_lines_message(source, line_no, col)
+    line_index = line_no - 1
+    lines = source.split("\n")
+    surround_size = populate_surround_size
+
+    base_index = [line_index - surround_size, 0].max
+    high_no = [line_no + surround_size, lines.size].min
+    options = populate_format_options(base_index, high_no, line_index, col)
+    context_lines = lines[base_index...high_no]
+
+    "--\n#{format_lines(context_lines, options).join("\n")}\n=="
+  end
+
+  def error_message(result, options)
+    err = result['error']
+    harmony_msg = harmony? ? '' : harmony_error_message(err['message'])
+    src_ctx = cotext_lines_message(options[:source], err['line'], err['col'])
+    "#{err['message']}#{harmony_msg}\n#{src_ctx}"
+  end
+
+  def parse_result(result, generate_map, options)
+    raise Error, error_message(result, options) if result.has_key?('error')
 
     if generate_map
       [result['code'] + source_map_comments, result['map']]
