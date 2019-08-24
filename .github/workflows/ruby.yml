@@ -54,6 +54,7 @@ jobs:
         if: matrix.ruby == '2.6.3'
         env:
           BUNDLE_GEMFILE: gemfiles/alaska
+          ALASKA: "1"
         run: |
           source $HOME/.rvm/scripts/rvm
           bundle install --jobs 4 --retry 3
