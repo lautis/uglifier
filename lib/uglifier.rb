@@ -265,7 +265,7 @@ class Uglifier
     end
   end
 
-  def cotext_lines_message(source, line_no, col)
+  def context_lines_message(source, line_no, col)
     line_index = line_no - 1
     lines = source.split("\n")
     surround_size = populate_surround_size
@@ -281,7 +281,7 @@ class Uglifier
   def error_message(result, options)
     err = result['error']
     harmony_msg = harmony? ? '' : harmony_error_message(err['message'])
-    src_ctx = cotext_lines_message(options[:source], err['line'], err['col'])
+    src_ctx = context_lines_message(options[:source], err['line'], err['col'])
     "#{err['message']}#{harmony_msg}\n#{src_ctx}"
   end
 
