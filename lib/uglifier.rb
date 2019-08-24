@@ -234,14 +234,14 @@ class Uglifier
     @options.fetch(:error_context_lines, DEFAULTS[:error_context_lines]).to_i
   end
 
-  def error_context_format_options(low, high, line_index, col)
+  def error_context_format_options(low, high, line_index, column)
     line_width = high.to_s.size
     {
       :line_index => line_index,
       :base_index => low,
       :line_width => line_width,
       :line_format => "\e[36m%#{line_width + 1}d\e[0m ", # cyan
-      :col => col
+      :col => column
     }
   end
 
@@ -262,14 +262,14 @@ class Uglifier
     end
   end
 
-  def context_lines_message(source, line_no, col)
-    line_index = line_no - 1
+  def context_lines_message(source, line_number, column)
+    line_index = line_number - 1
     lines = source.split("\n")
 
-    base_index = [line_index - error_context_lines, 0].max
-    high_no = [line_no + error_context_lines, lines.size].min
-    options = error_context_format_options(base_index, high_no, line_index, col)
-    context_lines = lines[base_index...high_no]
+    first_line = [line_index - error_context_lines, 0].max
+    last_line = [line_number + error_context_lines, lines.size].min
+    options = error_context_format_options(first_line, last_line, line_index, column)
+    context_lines = lines[first_line...last_line]
 
     "--\n#{format_lines(context_lines, options).join("\n")}\n=="
   end
