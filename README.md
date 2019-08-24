@@ -168,6 +168,7 @@ Available options and their defaults are
     :output_filename => nil,    # The filename or URL where the minified output can be found
     :input_source_map => nil    # The contents of the source map describing the input
   },
+  :error_context_lines => 8,    # How many context lines surrounding the error line. Env var ERROR_CONTEXT_LINES overrides this option
   :harmony => false             # Enable ES6/Harmony mode (experimental). Disabling mangling and compressing is recommended with Harmony mode.
 }
 ```
