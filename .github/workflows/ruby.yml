@@ -18,6 +18,14 @@ jobs:
           - 2.5.5
           - 2.6.3
           - jruby-9.2.8.0
+        include:
+          - ruby: 2.5.3
+            gemfile: gemfiles/rubyracer
+          - ruby: jruby-9.2.5.0
+            gemfile: gemfiles/rubyrhino
+          - ruby: 2.5.3
+            gemfile: gemfiles/alaska
+            env: ALASKA=1
     steps:
       - uses: actions/checkout@v1
       - name: Set up RVM
