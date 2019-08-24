@@ -8,15 +8,30 @@ jobs:
 
     strategy:
       matrix:
-        ruby: [2.3.x, 2.4.x, 2.5.x, 2.6.x]
+        ruby:
+          - 1.9.3
+          - 2.0.0
+          - 2.1.10
+          - 2.2.10
+          - 2.3.8
+          - 2.4.6
+          - 2.5.5
+          - 2.6.3
+          - ruby-head
+          - jruby-9.2.8.0
     steps:
       - uses: actions/checkout@v1
+      - name: Set up RVM
+        run: |
+          curl -sSL https://get.rvm.io | bash
       - name: Set up Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          rvm install ${{ matrix.ruby }}
+          rvm --default use ${{ matrix.ruby }}
       - name: Build and test with Rake
         run: |
+          source $HOME/.rvm/scripts/rvm
           gem install bundler -v 1.17.3
           bundle install --jobs 4 --retry 3
           bundle exec rake spec
