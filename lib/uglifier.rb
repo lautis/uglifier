@@ -230,14 +230,11 @@ class Uglifier
     end
   end
 
-  def populate_surround_size
-    surround_size = ENV['ERROR_CONTEXT_LINES'].to_i
-    surround_size = @options[:error_context_lines].to_i if surround_size <= 0
-    surround_size = DEFAULTS[:error_context_lines] if surround_size <= 0
-    surround_size
+  def error_context_lines
+    @options.fetch(:error_context_lines, DEFAULTS[:error_context_lines]).to_i
   end
 
-  def populate_format_options(low, high, line_index, col)
+  def error_context_format_options(low, high, line_index, col)
     line_width = high.to_s.size
     {
       :line_index => line_index,
@@ -268,11 +265,10 @@ class Uglifier
   def context_lines_message(source, line_no, col)
     line_index = line_no - 1
     lines = source.split("\n")
-    surround_size = populate_surround_size
 
-    base_index = [line_index - surround_size, 0].max
-    high_no = [line_no + surround_size, lines.size].min
-    options = populate_format_options(base_index, high_no, line_index, col)
+    base_index = [line_index - error_context_lines, 0].max
+    high_no = [line_no + error_context_lines, lines.size].min
+    options = error_context_format_options(base_index, high_no, line_index, col)
     context_lines = lines[base_index...high_no]
 
     "--\n#{format_lines(context_lines, options).join("\n")}\n=="
