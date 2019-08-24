@@ -36,10 +36,34 @@ jobs:
           source $HOME/.rvm/scripts/rvm
           rvm install ${{ matrix.ruby }}
           rvm --default use ${{ matrix.ruby }}
-      - name: Build and test with Rake
+      - name: Build and run specs
         run: |
           source $HOME/.rvm/scripts/rvm
           gem install bundler -v 1.17.3
+          bundle install --jobs 4 --retry 3
+          bundle exec rake spec
+      - name: Run specs with RubyRacer
+        if: matrix.ruby == 2.6.3
+        env:
+          BUNDLE_GEMFILE: gemfiles/rubyracer
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          bundle install --jobs 4 --retry 3
+          bundle exec rake spec
+      - name: Run tests with Alaska
+        if: matrix.ruby == '2.6.3'
+        env:
+          BUNDLE_GEMFILE: gemfiles/alaska
+        run: |
+          source $HOME/.rvm/scripts/rvm
+          bundle install --jobs 4 --retry 3
+          bundle exec rake spec
+      - name: Run tests with RubyRhino
+        if: matrix.ruby == 'jruby-9.2.8.0'
+        env:
+          BUNDLE_GEMFILE: gemfiles/rubyrhino
+        run: |
+          source $HOME/.rvm/scripts/rvm
           bundle install --jobs 4 --retry 3
           bundle exec rake spec
   lint:
