@@ -1,4 +1,4 @@
-## next
+## 4.2.0 (25 September 2019)
 
 - show code context for error messages (#167)
 - defer initialisation of ExecJS context to fix #165
