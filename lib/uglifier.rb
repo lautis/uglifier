@@ -150,9 +150,6 @@ class Uglifier
       raise ArgumentError, "Invalid option: #{missing}"
     end
     @options = options
-
-    source = harmony? ? source_with(HarmonySourcePath) : source_with(SourcePath)
-    @context = ExecJS.compile(source)
   end
 
   # Minifies JavaScript code
@@ -180,6 +177,13 @@ class Uglifier
   end
 
   private
+
+  def context
+    @context ||= begin
+      source = harmony? ? source_with(HarmonySourcePath) : source_with(SourcePath)
+      ExecJS.compile(source)
+    end
+  end
 
   def source_map_comments
     return '' unless @options[:source_map].respond_to?(:[])
@@ -214,7 +218,7 @@ class Uglifier
       :ie8 => ie8?
     }
 
-    parse_result(@context.call("uglifier", options), generate_map, options)
+    parse_result(context.call("uglifier", options), generate_map, options)
   end
 
   def harmony?
