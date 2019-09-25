@@ -267,6 +267,8 @@ class Uglifier
   end
 
   def context_lines_message(source, line_number, column)
+    return if line_number.nil?
+
     line_index = line_number - 1
     lines = source.split("\n")
 
@@ -280,7 +282,7 @@ class Uglifier
 
   def error_message(result, options)
     err = result['error']
-    harmony_msg = harmony? ? '' : harmony_error_message(err['message'])
+    harmony_msg = harmony? ? '' : harmony_error_message(err['message'].to_s)
     src_ctx = context_lines_message(options[:source], err['line'], err['col'])
     "#{err['message']}#{harmony_msg}\n#{src_ctx}"
   end
