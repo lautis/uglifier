@@ -6,6 +6,9 @@ AllCops:
     - "vendor/**/*"
     - "gemfiles/vendor/**/*"
 
+Metrics/AbcSize:
+  Max: 20
+
 Metrics/BlockLength:
   Enabled: true
   Exclude:
