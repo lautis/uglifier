@@ -1,3 +1,7 @@
+## next
+
+- update UglifyJS to [3.10.0](https://github.com/mishoo/UglifyJS2/compare/v9.10.0...v3.10.0)
+
 ## 4.2.0 (25 September 2019)
 
 - show code context for error messages (#167)
