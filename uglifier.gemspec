@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version = Uglifier::VERSION
   spec.authors = ["Ville Lautanala"]
   spec.email = ["lautis@gmail.com"]
-  spec.homepage = "http://github.com/lautis/uglifier"
+  spec.homepage = "https://github.com/lautis/uglifier"
   spec.summary = "Ruby wrapper for UglifyJS JavaScript compressor"
   spec.description = "Uglifier minifies JavaScript files by wrapping UglifyJS to be accessible in Ruby"
   spec.license = "MIT"
