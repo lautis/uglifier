@@ -1,5 +1,8 @@
 AllCops:
   DisplayCopNames: true
+  SuggestExtensions: false
+  NewCops: disable
+  TargetRubyVersion: 2.4
   Exclude:
     - uglifier.gemspec
     - lib/uglifier/version.rb
@@ -17,7 +20,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
 
 Metrics/MethodLength:
@@ -51,4 +54,10 @@ Style/MutableConstant:
   Enabled: false
 
 Style/ExpandPathArguments:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringConcatenation:
   Enabled: false
