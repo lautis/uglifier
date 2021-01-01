@@ -3,25 +3,7 @@
 Ruby wrapper for [UglifyJS](https://github.com/mishoo/UglifyJS2) JavaScript
 compressor.
 
-UglifyJS currently is extensively tested with ES5, but also includes experimental ES6/ES2015+/Harmony support.
-
-More stable alternatives for working with ES6 code is to first transpile to ES5 with e.g. [babel-transpiler](https://github.com/babel/ruby-babel-transpiler) or using [Closure Compiler](https://github.com/documentcloud/closure-compiler) to directly minify ES6 code.
-
-## ES6 / ES2015+ / Harmony mode
-
-When using Uglifier with ES6 syntax without any options, an error will be
-thrown.
-
-```
-Uglifier::Error: Unexpected token: punc ((). To use ES6 syntax, harmony mode must be enabled with Uglifier.new(:harmony => true).
-```
-
-The experimental ES6 syntax support can be enabled by passing `:harmony => true`
-option to Uglifier.
-
-```ruby
-Uglifier.compile(js, harmony: true)
-```
+UglifyJS only works with ES5. If you need to compress ES6, [ruby-terser](https://github.com/ahorek/terser-ruby) is a better option.
 
 ### Rails
 
