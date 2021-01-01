@@ -7,8 +7,6 @@ UglifyJS currently is extensively tested with ES5, but also includes experimenta
 
 More stable alternatives for working with ES6 code is to first transpile to ES5 with e.g. [babel-transpiler](https://github.com/babel/ruby-babel-transpiler) or using [Closure Compiler](https://github.com/documentcloud/closure-compiler) to directly minify ES6 code.
 
-[![Build Status](https://travis-ci.org/lautis/uglifier.svg?branch=master)](https://travis-ci.org/lautis/uglifier)
-
 ## ES6 / ES2015+ / Harmony mode
 
 When using Uglifier with ES6 syntax without any options, an error will be
