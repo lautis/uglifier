@@ -231,12 +231,12 @@ class Uglifier
   end
 
   def parse_result(result, generate_map)
-    raise Error, error_message(result) if result.has_key?('error')
+    raise Error, error_message(result) if result.has_key?('error') && result['error'].respond_to?(:any?) && result['error'].any?
 
     if generate_map
       [result['code'] + source_map_comments, result['map']]
     else
-      result['code'] + source_map_comments
+      (result['code'] || "") + source_map_comments
     end
   end
 
