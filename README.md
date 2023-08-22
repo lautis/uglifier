@@ -28,7 +28,7 @@ Uglifier is available as a ruby gem.
     $ gem install uglifier
 
 Ensure that your environment has a JavaScript interpreter supported by
-[ExecJS](https://github.com/sstephenson/execjs). Using `therubyracer` gem
+[ExecJS](https://github.com/rails/execjs). Using `therubyracer` gem
 is a safe choice if a runtime isn't already present. Note that while JScript built-in Windows 7 and older works, it is extremely slow.
 
 ## Usage
