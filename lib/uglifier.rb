@@ -27,7 +27,7 @@ class Uglifier
   DEFAULTS = {
     # rubocop:disable Layout/LineLength
     :output => {
-      :ascii_only => true, # Escape non-ASCII characterss
+      :ascii_only => true, # Escape non-ASCII characters
       :comments => :copyright, # Preserve comments (:all, :jsdoc, :copyright, :none)
       :inline_script => false, # Escape occurrences of </script in strings
       :quote_keys => false, # Quote keys in object literals

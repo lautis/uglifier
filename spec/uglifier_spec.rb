@@ -751,7 +751,7 @@ describe "Uglifier" do
     it 'contains harmony error message and follows error_context_lines option' do
       expect { Uglifier.compile(code, :harmony => false, :error_context_lines => 4) }
         .to raise_error(Uglifier::Error, %r{
-          harmony\smode [^\n]+ Uglifier\.new  # harmony error mesage
+          harmony\smode [^\n]+ Uglifier\.new  # harmony error message
           .+ --\n [^\n]+ //_1\n               # 1 should be the first line
           .+ => [^\n]+ bar \e\[\d+m \(\)      # should point to () at line 3
           .+ //_7\n ==\z                      # 7 should be the last line
@@ -761,7 +761,7 @@ describe "Uglifier" do
     it 'shows lines surrounded syntax error when harmony mode is on' do
       expect { Uglifier.compile(code, :harmony => true, :error_context_lines => 2) }
         .to raise_error(Uglifier::Error, %r{
-          Unexpect[^\n]+ ; [^\n]+expect [^\n]+ ,  # syntax error mesage
+          Unexpected[^\n]+ ; [^\n]+expect [^\n]+ ,  # syntax error message
           .+ --\n [^\n]+ //_16\n                  # 16 should be the first line
           .+ => [^\n]+ \} \e\[\d+m ;              # should point to ; at line 18
           .+ //_20\n ==\z                         # 20 should be the last line

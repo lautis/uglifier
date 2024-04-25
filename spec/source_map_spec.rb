@@ -72,7 +72,7 @@ describe "Uglifier" do
     expect(map[0].generated.line).to eq(2)
   end
 
-  it "proceses an input source map" do
+  it "processes an input source map" do
     source = <<-JS
       function hello () {
         function world () {
