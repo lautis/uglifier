@@ -1,3 +1,8 @@
+## next
+
+- fix Ruby 3.4 compatiblity, drop Ruby 2.3 and older support (#195)
+- fix typos (#194)
+
 ## 4.2.0 (25 September 2019)
 
 - show code context for error messages (#167)
