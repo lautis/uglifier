@@ -1,4 +1,4 @@
-## next
+## 4.2.1 (22 September 2024)
 
 - fix Ruby 3.4 compatiblity, drop Ruby 2.3 and older support (#195)
 - fix typos (#194)
