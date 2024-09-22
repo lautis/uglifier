@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description = "Uglifier minifies JavaScript files by wrapping UglifyJS to be accessible in Ruby"
   spec.license = "MIT"
 
-  spec.required_ruby_version = '>= 1.9.3'
+  spec.required_ruby_version = '>= 2.4.0'
 
   spec.extra_rdoc_files = [
     "LICENSE.txt",

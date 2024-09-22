@@ -1,7 +1,6 @@
 # encoding: UTF-8
 
 require "json"
-require "base64"
 require "execjs"
 require "uglifier/version"
 
@@ -160,7 +159,7 @@ class Uglifier
   def compile(source)
     if @options[:source_map]
       compiled, source_map = run_uglifyjs(source, true)
-      source_map_uri = Base64.strict_encode64(source_map)
+      source_map_uri = [source_map].pack('m0')
       source_map_mime = "application/json;charset=utf-8;base64"
       compiled + "\n//# sourceMappingURL=data:#{source_map_mime},#{source_map_uri}"
     else
@@ -512,7 +511,7 @@ class Uglifier
     source_map_options = @options[:source_map].is_a?(Hash) ? @options[:source_map] : {}
     sanitize_map_root(source_map_options.fetch(:input_source_map) do
       url = extract_source_mapping_url(source)
-      Base64.strict_decode64(url.split(",", 2)[-1]) if url && url.start_with?("data:")
+      url.split(",", 2)[-1].unpack1('m0') if url && url.start_with?("data:")
     end)
   rescue ArgumentError, JSON::ParserError
     nil
